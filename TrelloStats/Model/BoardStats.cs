@@ -19,6 +19,14 @@ namespace TrelloStats.Model
             CreatedDate = DateTime.Now;
         }
 
+        public int NumberOfCompletedCards
+        {
+            get
+            {
+                return CardStats.Count(c => !c.IsInProgress);
+            }
+        }
+
         public int CompletedWeeksElapsed
         {
             get
@@ -83,7 +91,7 @@ namespace TrelloStats.Model
         {
             var weekStatsList = new List<WeekStats>();
 
-            for (int week = 1; week <= CompletedWeeksElapsed + 1; week++)
+            for (int week = 1; week <= CompletedWeeksElapsed; week++)
             {
                 
                 var startDay = ProjectStartDate.AddDays(week * 7);

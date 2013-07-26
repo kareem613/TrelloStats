@@ -125,7 +125,7 @@ font-weight: bold !important;
 
             var summaryText = String.Format(SummaryTextTemplate, 
                     boardStats.FirstStartDate.ToLongDateString(),
-                    boardStats.CardStats.Count,
+                    boardStats.NumberOfCompletedCards,
                     boardStats.LastDoneDate.ToLongDateString(),
                     boardStats.CreatedDate.ToLongDateString(),
                     boardStats.CreatedDate.ToLongTimeString(),

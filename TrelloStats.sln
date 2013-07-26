@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrelloStats.Tests", "TrelloStats.Tests\TrelloStats.Tests.csproj", "{F9951AFA-338B-4645-B5AD-D7570F8B102B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrelloStats", "TrelloStats\TrelloStats.csproj", "{4202FE81-8AB3-48F6-828B-5F8E653F2CB0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrelloStatsApp", "TrelloStatsApp\TrelloStatsApp.csproj", "{4AFCFD81-AE8A-4521-9EDB-2DBADC83AA36}"
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F9951AFA-338B-4645-B5AD-D7570F8B102B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9951AFA-338B-4645-B5AD-D7570F8B102B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9951AFA-338B-4645-B5AD-D7570F8B102B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9951AFA-338B-4645-B5AD-D7570F8B102B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4202FE81-8AB3-48F6-828B-5F8E653F2CB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4202FE81-8AB3-48F6-828B-5F8E653F2CB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4202FE81-8AB3-48F6-828B-5F8E653F2CB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
