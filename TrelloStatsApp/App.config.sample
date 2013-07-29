@@ -5,6 +5,12 @@
     <add key="Trello.Token" value="[trello authorization token]"/>
     <add key="Gmail.EmailAddress" value="[gmail email address]"/>
     <add key="Gmail.OneTimePassword" value="[gmail password. Highly recommend using a one time password]"/>
+    <add key="Google.SpreadsheetName" value="TrinityTimeline"/>
+    <add key="Trello.Labels" value="Feature, Bug, Hotfix" />
+    <add key="Trello.ListNames.InProgress" value="Doing"/>
+    <add key="Trello.ListNames.StartNames" value="Doing,Hotfix"/>
+    <add key="Trello.ListNames.CompletedNames" value="Done, DoneLastSprint"/>
+    <add key="Trello.ListNames.ExtraListsToInclude" value="Demoed"/>
   </appSettings>
     <startup> 
         <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5" />

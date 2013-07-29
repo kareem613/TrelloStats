@@ -44,7 +44,7 @@ namespace TrelloStats
 
                 foreach (var card in cards[list])
                 {
-                    var stat = new CardStats() { Card = card, List = list };
+                    var stat = new CardStats() { Card = card, List = list, InProgressListName = _trelloService.InProgressListName };
 
                     AddStartStats(stat, card);
 
@@ -66,7 +66,7 @@ namespace TrelloStats
         {
             stat.Actions = _trelloService.GetActionsForCard<TrelloNet.Action>(card).OrderBy(c => c.Date);
             stat.FirstAction = stat.Actions.First();
-            stat.StartAction = stat.Actions.OfType<UpdateCardMoveAction>().Where(a => TrelloService.START_LIST_NAMES.Contains(a.Data.ListAfter.Name)).OrderBy(a => a.Date).FirstOrDefault();
+            stat.StartAction = stat.Actions.OfType<UpdateCardMoveAction>().Where(a => _trelloService.StartListNames.Contains(a.Data.ListAfter.Name)).OrderBy(a => a.Date).FirstOrDefault();
             stat.Labels = card.Labels;
             var match = Regex.Match(card.Name, @"^\((.*)\)(.*)");
             if (match.Success)
@@ -83,7 +83,7 @@ namespace TrelloStats
   
         private void AddCompleteStats(CardStats stat)
         {
-            stat.DoneAction = stat.Actions.OfType<UpdateCardMoveAction>().Where(a => TrelloService.DONE_LIST_NAMES.Contains(a.Data.ListAfter.Name)).OrderBy(a => a.Date).FirstOrDefault();
+            stat.DoneAction = stat.Actions.OfType<UpdateCardMoveAction>().Where(a => _trelloService.DoneListNames.Contains(a.Data.ListAfter.Name)).OrderBy(a => a.Date).FirstOrDefault();
                   
             if (stat.DoneAction == null)
             {

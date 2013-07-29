@@ -11,7 +11,6 @@ namespace TrelloStats
     public class GoogleService
     {
         private readonly SpreadsheetsService _service;
-        private const string spreadsheetName = "TrinityTimeline";
         private const string SummaryTextTemplate = @"
 Beginning <strong>{0}</strong> with the latest of <strong>{1}</strong> stories completed on <strong>{2}</strong> for a total of <strong>{5}</strong> points.
 <br/> Timeline last updated {3} {4}.
@@ -49,21 +48,22 @@ font-weight: bold !important;
 <tbody>
 </table>
 ";
-        private const string WeekStatsRowTemplate = @"<td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td><td>{7}</td><td>{8}</td>";
-
+        private string SpreadsheetName { get; set; }
         private string[] LabelNames { get; set; }
-        public GoogleService(string gmailAddress, string password, string[] labelNames)
+
+        public GoogleService(string gmailAddress, string password,string spreadsheetName, string[] labelNames)
         {
             _service = new SpreadsheetsService("trelloStats");
             _service.setUserCredentials(gmailAddress, password);
 
+            SpreadsheetName = spreadsheetName;
             LabelNames = labelNames;
         }
 
         public void PushToGoogleSpreadsheet(BoardStats boardStats)
         {
             SpreadsheetQuery query = new SpreadsheetQuery();
-            query.Title = spreadsheetName;
+            query.Title = SpreadsheetName;
             SpreadsheetFeed feed = _service.Query(query);
 
             if (feed.Entries.Count != 1)

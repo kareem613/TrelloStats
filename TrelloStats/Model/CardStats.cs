@@ -17,11 +17,13 @@ namespace TrelloStats.Model
 
         public Card Card { get; set; }
 
+        public string InProgressListName { get; set; }
+
         public bool IsInProgress
         {
             get
             {
-                return List.Name == TrelloService.IN_PROGRESS_LIST_NAME;
+                return List.Name == InProgressListName;
             }
             
         }
@@ -65,5 +67,7 @@ namespace TrelloStats.Model
 
 
         public List List { get; set; }
+
+        
     }
 }
