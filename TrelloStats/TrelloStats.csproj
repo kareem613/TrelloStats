@@ -62,6 +62,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoardData.cs" />
     <Compile Include="BoardStatsService.cs" />
     <Compile Include="Model\BoardStats.cs" />
     <Compile Include="Model\CardStats.cs" />

@@ -27,12 +27,14 @@ namespace TrelloStats
 
             BuildCardStats(cards, badCards, cardStats);
 
-            var boardStats = new BoardStats();
-            boardStats.ProjectStartDate = ProjectStartDate;
-            boardStats.AddCardStats(cardStats);
-            boardStats.AddBadCardStats(badCards);
+            
+            var boardData = new BoardData();
+            boardData.ProjectStartDate = ProjectStartDate;
+            boardData.AddCardStats(cardStats);
+            boardData.AddBadCardStats(badCards);
 
-            return boardStats;
+
+            return new BoardStats(boardData);
         }
 
         private void BuildCardStats(Dictionary<List,List<Card>> cards, List<CardStats> badCards, List<CardStats> cardStats)

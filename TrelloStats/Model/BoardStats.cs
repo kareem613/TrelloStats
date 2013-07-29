@@ -1,29 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TrelloNet;
 
 namespace TrelloStats.Model
 {
     public class BoardStats
     {
-        public List<CardStats> CardStats { get; private set; }
-        public List<CardStats> BadCardStats { get; private set; }
-
-        public DateTime CreatedDate { get; private set; }
-        public DateTime ProjectStartDate { get; set; }
-
-        public BoardStats()
+        public BoardData BoardData { get; set; }
+        public BoardStats(BoardData data)
         {
-            CardStats = new List<CardStats>();
-            BadCardStats = new List<CardStats>();
-            CreatedDate = DateTime.Now;
+            BoardData = data;
         }
+        
 
         public int NumberOfCompletedCards
         {
             get
             {
-                return CardStats.Count(c => !c.IsInProgress);
+                return BoardData.CardStats.Count(c => !c.IsInProgress);
             }
         }
 
@@ -55,7 +50,7 @@ namespace TrelloStats.Model
         {
             get
             {
-                return CardStats.OrderBy(cs => cs.EffectiveStartAction.Date).First();
+                return BoardData.CardStats.OrderBy(cs => cs.EffectiveStartAction.Date).First();
             }
             
         }
@@ -64,26 +59,16 @@ namespace TrelloStats.Model
         {
             get
             {
-                return CardStats.Where(c=> !c.IsInProgress).OrderByDescending(cs => cs.DoneAction.Date).First();
+                return BoardData.CardStats.Where(c => !c.IsInProgress).OrderByDescending(cs => cs.DoneAction.Date).First();
 
             }
         }
-
-        public void AddBadCardStats(List<CardStats> badCards)
-        {
-            BadCardStats.AddRange(badCards);
-        }
-
-        public void AddCardStats(List<CardStats> cardStats)
-        {
-            CardStats.AddRange(cardStats);
-        }
-
+        
         public double TotalPoints
         {
             get
             {
-                return CardStats.Sum(c=>c.Points);
+                return BoardData.CardStats.Sum(c => c.Points);
             }
         }
 
@@ -93,20 +78,28 @@ namespace TrelloStats.Model
 
             for (int week = 1; week <= CompletedWeeksElapsed; week++)
             {
-                
-                var startDay = ProjectStartDate.AddDays(week * 7);
+
+                var startDay = BoardData.ProjectStartDate.AddDays(week * 7);
                 var endDay = startDay.AddDays(7);
                 if(startDay.DayOfWeek != DayOfWeek.Monday || endDay.DayOfWeek != DayOfWeek.Monday)
                 {
 
                 }
-                var completedCards = CardStats.Where(c => !c.IsInProgress && c.DoneAction.Date >= startDay && c.DoneAction.Date < endDay);
-                var inProgressCards = CardStats.Where(c => c.IsInProgress && c.EffectiveStartAction.Date >= startDay && c.EffectiveStartAction.Date < endDay);
+                var completedCards = BoardData.CardStats.Where(c => !c.IsInProgress && c.DoneAction.Date >= startDay && c.DoneAction.Date < endDay);
+                var inProgressCards = BoardData.CardStats.Where(c => c.IsInProgress && c.EffectiveStartAction.Date >= startDay && c.EffectiveStartAction.Date < endDay);
                 
                 WeekStats weekStats = new WeekStats() { Cards = completedCards, CardsInProgress = inProgressCards, WeekNumber = week, StartDate = startDay, EndDate = endDay };
                 weekStatsList.Add(weekStats);
             }
             return weekStatsList;
+        }
+
+        public IEnumerable<CardStats> CompletedCardStats
+        {
+            get
+            {
+                return BoardData.CardStats.Where(c=> !c.IsInProgress);
+            }
         }
     }
   

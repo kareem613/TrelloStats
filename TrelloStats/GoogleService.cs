@@ -85,7 +85,7 @@ font-weight: bold !important;
             titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "type", Value = "title" });
             _service.Insert(listFeed, titleRow);
 
-            foreach (var cardStat in boardStats.CardStats.Where(c=> !c.IsInProgress))
+            foreach (var cardStat in boardStats.CompletedCardStats)
             {
                 var row = new ListEntry();
                 row.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = cardStat.EffectiveStartAction.Date.ToString() });
@@ -96,7 +96,7 @@ font-weight: bold !important;
                 _service.Insert(listFeed, row);
             }
 
-            if (boardStats.BadCardStats.Count > 0)
+            if (boardStats.BoardData.BadCardStats.Count > 0)
             {
                 var errorRow = new ListEntry();
                 errorRow.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = boardStats.FirstStartDate.ToString() });
@@ -110,7 +110,7 @@ font-weight: bold !important;
         private string GetSummaryTextForErrorCards(BoardStats boardStats)
         {
             var errorCards = new StringBuilder();
-            boardStats.BadCardStats.ForEach(c => errorCards.AppendFormat("<div><a href=\"{0}\">{1}</a></div>", c.Card.Url, c.Card.Name));
+            boardStats.BoardData.BadCardStats.ForEach(c => errorCards.AppendFormat("<div><a href=\"{0}\">{1}</a></div>", c.Card.Url, c.Card.Name));
             return errorCards.ToString();
         }
   
@@ -134,8 +134,8 @@ font-weight: bold !important;
                     boardStats.FirstStartDate.ToLongDateString(),
                     boardStats.NumberOfCompletedCards,
                     boardStats.LastDoneDate.ToLongDateString(),
-                    boardStats.CreatedDate.ToLongDateString(),
-                    boardStats.CreatedDate.ToLongTimeString(),
+                    boardStats.BoardData.CreatedDate.ToLongDateString(),
+                    boardStats.BoardData.CreatedDate.ToLongTimeString(),
                     boardStats.TotalPoints
                 );
 
