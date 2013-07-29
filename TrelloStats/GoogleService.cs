@@ -72,38 +72,74 @@ font-weight: bold !important;
             WorksheetEntry timelineWorksheet = GetWorksheet(feed, "Data");
             var listFeed = GetListFeed(timelineWorksheet);
 
-            foreach (var row in listFeed.Entries)
-            {
-                row.Delete();
-            }
+            DeleteAllDataInWorksheet(listFeed);
 
+            AddGoodCards(boardStats, listFeed);
+            AddBadCards(boardStats, listFeed);
+            AddTitleCard(boardStats, listFeed);
+        }
+  
+        private void AddBadCards(BoardStats boardStats, ListFeed listFeed)
+        {
+            if (boardStats.BoardData.BadCardStats.Count > 0)
+            {
+                var errorRow = GetBadCardEntry(boardStats);
+                _service.Insert(listFeed, errorRow);
+            }
+        }
+  
+        private void AddGoodCards(BoardStats boardStats, ListFeed listFeed)
+        {
+            foreach (var cardStat in boardStats.CompletedCardStats)
+            {
+                var row = GetCompletedCardEntry(cardStat);
+                _service.Insert(listFeed, row);
+            }
+        }
+  
+        private void AddTitleCard(BoardStats boardStats, ListFeed listFeed)
+        {
+            var titleRow = GetTitleCardEntry(boardStats);
+            _service.Insert(listFeed, titleRow);
+        }
+  
+        private ListEntry GetBadCardEntry(BoardStats boardStats)
+        {
+            var errorRow = new ListEntry();
+            errorRow.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = boardStats.FirstStartDate.ToString() });
+            errorRow.Elements.Add(new ListEntry.Custom() { LocalName = "enddate", Value = "" });
+            errorRow.Elements.Add(new ListEntry.Custom() { LocalName = "headline", Value = "Unproccessed Trello Cards" });
+            errorRow.Elements.Add(new ListEntry.Custom() { LocalName = "text", Value = GetSummaryTextForErrorCards(boardStats) });
+            return errorRow;
+        }
+  
+        private ListEntry GetCompletedCardEntry(CardStats cardStat)
+        {
+            var row = new ListEntry();
+            row.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = cardStat.EffectiveStartAction.Date.ToString() });
+            row.Elements.Add(new ListEntry.Custom() { LocalName = "enddate", Value = "" });
+            row.Elements.Add(new ListEntry.Custom() { LocalName = "headline", Value = GetHeadlineForCard(cardStat) });
+            row.Elements.Add(new ListEntry.Custom() { LocalName = "text", Value = String.Format("{0} Elapsed Day(s)", cardStat.BusinessDaysElapsed) });
+            row.Elements.Add(new ListEntry.Custom() { LocalName = "media", Value = cardStat.Card.Url });
+            return row;
+        }
+  
+        private ListEntry GetTitleCardEntry(BoardStats boardStats)
+        {
             var titleRow = new ListEntry();
             titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = boardStats.FirstStartDate.ToString() });
             titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "enddate", Value = "" });
             titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "headline", Value = "Trinity Timeline" });
             titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "text", Value = GetSummaryTextForBoardStat(boardStats) });
             titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "type", Value = "title" });
-            _service.Insert(listFeed, titleRow);
-
-            foreach (var cardStat in boardStats.CompletedCardStats)
+            return titleRow;
+        }
+  
+        private void DeleteAllDataInWorksheet(ListFeed listFeed)
+        {
+            foreach (var row in listFeed.Entries)
             {
-                var row = new ListEntry();
-                row.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = cardStat.EffectiveStartAction.Date.ToString() });
-                row.Elements.Add(new ListEntry.Custom() { LocalName = "enddate", Value = "" });
-                row.Elements.Add(new ListEntry.Custom() { LocalName = "headline", Value = GetHeadlineForCard(cardStat) });
-                row.Elements.Add(new ListEntry.Custom() { LocalName = "text", Value = String.Format("{0} Elapsed Day(s)", cardStat.BusinessDaysElapsed) });
-                row.Elements.Add(new ListEntry.Custom() { LocalName = "media", Value = cardStat.Card.Url });
-                _service.Insert(listFeed, row);
-            }
-
-            if (boardStats.BoardData.BadCardStats.Count > 0)
-            {
-                var errorRow = new ListEntry();
-                errorRow.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = boardStats.FirstStartDate.ToString() });
-                errorRow.Elements.Add(new ListEntry.Custom() { LocalName = "enddate", Value = "" });
-                errorRow.Elements.Add(new ListEntry.Custom() { LocalName = "headline", Value = "Unproccessed Trello Cards" });
-                errorRow.Elements.Add(new ListEntry.Custom() { LocalName = "text", Value = GetSummaryTextForErrorCards(boardStats) });
-                _service.Insert(listFeed, errorRow);
+                row.Delete();
             }
         }
   
@@ -140,14 +176,13 @@ font-weight: bold !important;
                 );
 
             summaryText = summaryText.Replace("[[weekly_stats_header]]", weekStatsHeader);
-
             summaryText = summaryText.Replace("[[weekly_stats_rows]]", weekRows.ToString());
             return summaryText;
         }
 
         private string GetWeekStatsHtmlHeader()
         {
-            var headerTitles = new List<string>(){"Week #","Start","End","Still In Progress","Stories Completed","Points Completed"};
+            var headerTitles = new List<string>(){"Week #","Start","End","In Progress","Stories Completed","Points Completed"};
             foreach (var labelName in LabelNames)
             {
                 headerTitles.Insert(headerTitles.Count - 1, labelName);
