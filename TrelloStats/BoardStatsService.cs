@@ -13,7 +13,7 @@ namespace TrelloStats
     {
         private readonly TrelloService _trelloService;
 
-        private DateTime ProjectStartDate = new DateTime(2013,6,4);
+        private DateTime ProjectStartDate = new DateTime(2013,6,4,14,0,0);
 
         public BoardStatsService(TrelloService trelloService)
         {
