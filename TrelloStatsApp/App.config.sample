@@ -9,7 +9,7 @@
     <add key="Trello.Labels" value="Feature, Bug, Hotfix" />
     <add key="Trello.ListNames.InProgress" value="Doing"/>
     <add key="Trello.ListNames.StartNames" value="Doing,Hotfix"/>
-    <add key="Trello.ListNames.CompletedNames" value="Done, DoneLastSprint"/>
+    <add key="Trello.ListNames.CompletedNames" value="Done, Demoed"/>
     <add key="Trello.ListNames.ExtraListsToInclude" value="Demoed"/>
   </appSettings>
     <startup> 
