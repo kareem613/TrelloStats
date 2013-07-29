@@ -38,30 +38,6 @@ namespace TrelloStats.Model
 
         public UpdateCardMoveAction DoneAction { get; set; }
 
-        public bool WasImplementedPriorToEstimatation
-        {
-            get
-            {
-                return Points == 0 || Labels.Any(l => l.Name == "Implemented Prior to Estimate");
-            }
-        }
-
-        public bool WasEstimatationPriorToImplementation
-        {
-            get
-            {
-                return Points > 0 && Labels.Any(l => l.Name != "Implemented Prior to Estimate");
-            }
-        }
-
-        public bool WasRateAfterImplementation
-        {
-            get
-            {
-                return Points > 0 && Labels.Any(l => l.Name == "Implemented Prior to Estimate");
-            }
-        }
-
         public TimeSpan Duration
         {
             get

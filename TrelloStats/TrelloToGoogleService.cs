@@ -12,7 +12,7 @@ namespace TrelloStats
    
         public TrelloToGoogleService()
         {
-            _googleService = new GoogleService(ConfigurationManager.AppSettings["Gmail.EmailAddress"], ConfigurationManager.AppSettings["Gmail.OneTimePassword"]);
+            _googleService = new GoogleService(ConfigurationManager.AppSettings["Gmail.EmailAddress"], ConfigurationManager.AppSettings["Gmail.OneTimePassword"], ConfigurationManager.AppSettings["Trello.Labels"].Split(','));
             _trelloService = new TrelloService(ConfigurationManager.AppSettings["Trello.Key"],ConfigurationManager.AppSettings["Trello.Token"]);
             _boardStatsService = new BoardStatsService(_trelloService);
         }

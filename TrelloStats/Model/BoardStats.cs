@@ -124,22 +124,6 @@ namespace TrelloStats.Model
             }
         }
 
-        public int NumberOfEstimatedCards
-        {
-            get
-            {
-                return Cards.Count(c => c.WasEstimatationPriorToImplementation);
-            }
-        }
-
-        public int NumberOfUnestimatedCards
-        {
-            get
-            {
-                return Cards.Count(c => c.WasImplementedPriorToEstimatation );
-            }
-        }
-
         public double PointsCompleted
         {
             get

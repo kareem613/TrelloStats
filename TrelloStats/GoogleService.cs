@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Google.GData.Client;
@@ -21,7 +22,8 @@ text-align:center;
 color:#66a3d3;
 }}
 #week_stats {{
-width:80%;
+width:100%;
+white-space:nowrap;
 border-top:1px solid #e5eff8;
 border-right:1px solid #e5eff8;
 border-collapse:collapse;
@@ -42,17 +44,20 @@ font-weight: bold !important;
 </style>
 <table id=""week_stats"">
 <tbody>
-    <tr><th>Week #</th><th>Start</th><th>End</th><th>Still In Progress</th><th>Stories Completed</th><th>Unestimated Stories Completed</th><th>Fusebill Stories Completed</th><th>Points Completed</th></tr>
+    [[weekly_stats_header]]
     [[weekly_stats_rows]]
 <tbody>
 </table>
 ";
-        private const string WeekStatsRowTemplate = @"<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td><td>{7}</td></tr>";
-        
-        public GoogleService(string gmailAddress, string password)
+        private const string WeekStatsRowTemplate = @"<td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td><td>{7}</td><td>{8}</td>";
+
+        private string[] LabelNames { get; set; }
+        public GoogleService(string gmailAddress, string password, string[] labelNames)
         {
             _service = new SpreadsheetsService("trelloStats");
             _service.setUserCredentials(gmailAddress, password);
+
+            LabelNames = labelNames;
         }
 
         public void PushToGoogleSpreadsheet(BoardStats boardStats)
@@ -119,9 +124,11 @@ font-weight: bold !important;
   
         private string GetSummaryTextForBoardStat(BoardStats boardStats)
         {
+            var weekStatsHeader = GetWeekStatsHtmlHeader();
+
             var weekStatsList = boardStats.GetWeeklyStats();
             var weekRows = new StringBuilder();
-            weekStatsList.ForEach(w => weekRows.AppendFormat(WeekStatsRowTemplate,w.WeekNumber,w.StartDate.ToShortDateString(), w.EndDate.ToShortDateString(),w.NumberOfCardsInProgress, w.NumberOfCompletedCards, w.NumberOfUnestimatedCards,w.GetNumberOfCardsWithLabel("Fusebill"), w.PointsCompleted));
+            weekStatsList.ForEach(w => weekRows.Append(GetWeekStatsHtmlRow(w)));
 
             var summaryText = String.Format(SummaryTextTemplate, 
                     boardStats.FirstStartDate.ToLongDateString(),
@@ -131,8 +138,52 @@ font-weight: bold !important;
                     boardStats.CreatedDate.ToLongTimeString(),
                     boardStats.TotalPoints
                 );
+
+            summaryText = summaryText.Replace("[[weekly_stats_header]]", weekStatsHeader);
+
             summaryText = summaryText.Replace("[[weekly_stats_rows]]", weekRows.ToString());
             return summaryText;
+        }
+
+        private string GetWeekStatsHtmlHeader()
+        {
+            var headerTitles = new List<string>(){"Week #","Start","End","Still In Progress","Stories Completed","Points Completed"};
+            foreach (var labelName in LabelNames)
+            {
+                headerTitles.Insert(headerTitles.Count - 1, labelName);
+            }
+            var header = new StringBuilder("<tr>");
+            headerTitles.ForEach(h => header.AppendFormat("<th>{0}</th>", h));
+            header.AppendLine("</tr>");
+            return header.ToString();
+        }
+  
+        private string GetWeekStatsHtmlRow(WeekStats w)
+        {
+            var row = new StringBuilder("<tr>");
+            row.AppendLine(GetWeekStatsRow(w.WeekNumber));
+
+            row.AppendLine(GetWeekStatsRow(w.StartDate.ToShortDateString()));
+            row.AppendLine(GetWeekStatsRow(w.EndDate.ToShortDateString()));
+            row.AppendLine(GetWeekStatsRow(w.NumberOfCardsInProgress));
+            row.AppendLine(GetWeekStatsRow(w.NumberOfCompletedCards));
+
+            foreach (var labelName in LabelNames)
+            {
+                row.AppendLine(GetWeekStatsRow(w.GetNumberOfCardsWithLabel(labelName)));
+            }
+           
+            row.AppendLine(GetWeekStatsRow(w.PointsCompleted));
+            
+
+            row.Append("</tr>");
+
+            return row.ToString();
+        }
+  
+        private string GetWeekStatsRow(object value)
+        {
+            return string.Format("<td>{0}</td>", value.ToString());
         }
 
         private WorksheetEntry GetWorksheet(SpreadsheetFeed feed, string worksheetName)
