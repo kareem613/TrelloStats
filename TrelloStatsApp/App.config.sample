@@ -13,6 +13,7 @@
     <add key="Trello.ListNames.ExtraListsToInclude" value="Demoed"/>
     <add key="TimelineJS.Tags" value="Hotfix,Support"/>
     <add key="TimelineJS.Tags.Default" value="Feature"/>
+    <add key="TimelineJS.OffsetMinutesPerCard" value="60"/>
   </appSettings>
     <startup> 
         <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5" />
