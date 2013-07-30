@@ -11,6 +11,8 @@
     <add key="Trello.ListNames.StartNames" value="Doing,Hotfix"/>
     <add key="Trello.ListNames.CompletedNames" value="Done, Demoed"/>
     <add key="Trello.ListNames.ExtraListsToInclude" value="Demoed"/>
+    <add key="TimelineJS.Tags" value="Hotfix,Support"/>
+    <add key="TimelineJS.Tags.Default" value="Feature"/>
   </appSettings>
     <startup> 
         <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5" />

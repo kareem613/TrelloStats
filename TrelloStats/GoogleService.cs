@@ -5,6 +5,7 @@ using System.Text;
 using Google.GData.Client;
 using Google.GData.Spreadsheets;
 using TrelloStats.Model;
+using System.Configuration;
 
 namespace TrelloStats
 {
@@ -90,10 +91,17 @@ font-weight: bold !important;
   
         private void AddGoodCards(BoardStats boardStats, ListFeed listFeed)
         {
-            foreach (var cardStat in boardStats.CompletedCardStats)
+            foreach (var dayGroups in boardStats.CompletedCardStats.GroupBy(b=>b.DoneAction.Date.ToShortDateString()))
             {
-                var row = GetCompletedCardEntry(cardStat);
+                var dayGroupList = dayGroups.ToList();
+                for (int i = 0; i < dayGroupList.Count(); i++)
+                {
+                    var cardStat = dayGroupList[i];
+                    var timeOffset = new TimeSpan(i,0,0);
+                   
+                    var row = GetCompletedCardEntry(cardStat, timeOffset);
                 _service.Insert(listFeed, row);
+                }
             }
         }
   
@@ -113,15 +121,29 @@ font-weight: bold !important;
             return errorRow;
         }
   
-        private ListEntry GetCompletedCardEntry(CardStats cardStat)
+        private ListEntry GetCompletedCardEntry(CardStats cardStat, TimeSpan timeOffset)
         {
             var row = new ListEntry();
-            row.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = cardStat.EffectiveStartAction.Date.ToString() });
+            row.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = cardStat.DoneAction.Date.Add(timeOffset).ToString() });
             row.Elements.Add(new ListEntry.Custom() { LocalName = "enddate", Value = "" });
             row.Elements.Add(new ListEntry.Custom() { LocalName = "headline", Value = GetHeadlineForCard(cardStat) });
             row.Elements.Add(new ListEntry.Custom() { LocalName = "text", Value = String.Format("{0} Elapsed Day(s)", cardStat.BusinessDaysElapsed) });
             row.Elements.Add(new ListEntry.Custom() { LocalName = "media", Value = cardStat.Card.Url });
+            row.Elements.Add(new ListEntry.Custom() { LocalName = "tag", Value = GetCategory(cardStat) });
+            
             return row;
+        }
+
+        private string GetCategory(CardStats cardStat)
+        {
+            var tags = ConfigurationManager.AppSettings["TimelineJS.Tags"].Split(',');
+            foreach (var tag in tags)
+            {
+                if (cardStat.Labels.Any(l => l.Name == tag))
+                    return tag;
+            }
+
+            return ConfigurationManager.AppSettings["TimelineJS.Tags.Default"];
         }
   
         private ListEntry GetTitleCardEntry(BoardStats boardStats)

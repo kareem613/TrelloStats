@@ -45,14 +45,13 @@ namespace TrelloStats
                 foreach (var card in cards[list])
                 {
                     var stat = new CardStats() { Card = card, List = list, InProgressListName = _trelloService.InProgressListName };
-
+                    
                     AddStartStats(stat, card);
 
                     if (!stat.IsInProgress)
                     {
                         AddCompleteStats(stat);
                     }
-
                     if (stat.IsComplete || stat.IsInProgress)
                         cardStats.Add(stat);
                     else
