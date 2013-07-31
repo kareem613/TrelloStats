@@ -51,12 +51,13 @@ font-weight: bold !important;
 ";
         private string SpreadsheetName { get; set; }
         private string[] LabelNames { get; set; }
-
-        public GoogleService(string gmailAddress, string password,string spreadsheetName, string[] labelNames)
+        private TimeZoneInfo TimeZone { get; set; }
+        public GoogleService(string gmailAddress, string password,string spreadsheetName, string[] labelNames, TimeZoneInfo timeZone)
         {
             _service = new SpreadsheetsService("trelloStats");
             _service.setUserCredentials(gmailAddress, password);
 
+            TimeZone = timeZone;
             SpreadsheetName = spreadsheetName;
             LabelNames = labelNames;
         }
@@ -91,7 +92,7 @@ font-weight: bold !important;
   
         private void AddGoodCards(BoardStats boardStats, ListFeed listFeed)
         {
-            foreach (var dayGroups in boardStats.CompletedCardStats.GroupBy(b=>b.DoneAction.Date.ToShortDateString()))
+            foreach (var dayGroups in boardStats.CompletedCardStats.GroupBy(b => b.DoneAction.DateInTimeZone(TimeZone).ToShortDateString()))
             {
                 var dayGroupList = dayGroups.ToList();
                 for (int i = 0; i < dayGroupList.Count(); i++)
@@ -125,7 +126,7 @@ font-weight: bold !important;
         private ListEntry GetCompletedCardEntry(CardStats cardStat, TimeSpan timeOffset)
         {
             var row = new ListEntry();
-            row.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = cardStat.DoneAction.Date.Add(timeOffset).ToString() });
+            row.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = cardStat.DoneAction.DateInTimeZone(TimeZone).Add(timeOffset).ToString() });
             row.Elements.Add(new ListEntry.Custom() { LocalName = "enddate", Value = "" });
             row.Elements.Add(new ListEntry.Custom() { LocalName = "headline", Value = GetHeadlineForCard(cardStat) });
             row.Elements.Add(new ListEntry.Custom() { LocalName = "text", Value = String.Format("{0} Elapsed Day(s)", cardStat.BusinessDaysElapsed) });

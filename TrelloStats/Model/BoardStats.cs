@@ -7,10 +7,12 @@ namespace TrelloStats.Model
 {
     public class BoardStats
     {
+        private readonly TimeZoneInfo _timeZone;
         public BoardData BoardData { get; set; }
-        public BoardStats(BoardData data)
+        public BoardStats(BoardData data, TimeZoneInfo timeZone)
         {
             BoardData = data;
+            _timeZone = timeZone;
         }
         
 
@@ -34,7 +36,7 @@ namespace TrelloStats.Model
         {
             get
             {
-                return FirstStartedActivity.EffectiveStartAction.Date;
+                return FirstStartedActivity.EffectiveStartAction.DateInTimeZone(_timeZone);
             }
         }
 
@@ -42,7 +44,7 @@ namespace TrelloStats.Model
         {
             get
             {
-                return LastDoneActivity.DoneAction.Date;
+                return LastDoneActivity.DoneAction.DateInTimeZone(_timeZone);
             }
         }
 
@@ -85,8 +87,8 @@ namespace TrelloStats.Model
                 {
 
                 }
-                var completedCards = BoardData.CardStats.Where(c => !c.IsInProgress && c.DoneAction.Date >= startDay && c.DoneAction.Date < endDay);
-                var inProgressCards = BoardData.CardStats.Where(c => c.IsInProgress && c.EffectiveStartAction.Date >= startDay && c.EffectiveStartAction.Date < endDay);
+                var completedCards = BoardData.CardStats.Where(c => !c.IsInProgress && c.DoneAction.DateInTimeZone(_timeZone) >= startDay && c.DoneAction.DateInTimeZone(_timeZone) < endDay);
+                var inProgressCards = BoardData.CardStats.Where(c => c.IsInProgress && c.EffectiveStartAction.DateInTimeZone(_timeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_timeZone) < endDay);
                 
                 WeekStats weekStats = new WeekStats() { Cards = completedCards, CardsInProgress = inProgressCards, WeekNumber = week, StartDate = startDay, EndDate = endDay };
                 weekStatsList.Add(weekStats);

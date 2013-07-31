@@ -4,6 +4,11 @@ namespace TrelloStats
 {
     public static class DateTimeExtensions
     {
+        public static DateTime DateInTimeZone(this TrelloNet.Action action, TimeZoneInfo timezone)
+        {
+            return TimeZoneInfo.ConvertTimeFromUtc(action.Date, timezone);
+        }
+
         /// <summary>
         /// Calculates number of business days, taking into account:
         ///  - weekends (Saturdays and Sundays)

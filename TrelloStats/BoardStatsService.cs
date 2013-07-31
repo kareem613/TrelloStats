@@ -13,11 +13,13 @@ namespace TrelloStats
     {
         private readonly TrelloService _trelloService;
 
+        private readonly TimeZoneInfo _timeZone;
         private DateTime ProjectStartDate = new DateTime(2013,6,4,14,0,0);
 
-        public BoardStatsService(TrelloService trelloService)
+        public BoardStatsService(TrelloService trelloService, TimeZoneInfo timeZone)
         {
             _trelloService = trelloService;
+            _timeZone = timeZone;
         }
 
         public BoardStats BuildBoardStats(Dictionary<List,List<Card>> cards)
@@ -34,7 +36,7 @@ namespace TrelloStats
             boardData.AddBadCardStats(badCards);
 
 
-            return new BoardStats(boardData);
+            return new BoardStats(boardData, _timeZone);
         }
 
         private void BuildCardStats(Dictionary<List,List<Card>> cards, List<CardStats> badCards, List<CardStats> cardStats)
@@ -44,7 +46,7 @@ namespace TrelloStats
 
                 foreach (var card in cards[list])
                 {
-                    var stat = new CardStats() { Card = card, List = list, InProgressListName = _trelloService.InProgressListName };
+                    var stat = new CardStats() { Card = card, List = list, InProgressListName = _trelloService.InProgressListName, TimeZone = _timeZone };
                     
                     AddStartStats(stat, card);
 

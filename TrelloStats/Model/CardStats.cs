@@ -19,6 +19,8 @@ namespace TrelloStats.Model
 
         public string InProgressListName { get; set; }
 
+        public TimeZoneInfo TimeZone { get; set; }
+
         public bool IsInProgress
         {
             get
@@ -44,7 +46,7 @@ namespace TrelloStats.Model
         {
             get
             {
-                return DoneAction.Date.Subtract(StartAction.Date);
+                return DoneAction.DateInTimeZone(TimeZone).Subtract(StartAction.DateInTimeZone(TimeZone));
             }
         }
 

@@ -18,6 +18,7 @@ namespace TrelloStats
             _trello = new Trello(key);
             //var url = trello.GetAuthorizationUrl("Trello Stats", Scope.ReadOnly, Expiration.Never);
             _trello.Authorize(token);
+            
 
             InProgressListName = inProgressListName;
             StartListNames = startListNames;
