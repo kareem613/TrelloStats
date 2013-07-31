@@ -211,7 +211,10 @@ font-weight: bold !important;
                 headerTitles.Insert(headerTitles.Count - 1, labelName);
             }
             var header = new StringBuilder("<tr>");
-            headerTitles.ForEach(h => header.AppendFormat("<th>{0}</th>", h));
+            foreach (var headerTitle in headerTitles)
+            {
+                header.AppendFormat("<th>{0}</th>", headerTitle);
+            }
             header.AppendLine("</tr>");
             return header.ToString();
         }
@@ -228,7 +231,18 @@ font-weight: bold !important;
 
             foreach (var labelName in LabelNames)
             {
-                row.AppendLine(GetWeekStatsRow(w.GetNumberOfCardsWithLabel(labelName)));
+                var labelNameSet = labelName.Split('/');
+                if (labelNameSet.Length > 1)
+                {
+                    var value1 = w.GetNumberOfCardsWithLabel(labelNameSet[0]);
+                    var value2 = w.GetNumberOfCardsWithLabel(labelNameSet[1]);
+                    var valueSet = String.Format("{0}/{1}",value1, value2);
+                    row.AppendLine(GetWeekStatsRow(valueSet));
+                }
+                else
+                {
+                    row.AppendLine(GetWeekStatsRow(w.GetNumberOfCardsWithLabel(labelName)));
+                }
             }
            
             row.AppendLine(GetWeekStatsRow(w.PointsCompleted));

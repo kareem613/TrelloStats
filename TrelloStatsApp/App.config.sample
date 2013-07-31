@@ -5,14 +5,38 @@
     <add key="Trello.Token" value="[trello authorization token]"/>
     <add key="Gmail.EmailAddress" value="[gmail email address]"/>
     <add key="Gmail.OneTimePassword" value="[gmail password. Highly recommend using a one time password]"/>
+    
+    <!--
+      The google spreadsheet to push results to. It must contain the following columns:
+      startdate,enddate,headline,text,type
+    -->
     <add key="Google.SpreadsheetName" value="TrinityTimeline"/>
-    <add key="Trello.Labels" value="Feature, Bug, Hotfix" />
+    
+    <!--List of Trello labels to count and display as a column in the title stats. Delimit a set with a '/' to display them in the same table column. -->
+    <add key="Trello.Labels" value="Feature,Bug/Hotfix" />
+    
+    <!--The Trello list to be counted as in progress. Only one is allowed. -->
     <add key="Trello.ListNames.InProgress" value="Doing"/>
+    
+    <!--The Trello lists to be considered as the start of a card.-->
     <add key="Trello.ListNames.StartNames" value="Doing,Hotfix"/>
-    <add key="Trello.ListNames.CompletedNames" value="Done, Demoed"/>
+    
+    <!--The Trello lists to be considered as the completion of a card.-->
+    <add key="Trello.ListNames.CompletedNames" value="Done,Delivered"/>
+    
+    <!--Additional Trello lists to process cards from.--> 
     <add key="Trello.ListNames.ExtraListsToInclude" value="Demoed"/>
+    
+    <!--Labels from Trello to treat as TimelineJS tags-->
     <add key="TimelineJS.Tags" value="Hotfix,Support"/>
+
+    <!--TimelineJS tag to use if a card is not labeled with any of the TimelineJS.Tags.-->
     <add key="TimelineJS.Tags.Default" value="Feature"/>
+    
+    <!--
+      Minutes to offset the time of each card when multiple cards are completed on the same day. 
+      This prevents them from stacking directly above each other for a better display.
+    -->
     <add key="TimelineJS.OffsetMinutesPerCard" value="60"/>
   </appSettings>
     <startup> 
