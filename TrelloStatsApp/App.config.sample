@@ -6,6 +6,9 @@
     <add key="Gmail.EmailAddress" value="[gmail email address]"/>
     <add key="Gmail.OneTimePassword" value="[gmail password. Highly recommend using a one time password]"/>
     
+    <!--.NET Timezone Id. All dates from Trello(UTC) are converted to this timezone-->
+    <add key="TimeZone" value="Eastern Standard Time"/>
+    
     <!--
       The google spreadsheet to push results to. It must contain the following columns:
       startdate,enddate,headline,text,type

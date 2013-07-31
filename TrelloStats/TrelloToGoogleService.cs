@@ -13,8 +13,8 @@ namespace TrelloStats
    
         public TrelloToGoogleService()
         {
-                TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-                _googleService = new GoogleService(GetAppConfig("Gmail.EmailAddress"), GetAppConfig("Gmail.OneTimePassword"), GetAppConfig("Google.SpreadsheetName"), GetAppSettingAsArray("Trello.Labels"), timeZone);
+            TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById(GetAppConfig("TimeZone"));
+            _googleService = new GoogleService(GetAppConfig("Gmail.EmailAddress"), GetAppConfig("Gmail.OneTimePassword"), GetAppConfig("Google.SpreadsheetName"), GetAppSettingAsArray("Trello.Labels"), timeZone);
             _trelloService = new TrelloService(ConfigurationManager.AppSettings["Trello.Key"], ConfigurationManager.AppSettings["Trello.Token"], GetAppConfig("Trello.ListNames.InProgress"), GetAppSettingAsArray("Trello.ListNames.StartNames"), GetAppSettingAsArray("Trello.ListNames.CompletedNames"), GetAppSettingAsArray("Trello.ListNames.ExtraListsToInclude"));
             _boardStatsService = new BoardStatsService(_trelloService, timeZone);
         }
