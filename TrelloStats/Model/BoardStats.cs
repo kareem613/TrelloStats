@@ -76,7 +76,7 @@ namespace TrelloStats.Model
         {
             var weekStatsList = new List<WeekStats>();
 
-            for (int week = 1; week <= CompletedWeeksElapsed; week++)
+            for (int week = 1; week <= CompletedWeeksElapsed +1; week++)
             {
 
                 var startDay = BoardData.ProjectStartDate.AddDays(week * 7);
