@@ -15,6 +15,7 @@ namespace TrelloStatsApp
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
+                Console.ReadLine();
             }
         }
     }
