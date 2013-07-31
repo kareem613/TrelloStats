@@ -22,7 +22,7 @@ namespace TrelloStats
             InProgressListName = inProgressListName;
             StartListNames = startListNames;
             DoneListNames = doneListNames;
-            ExtraListNamesToScan = extraListsToScan;
+            ExtraListNamesToScan = extraListsToScan.Where(s=>!string.IsNullOrWhiteSpace(s)).ToArray();
         }
 
         public IEnumerable<T> GetActionsForCard<T>(Card card)
@@ -47,7 +47,7 @@ namespace TrelloStats
             return cards;
         }
 
-        private List<List> GetListsToScan(List<List> listsInBoard)
+        private IEnumerable<List> GetListsToScan(List<List> listsInBoard)
         {
             var doneLists = listsInBoard.Where(l => DoneListNames.Contains(l.Name));
 
@@ -57,7 +57,7 @@ namespace TrelloStats
             {
                 listsToScan.Add(listsInBoard.Single(l => l.Name == listName));
             }
-            return listsToScan;
+            return listsToScan.Distinct();
         }
     }
 }
