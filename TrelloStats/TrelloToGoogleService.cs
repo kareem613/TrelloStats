@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using TrelloStats.Model;
 
@@ -31,10 +32,25 @@ namespace TrelloStats
 
         public void CalculateStats()
         {
+            var stopwatch = Stopwatch.StartNew();
+            Console.Write("Querying Trello...");
             var cards = _trelloService.GetCardsToExamine();
-
+            Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
+            
+            stopwatch.Restart();
+            Console.Write("Calculating stats...");
             BoardStats boardStats = _boardStatsService.BuildBoardStats(cards);
+            Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
+
+            stopwatch.Restart();
+            Console.Write("Deleting old records from Google...");
+            _googleService.ClearSpreadsheet();
+            Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
+
+            stopwatch.Restart();
+            Console.Write("Pushing results to Google...");
             _googleService.PushToGoogleSpreadsheet(boardStats);
+            Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
         }
   
        

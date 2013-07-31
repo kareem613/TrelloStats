@@ -64,6 +64,15 @@ font-weight: bold !important;
 
         public void PushToGoogleSpreadsheet(BoardStats boardStats)
         {
+            var listFeed = GetListFeedForSpreadsheet();
+
+            AddGoodCards(boardStats, listFeed);
+            AddBadCards(boardStats, listFeed);
+            AddTitleCard(boardStats, listFeed);
+        }
+
+        private ListFeed GetListFeedForSpreadsheet()
+        {
             SpreadsheetQuery query = new SpreadsheetQuery();
             query.Title = SpreadsheetName;
             SpreadsheetFeed feed = _service.Query(query);
@@ -73,12 +82,7 @@ font-weight: bold !important;
 
             WorksheetEntry timelineWorksheet = GetWorksheet(feed, "Data");
             var listFeed = GetListFeed(timelineWorksheet);
-
-            DeleteAllDataInWorksheet(listFeed);
-
-            AddGoodCards(boardStats, listFeed);
-            AddBadCards(boardStats, listFeed);
-            AddTitleCard(boardStats, listFeed);
+            return listFeed;
         }
   
         private void AddBadCards(BoardStats boardStats, ListFeed listFeed)
@@ -278,6 +282,13 @@ font-weight: bold !important;
             ListQuery listQuery = new ListQuery(listFeedLink.HRef.ToString());
             ListFeed listFeed = _service.Query(listQuery);
             return listFeed;
+        }
+
+        internal void ClearSpreadsheet()
+        {
+            var listFeed = GetListFeedForSpreadsheet();
+
+            DeleteAllDataInWorksheet(listFeed);
         }
     }
 }
