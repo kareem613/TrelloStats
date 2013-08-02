@@ -32,6 +32,9 @@
 
     <!--Lists to display with total card count-->
     <add key="Trello.ListNames.ExtraListsToCount" value="Product Backlog,For Review,Ready"/>
+
+    <!--List that contains estimated cards. Used for projections.-->
+    <add key="Trello.Projections.EstimatedList" value="On Deck"/>
     
     <!--Labels from Trello to treat as TimelineJS tags-->
     <add key="TimelineJS.Tags" value="Hotfix,Support"/>
