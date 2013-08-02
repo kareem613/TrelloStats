@@ -246,7 +246,7 @@ margin-bottom:5px;
 
         private string GetWeekStatsHtmlHeader(BoardStats boardStats)
         {
-            var headerTitles = new List<string>(){"Week #","Start Date","End Date","In Progress","Stories Completed","Points Completed"};
+            var headerTitles = new List<string>(){"Week #","Start","End","In Progress","Stories Completed","Points Completed"};
             foreach (var labelName in LabelNames)
             {
                 headerTitles.Insert(headerTitles.Count - 1, labelName);
@@ -255,9 +255,6 @@ margin-bottom:5px;
             var header = new StringBuilder("<tr>");
             for (int i = 0; i < headerTitles.Count;i++)
             {
-                if(i <= 2)
-                    header.AppendFormat(@"<th class=""date"">{0}</th>", headerTitles[i]);
-                else
                 header.AppendFormat("<th>{0}</th>", headerTitles[i]);
             }
 
