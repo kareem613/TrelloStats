@@ -32,14 +32,43 @@ namespace TrelloStats
             var listStats = new List<ListStats>();
             BuildListStats(trelloData.ListsToStat, listStats);
             
+            
+
             var boardData = new BoardData();
             boardData.ProjectStartDate = ProjectStartDate;
             boardData.AddCardStats(cardStats);
             boardData.AddBadCardStats(badCards);
             boardData.ListStats = listStats;
 
+            var estimatedList = _trelloService.GetCardsForList(boardData.ListStats.Single(s=>s.List.Name == _trelloService.EstimatedList).List);
+            var estimatedPoints = estimatedList.Sum(c => GetPointsForCard(c));
 
-            return new BoardStats(boardData, _timeZone);
+            var boardStats =  new BoardStats(boardData, _timeZone);
+            boardStats.EstimatedListPoints = estimatedPoints;
+
+            BuildProjections(boardStats);
+
+
+            return boardStats;
+        }
+
+        private void BuildProjections(BoardStats boardStats)
+        {
+            var estimatedPoints = boardStats.EstimatedListPoints;
+            var totalDonePoints = boardStats.TotalPoints;
+            var elapsedWeeks = boardStats.CompletedWeeksElapsed;
+
+            var historicalPointsPerWeek = totalDonePoints / elapsedWeeks;
+            var projectedWeeksToComplete = estimatedPoints / historicalPointsPerWeek;
+
+            boardStats.Projections = new BoardProjections()
+            {
+                EstimatePoints = estimatedPoints,
+                TotalPointsCompleted = totalDonePoints,
+                elapsedWeeks = elapsedWeeks,
+                historicalPointsPerWeek = historicalPointsPerWeek,
+                ProjectedWeeksToCompletion = projectedWeeksToComplete
+            };
         }
 
         private void BuildListStats(List<List> trelloLists, List<ListStats> listStats)
@@ -81,6 +110,13 @@ namespace TrelloStats
             stat.FirstAction = stat.Actions.First();
             stat.StartAction = stat.Actions.OfType<UpdateCardMoveAction>().Where(a => _trelloService.StartListNames.Contains(a.Data.ListAfter.Name)).OrderBy(a => a.Date).FirstOrDefault();
             stat.Labels = card.Labels;
+            var points =  GetPointsForCard(card);
+            stat.Points = points;
+            stat.Card.Name = GetCardNameWithoutPoints(card);
+        }
+  
+        private double GetPointsForCard(Card card)
+        {
             var match = Regex.Match(card.Name, @"^\((.*)\)(.*)");
             if (match.Success)
             {
@@ -88,10 +124,20 @@ namespace TrelloStats
                 double points;
                 if (double.TryParse(pointsString, out points))
                 {
-                    stat.Points = points;
-                    stat.Card.Name = match.Groups[2].Value;
+                    return points;
                 }
             }
+            return 0;
+        }
+
+        private string GetCardNameWithoutPoints(Card card)
+        {
+            var match = Regex.Match(card.Name, @"^\((.*)\)(.*)");
+            if (match.Success)
+            {
+                return match.Groups[2].Value; 
+            }
+            return card.Name;
         }
   
         private void AddCompleteStats(CardStats stat)

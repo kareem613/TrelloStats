@@ -13,7 +13,8 @@ namespace TrelloStats
     {
         private readonly SpreadsheetsService _service;
         private const string SummaryTextTemplate = @"
-Beginning <strong>{0}</strong> with the latest of <strong>{1}</strong> stories completed on <strong>{2}</strong> for a total of <strong>{5}</strong> points.
+Beginning <strong>{0}</strong> with the latest of <strong>{1}</strong> stories completed on <strong>{2}</strong> for a total of <strong>{5}</strong> points.<br/>
+[[projections_summary]]
 <br/> Timeline last updated {3} {4}.
 <style>
 .stats th {{font-weight:bold;
@@ -44,9 +45,10 @@ font-weight: bold !important;
 #list_stats {{
 margin-bottom:5px;
 }}
-
 </style>
+<div>
 [[extra_lists_stats_table]]
+</div>
 <table id=""week_stats"" class=""stats"">
 <tbody>
     [[weekly_stats_header]]
@@ -208,13 +210,27 @@ margin-bottom:5px;
                     boardStats.TotalPoints
                 );
 
-
+            summaryText = summaryText.Replace("[[projections_summary]]", GetProjectionsSummaryText(boardStats));
             summaryText = summaryText.Replace("[[extra_lists_stats_table]]", GetExtraListsStatsTableHtml(boardStats));
             summaryText = summaryText.Replace("[[weekly_stats_header]]", weekStatsHeader);
             summaryText = summaryText.Replace("[[weekly_stats_rows]]", weekRows.ToString());
 
 
             return summaryText;
+        }
+
+        private string GetProjectionsSummaryText(BoardStats boardStats)
+        {
+            var template = "Team Velocity is <strong>[[velocity]]</strong>. Remaining points are <strong>[[remaining_points]]</strong>. Expected completion date is <strong>[[expected_completion_min]]</strong>.";
+            template = template.Replace("[[velocity]]", boardStats.Projections.historicalPointsPerWeek.ToString("##"))
+                .Replace("[[remaining_points]]", boardStats.Projections.EstimatePoints.ToString())
+                .Replace("[[expected_completion_min]]",GetCompletionDate(boardStats.Projections.ProjectedWeeksToCompletion).ToLongDateString());
+            return template;
+        }
+
+        private DateTime GetCompletionDate(double weeks)
+        {
+            return DateTime.Now.AddDays(weeks * 7);
         }
 
         private string GetExtraListsStatsTableHtml(BoardStats boardStats)

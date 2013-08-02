@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoardData.cs" />
+    <Compile Include="BoardProjections.cs" />
     <Compile Include="BoardStatsService.cs" />
     <Compile Include="ListStats.cs" />
     <Compile Include="Model\BoardStats.cs" />

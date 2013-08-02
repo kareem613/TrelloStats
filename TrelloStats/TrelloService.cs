@@ -12,10 +12,11 @@ namespace TrelloStats
         public readonly string[] DoneListNames;
         private readonly string[] ExtraListNamesToScan;
         private readonly string[] ListNamesToStat;
+        public readonly string EstimatedList;
         
         private readonly Trello _trello;
 
-        public TrelloService(string key, string token, string inProgressListName, string[] startListNames, string[] doneListNames, string[] extraListsToScan, string[] listNamesToStat)
+        public TrelloService(string key, string token, string inProgressListName, string[] startListNames, string[] doneListNames, string[] extraListsToScan, string[] listNamesToStat, string estimatedList)
         {
             _trello = new Trello(key);
             //var url = trello.GetAuthorizationUrl("Trello Stats", Scope.ReadOnly, Expiration.Never);
@@ -27,6 +28,7 @@ namespace TrelloStats
             DoneListNames = doneListNames;
             ExtraListNamesToScan = extraListsToScan.Where(s=>!string.IsNullOrWhiteSpace(s)).ToArray();
             ListNamesToStat = listNamesToStat.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+            EstimatedList = estimatedList;
         }
 
         public IEnumerable<T> GetActionsForCard<T>(Card card)
@@ -64,8 +66,8 @@ namespace TrelloStats
         {
             var doneLists = listsInBoard.Where(l => DoneListNames.Contains(l.Name));
 
-            var listsToScan = new List<List> (doneLists);
-            listsToScan.Add(listsInBoard.Single(l=>l.Name == InProgressListName));
+            var listsToScan = new List<List>(doneLists);
+            listsToScan.Add(listsInBoard.Single(l => l.Name == InProgressListName));
             foreach (var listName in ExtraListNamesToScan)
             {
                 listsToScan.Add(listsInBoard.Single(l => l.Name == listName));

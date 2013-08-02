@@ -103,6 +103,10 @@ namespace TrelloStats.Model
                 return BoardData.CardStats.Where(c=> !c.IsInProgress);
             }
         }
+
+        public double EstimatedListPoints { get; set; }
+
+        internal BoardProjections Projections { get; set; }
     }
   
     public class WeekStats
