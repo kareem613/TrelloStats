@@ -221,7 +221,7 @@ margin-bottom:5px;
 
         private string GetProjectionsSummaryText(BoardStats boardStats)
         {
-            var template = "Team Velocity is <strong>[[velocity]]</strong>. Remaining points are <strong>[[remaining_points]]</strong>. Expected completion window is <strong>[[expected_completion_min]] - [[expected_completion_max]]</strong>.";
+            var template = "Team Velocity is <strong>[[velocity]]</strong> points per week. Remaining points are <strong>[[remaining_points]]</strong>. Expected completion window is <strong>[[expected_completion_min]] - [[expected_completion_max]]</strong>.";
             template = template.Replace("[[velocity]]", boardStats.Projections.historicalPointsPerWeek.ToString("##"))
                 .Replace("[[remaining_points]]", boardStats.Projections.EstimatePoints.ToString())
                 .Replace("[[expected_completion_min]]",boardStats.Projections.ProjectedMinimumCompletionDate.ToLongDateString())
