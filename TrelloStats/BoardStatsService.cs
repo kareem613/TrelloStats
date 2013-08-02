@@ -22,28 +22,40 @@ namespace TrelloStats
             _timeZone = timeZone;
         }
 
-        public BoardStats BuildBoardStats(Dictionary<List,List<Card>> cards)
+        public BoardStats BuildBoardStats(TrelloData trelloData)
         {
             var cardStats = new List<CardStats>();
             var badCards = new List<CardStats>();
 
-            BuildCardStats(cards, badCards, cardStats);
+            BuildCardStats(trelloData.Cards, badCards, cardStats);
 
+            var listStats = new List<ListStats>();
+            BuildListStats(trelloData.ListsToStat, listStats);
             
             var boardData = new BoardData();
             boardData.ProjectStartDate = ProjectStartDate;
             boardData.AddCardStats(cardStats);
             boardData.AddBadCardStats(badCards);
+            boardData.ListStats = listStats;
 
 
             return new BoardStats(boardData, _timeZone);
+        }
+
+        private void BuildListStats(List<List> trelloLists, List<ListStats> listStats)
+        {
+            foreach (var trelloList in trelloLists)
+            {
+                List<TrelloNet.Card> cardsForList = _trelloService.GetCardsForList(trelloList);
+                var listStat = new ListStats() { List = trelloList, CardCount = cardsForList.Count };
+                listStats.Add(listStat);
+            }
         }
 
         private void BuildCardStats(Dictionary<List,List<Card>> cards, List<CardStats> badCards, List<CardStats> cardStats)
         {
             foreach (var list in cards.Keys)
             {
-
                 foreach (var card in cards[list])
                 {
                     var stat = new CardStats() { Card = card, List = list, InProgressListName = _trelloService.InProgressListName, TimeZone = _timeZone };

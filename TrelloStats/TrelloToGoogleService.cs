@@ -16,7 +16,7 @@ namespace TrelloStats
         {
             TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById(GetAppConfig("TimeZone"));
             _googleService = new GoogleService(GetAppConfig("Gmail.EmailAddress"), GetAppConfig("Gmail.OneTimePassword"), GetAppConfig("Google.SpreadsheetName"), GetAppSettingAsArray("Trello.Labels"), timeZone);
-            _trelloService = new TrelloService(ConfigurationManager.AppSettings["Trello.Key"], ConfigurationManager.AppSettings["Trello.Token"], GetAppConfig("Trello.ListNames.InProgress"), GetAppSettingAsArray("Trello.ListNames.StartNames"), GetAppSettingAsArray("Trello.ListNames.CompletedNames"), GetAppSettingAsArray("Trello.ListNames.ExtraListsToInclude"));
+            _trelloService = new TrelloService(ConfigurationManager.AppSettings["Trello.Key"], ConfigurationManager.AppSettings["Trello.Token"], GetAppConfig("Trello.ListNames.InProgress"), GetAppSettingAsArray("Trello.ListNames.StartNames"), GetAppSettingAsArray("Trello.ListNames.CompletedNames"), GetAppSettingAsArray("Trello.ListNames.ExtraListsToInclude"), GetAppSettingAsArray("Trello.ListNames.ExtraListsToCount"));
             _boardStatsService = new BoardStatsService(_trelloService, timeZone);
         }
   
@@ -34,12 +34,12 @@ namespace TrelloStats
         {
             var stopwatch = Stopwatch.StartNew();
             Console.Write("Querying Trello...");
-            var cards = _trelloService.GetCardsToExamine();
+            var trelloData = _trelloService.GetCardsToExamine();
             Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
             
             stopwatch.Restart();
             Console.Write("Calculating stats...");
-            BoardStats boardStats = _boardStatsService.BuildBoardStats(cards);
+            BoardStats boardStats = _boardStatsService.BuildBoardStats(trelloData);
             Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
 
             stopwatch.Restart();

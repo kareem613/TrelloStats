@@ -31,5 +31,7 @@ namespace TrelloStats
         {
             CardStats.AddRange(cardStats);
         }
+
+        public List<ListStats> ListStats { get; set; }
     }
 }

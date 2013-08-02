@@ -16,10 +16,11 @@ namespace TrelloStats
 Beginning <strong>{0}</strong> with the latest of <strong>{1}</strong> stories completed on <strong>{2}</strong> for a total of <strong>{5}</strong> points.
 <br/> Timeline last updated {3} {4}.
 <style>
-#week_stats th {{font-weight:bold;
+.stats th {{font-weight:bold;
 background:#f4f9fe;
 text-align:center;
 color:#66a3d3;
+padding: 1px 5px;
 }}
 #week_stats {{
 width:100%;
@@ -28,7 +29,7 @@ border-top:1px solid #e5eff8;
 border-right:1px solid #e5eff8;
 border-collapse:collapse;
 }}
-#week_stats td {{
+.stats td {{
 color:#678197;
 border-bottom:1px solid #e5eff8;
 border-left:1px solid #e5eff8;
@@ -40,9 +41,13 @@ background:#f4f9fe !important
 color:#66a3d3 !important;
 font-weight: bold !important;
 }}
+#list_stats {{
+margin-bottom:5px;
+}}
 
 </style>
-<table id=""week_stats"">
+[[extra_lists_stats_table]]
+<table id=""week_stats"" class=""stats"">
 <tbody>
     [[weekly_stats_header]]
     [[weekly_stats_rows]]
@@ -65,10 +70,10 @@ font-weight: bold !important;
         public void PushToGoogleSpreadsheet(BoardStats boardStats)
         {
             var listFeed = GetListFeedForSpreadsheet();
-
+            AddTitleCard(boardStats, listFeed);
             AddGoodCards(boardStats, listFeed);
             AddBadCards(boardStats, listFeed);
-            AddTitleCard(boardStats, listFeed);
+            
         }
 
         private ListFeed GetListFeedForSpreadsheet()
@@ -188,11 +193,11 @@ font-weight: bold !important;
   
         private string GetSummaryTextForBoardStat(BoardStats boardStats)
         {
-            var weekStatsHeader = GetWeekStatsHtmlHeader();
+            var weekStatsHeader = GetWeekStatsHtmlHeader(boardStats);
 
             var weekStatsList = boardStats.GetWeeklyStats();
             var weekRows = new StringBuilder();
-            weekStatsList.ForEach(w => weekRows.Append(GetWeekStatsHtmlRow(w)));
+            weekStatsList.ForEach(w => weekRows.Append(GetWeekStatsHtmlRow(w, boardStats)));
 
             var summaryText = String.Format(SummaryTextTemplate, 
                     boardStats.FirstStartDate.ToLongDateString(),
@@ -203,28 +208,47 @@ font-weight: bold !important;
                     boardStats.TotalPoints
                 );
 
+
+            summaryText = summaryText.Replace("[[extra_lists_stats_table]]", GetExtraListsStatsTableHtml(boardStats));
             summaryText = summaryText.Replace("[[weekly_stats_header]]", weekStatsHeader);
             summaryText = summaryText.Replace("[[weekly_stats_rows]]", weekRows.ToString());
+
+
             return summaryText;
         }
 
-        private string GetWeekStatsHtmlHeader()
+        private string GetExtraListsStatsTableHtml(BoardStats boardStats)
+        {
+            var row = new StringBuilder(@"<table id=""list_stats"" class=""stats""><tbody>");
+            foreach (var listStat in boardStats.BoardData.ListStats)
+            {
+                row.AppendLine(string.Format("<tr><th>{0}</th><td>{1}</td></tr>",listStat.List.Name, listStat.CardCount));
+            }
+            row.AppendLine("</tbody></table>");
+            return row.ToString();
+        }
+
+        private string GetWeekStatsHtmlHeader(BoardStats boardStats)
         {
             var headerTitles = new List<string>(){"Week #","Start","End","In Progress","Stories Completed","Points Completed"};
             foreach (var labelName in LabelNames)
             {
                 headerTitles.Insert(headerTitles.Count - 1, labelName);
             }
+      
             var header = new StringBuilder("<tr>");
             foreach (var headerTitle in headerTitles)
             {
                 header.AppendFormat("<th>{0}</th>", headerTitle);
             }
+
+            
+
             header.AppendLine("</tr>");
             return header.ToString();
         }
-  
-        private string GetWeekStatsHtmlRow(WeekStats w)
+
+        private string GetWeekStatsHtmlRow(WeekStats w, BoardStats boardStats)
         {
             var row = new StringBuilder("<tr>");
             row.AppendLine(GetWeekStatsRow(w.WeekNumber));

@@ -29,6 +29,9 @@
     
     <!--Additional Trello lists to process cards from.--> 
     <add key="Trello.ListNames.ExtraListsToInclude" value="Demoed"/>
+
+    <!--Lists to display with total card count-->
+    <add key="Trello.ListNames.ExtraListsToCount" value="Product Backlog,For Review,Ready"/>
     
     <!--Labels from Trello to treat as TimelineJS tags-->
     <add key="TimelineJS.Tags" value="Hotfix,Support"/>
