@@ -82,6 +82,10 @@ namespace TrelloStats.Model
             {
 
                 var startDay = BoardData.ProjectStartDate.AddDays(week * 7);
+                
+                //TODO: Why does this occasionally got past the current week. Occured on July 31st and august 1st.
+                if (startDay > DateTime.Now)
+                    continue;
                 var endDay = startDay.AddDays(7);
                 if(startDay.DayOfWeek != DayOfWeek.Monday || endDay.DayOfWeek != DayOfWeek.Monday)
                 {

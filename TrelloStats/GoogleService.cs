@@ -25,10 +25,12 @@ padding: 1px 5px;
 }}
 #week_stats {{
 width:100%;
-white-space:nowrap;
 border-top:1px solid #e5eff8;
 border-right:1px solid #e5eff8;
 border-collapse:collapse;
+}}
+.stats .date {{
+white-space:nowrap;
 }}
 .stats td {{
 color:#678197;
@@ -164,7 +166,7 @@ margin-bottom:5px;
             var titleRow = new ListEntry();
             titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = boardStats.FirstStartDate.ToString() });
             titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "enddate", Value = "" });
-            titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "headline", Value = "Trinity Timeline" });
+            titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "headline", Value = "Development Timeline" });
             titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "text", Value = GetSummaryTextForBoardStat(boardStats) });
             titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "type", Value = "title" });
             return titleRow;
@@ -244,16 +246,19 @@ margin-bottom:5px;
 
         private string GetWeekStatsHtmlHeader(BoardStats boardStats)
         {
-            var headerTitles = new List<string>(){"Week #","Start","End","In Progress","Stories Completed","Points Completed"};
+            var headerTitles = new List<string>(){"Week #","Start Date","End Date","In Progress","Stories Completed","Points Completed"};
             foreach (var labelName in LabelNames)
             {
                 headerTitles.Insert(headerTitles.Count - 1, labelName);
             }
       
             var header = new StringBuilder("<tr>");
-            foreach (var headerTitle in headerTitles)
+            for (int i = 0; i < headerTitles.Count;i++)
             {
-                header.AppendFormat("<th>{0}</th>", headerTitle);
+                if(i <= 2)
+                    header.AppendFormat(@"<th class=""date"">{0}</th>", headerTitles[i]);
+                else
+                header.AppendFormat("<th>{0}</th>", headerTitles[i]);
             }
 
             
@@ -267,8 +272,8 @@ margin-bottom:5px;
             var row = new StringBuilder("<tr>");
             row.AppendLine(GetWeekStatsRow(w.WeekNumber));
 
-            row.AppendLine(GetWeekStatsRow(w.StartDate.ToShortDateString()));
-            row.AppendLine(GetWeekStatsRow(w.EndDate.ToShortDateString()));
+            row.AppendLine(GetWeekStatsRow(w.StartDate.ToShortDateString(), "date"));
+            row.AppendLine(GetWeekStatsRow(w.EndDate.ToShortDateString(), "date"));
             row.AppendLine(GetWeekStatsRow(w.NumberOfCardsInProgress));
             row.AppendLine(GetWeekStatsRow(w.NumberOfCompletedCards));
 
@@ -295,7 +300,12 @@ margin-bottom:5px;
 
             return row.ToString();
         }
-  
+
+        private string GetWeekStatsRow(object value, string cssClass)
+        {
+            return string.Format(@"<td class=""{0}"">{1}</td>",cssClass, value.ToString());
+        }
+
         private string GetWeekStatsRow(object value)
         {
             return string.Format("<td>{0}</td>", value.ToString());
