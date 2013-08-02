@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using TrelloNet;
 using TrelloStats.Model;
 
@@ -16,10 +14,16 @@ namespace TrelloStats
         private readonly TimeZoneInfo _timeZone;
         private DateTime ProjectStartDate = new DateTime(2013,6,4,14,0,0);
 
+        public double EstimateWindowLowerBoundFactor { get; set; }
+        public double EstimateWindowUpperBoundFactor { get; set; }
+
         public BoardStatsService(TrelloService trelloService, TimeZoneInfo timeZone)
         {
             _trelloService = trelloService;
             _timeZone = timeZone;
+
+            EstimateWindowLowerBoundFactor = 0.5;
+            EstimateWindowUpperBoundFactor= 1.5;
         }
 
         public BoardStats BuildBoardStats(TrelloData trelloData)
@@ -60,6 +64,8 @@ namespace TrelloStats
 
             var historicalPointsPerWeek = totalDonePoints / elapsedWeeks;
             var projectedWeeksToComplete = estimatedPoints / historicalPointsPerWeek;
+            var projectedWeeksMin = projectedWeeksToComplete * EstimateWindowLowerBoundFactor;
+            var projectedWeeksMax = projectedWeeksToComplete * EstimateWindowUpperBoundFactor;
 
             boardStats.Projections = new BoardProjections()
             {
@@ -67,8 +73,16 @@ namespace TrelloStats
                 TotalPointsCompleted = totalDonePoints,
                 elapsedWeeks = elapsedWeeks,
                 historicalPointsPerWeek = historicalPointsPerWeek,
-                ProjectedWeeksToCompletion = projectedWeeksToComplete
+                ProjectedWeeksToCompletion = projectedWeeksToComplete,
+                ProjectionCompletionDate = GetCompletionDate(projectedWeeksToComplete),
+                ProjectedMinimumCompletionDate = GetCompletionDate(projectedWeeksMin),
+                ProjectedMaximumCompletionDate = GetCompletionDate(projectedWeeksMax)
             };
+        }
+
+        private DateTime GetCompletionDate(double weeks)
+        {
+            return DateTime.Now.AddDays(weeks * 7);
         }
 
         private void BuildListStats(List<List> trelloLists, List<ListStats> listStats)

@@ -13,7 +13,7 @@ namespace TrelloStats
     {
         private readonly SpreadsheetsService _service;
         private const string SummaryTextTemplate = @"
-Beginning <strong>{0}</strong> with the latest of <strong>{1}</strong> stories completed on <strong>{2}</strong> for a total of <strong>{5}</strong> points.<br/>
+Work started on <strong>{0}</strong> with the most recent of <strong>{1}</strong> stories completed on <strong>{2}</strong>. Total points completed is <strong>{5}</strong>.<br/>
 [[projections_summary]]
 <br/> Timeline last updated {3} {4}.
 <style>
@@ -221,17 +221,15 @@ margin-bottom:5px;
 
         private string GetProjectionsSummaryText(BoardStats boardStats)
         {
-            var template = "Team Velocity is <strong>[[velocity]]</strong>. Remaining points are <strong>[[remaining_points]]</strong>. Expected completion date is <strong>[[expected_completion_min]]</strong>.";
+            var template = "Team Velocity is <strong>[[velocity]]</strong>. Remaining points are <strong>[[remaining_points]]</strong>. Expected completion window is <strong>[[expected_completion_min]] - [[expected_completion_max]]</strong>.";
             template = template.Replace("[[velocity]]", boardStats.Projections.historicalPointsPerWeek.ToString("##"))
                 .Replace("[[remaining_points]]", boardStats.Projections.EstimatePoints.ToString())
-                .Replace("[[expected_completion_min]]",GetCompletionDate(boardStats.Projections.ProjectedWeeksToCompletion).ToLongDateString());
+                .Replace("[[expected_completion_min]]",boardStats.Projections.ProjectedMinimumCompletionDate.ToLongDateString())
+                .Replace("[[expected_completion_max]]", boardStats.Projections.ProjectedMaximumCompletionDate.ToLongDateString());
             return template;
         }
 
-        private DateTime GetCompletionDate(double weeks)
-        {
-            return DateTime.Now.AddDays(weeks * 7);
-        }
+        
 
         private string GetExtraListsStatsTableHtml(BoardStats boardStats)
         {

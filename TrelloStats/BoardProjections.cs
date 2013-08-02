@@ -16,5 +16,11 @@ namespace TrelloStats
         public double historicalPointsPerWeek { get; set; }
 
         public double ProjectedWeeksToCompletion { get; set; }
+
+        public DateTime ProjectedMinimumCompletionDate { get; set; }
+
+        public DateTime ProjectedMaximumCompletionDate { get; set; }
+
+        public DateTime ProjectionCompletionDate { get; set; }
     }
 }

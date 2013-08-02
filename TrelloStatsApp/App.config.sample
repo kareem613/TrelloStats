@@ -34,7 +34,13 @@
     <add key="Trello.ListNames.ExtraListsToCount" value="Product Backlog,For Review,Ready"/>
 
     <!--List that contains estimated cards. Used for projections.-->
-    <add key="Trello.Projections.EstimatedList" value="On Deck"/>
+    <add key="Trello.Projections.EstimatedList" value="Ready"/>
+
+    <!--Factor to multiple projection by to determine optimistic completion date of all stories.-->
+    <add key="Trello.Projections.EstimateWindowLowerBoundFactor" value="0.75"/>
+
+    <!--Factor to multiple projection by to determine pessimistic completion date of all stories.-->
+    <add key="Trello.Projections.EstimateWindowUpperBoundFactor" value="1.5"/>
     
     <!--Labels from Trello to treat as TimelineJS tags-->
     <add key="TimelineJS.Tags" value="Hotfix,Support"/>
