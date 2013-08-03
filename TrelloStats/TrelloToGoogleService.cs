@@ -16,11 +16,22 @@ namespace TrelloStats
         {
             TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById(GetAppConfig("TimeZone"));
             _googleService = new GoogleService(GetAppConfig("Gmail.EmailAddress"), GetAppConfig("Gmail.OneTimePassword"), GetAppConfig("Google.SpreadsheetName"), GetAppSettingAsArray("Trello.Labels"), timeZone);
-            _trelloService = new TrelloService(ConfigurationManager.AppSettings["Trello.Key"], ConfigurationManager.AppSettings["Trello.Token"], GetAppConfig("Trello.ListNames.InProgress"), GetAppSettingAsArray("Trello.ListNames.StartNames"), GetAppSettingAsArray("Trello.ListNames.CompletedNames"), GetAppSettingAsArray("Trello.ListNames.ExtraListsToInclude"), GetAppSettingAsArray("Trello.ListNames.ExtraListsToCount"), ConfigurationManager.AppSettings["Trello.Projections.EstimatedList"]);
+            _trelloService = new TrelloService(ConfigurationManager.AppSettings["Trello.Key"], ConfigurationManager.AppSettings["Trello.Token"], GetAppConfig("Trello.ListNames.InProgress"), GetAppConfig("Trello.ListNames.InTest"), GetAppSettingAsArray("Trello.ListNames.StartNames"), GetAppSettingAsArray("Trello.ListNames.CompletedNames"), GetAppSettingAsArray("Trello.ListNames.ExtraListsToInclude"), GetAppSettingAsArray("Trello.ListNames.ExtraListsToCount"), ConfigurationManager.AppSettings["Trello.Projections.EstimatedList"]);
             _boardStatsService = new BoardStatsService(_trelloService, timeZone);
 
             _boardStatsService.EstimateWindowLowerBoundFactor = GetAppConfigDouble("Trello.Projections.EstimateWindowLowerBoundFactor",1);
             _boardStatsService.EstimateWindowUpperBoundFactor = GetAppConfigDouble("Trello.Projections.EstimateWindowUpperBoundFactor", 1);
+
+            _boardStatsService.WeeksToSkipForVelocityCalculation = GetAppConfigInt("Trello.Projections.WeeksToSkipForVelocityCalculation", 0);
+        }
+
+        private int GetAppConfigInt(string p, int defaultValue)
+        {
+            var configString = ConfigurationManager.AppSettings[p];
+            int value;
+            if (int.TryParse(configString, out value))
+                return value;
+            else return defaultValue;
         }
 
         private double GetAppConfigDouble(string p, double defaultValue)

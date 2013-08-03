@@ -20,7 +20,7 @@ namespace TrelloStats.Model
         {
             get
             {
-                return BoardData.CardStats.Count(c => !c.IsInProgress);
+                return BoardData.CardStats.Count(c => !c.IsInProgress && !c.IsInTest);
             }
         }
 
@@ -61,7 +61,7 @@ namespace TrelloStats.Model
         {
             get
             {
-                return BoardData.CardStats.Where(c => !c.IsInProgress).OrderByDescending(cs => cs.DoneAction.Date).First();
+                return BoardData.CardStats.Where(c => !c.IsInProgress && !c.IsInTest).OrderByDescending(cs => cs.DoneAction.Date).First();
 
             }
         }
@@ -83,7 +83,7 @@ namespace TrelloStats.Model
 
                 var startDay = BoardData.ProjectStartDate.AddDays(week * 7);
                 
-                //TODO: Why does this occasionally got past the current week. Occured on July 31st and august 1st.
+                //TODO: Why does this occasionally go past the current week. Occured on July 31st and august 1st.
                 if (startDay > DateTime.Now)
                     continue;
                 var endDay = startDay.AddDays(7);
@@ -91,10 +91,11 @@ namespace TrelloStats.Model
                 {
 
                 }
-                var completedCards = BoardData.CardStats.Where(c => !c.IsInProgress && c.DoneAction.DateInTimeZone(_timeZone) >= startDay && c.DoneAction.DateInTimeZone(_timeZone) < endDay);
+                var completedCards = BoardData.CardStats.Where(c => !c.IsInProgress && !c.IsInTest && c.DoneAction.DateInTimeZone(_timeZone) >= startDay && c.DoneAction.DateInTimeZone(_timeZone) < endDay);
                 var inProgressCards = BoardData.CardStats.Where(c => c.IsInProgress && c.EffectiveStartAction.DateInTimeZone(_timeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_timeZone) < endDay);
+                var inTestCards = BoardData.CardStats.Where(c => c.IsInTest && c.EffectiveStartAction.DateInTimeZone(_timeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_timeZone) < endDay);
                 
-                WeekStats weekStats = new WeekStats() { Cards = completedCards, CardsInProgress = inProgressCards, WeekNumber = week, StartDate = startDay, EndDate = endDay };
+                WeekStats weekStats = new WeekStats() { Cards = completedCards, CardsInProgress = inProgressCards,CardsInTest = inTestCards, WeekNumber = week, StartDate = startDay, EndDate = endDay };
                 weekStatsList.Add(weekStats);
             }
             return weekStatsList;
@@ -104,7 +105,7 @@ namespace TrelloStats.Model
         {
             get
             {
-                return BoardData.CardStats.Where(c=> !c.IsInProgress);
+                return BoardData.CardStats.Where(c=> !c.IsInProgress && !c.IsInTest);
             }
         }
 
@@ -117,6 +118,7 @@ namespace TrelloStats.Model
     {
         public IEnumerable<CardStats> Cards { get; set; }
         public IEnumerable<CardStats> CardsInProgress { get; set; }
+        public IEnumerable<CardStats> CardsInTest{ get; set; }
 
         public int WeekNumber { get; set; }
         public int NumberOfCompletedCards
@@ -145,6 +147,14 @@ namespace TrelloStats.Model
             get
             {
                 return CardsInProgress.Count();
+            }
+        }
+
+        public int NumberOfCardsInTest
+        {
+            get
+            {
+                return CardsInTest.Count();
             }
         }
         public DateTime StartDate { get; set; }

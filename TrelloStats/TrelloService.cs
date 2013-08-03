@@ -7,6 +7,7 @@ namespace TrelloStats
 {
     public class TrelloService
     {
+        public readonly string InTestListName;
         public readonly string InProgressListName;
         public readonly string[] StartListNames;
         public readonly string[] DoneListNames;
@@ -16,13 +17,15 @@ namespace TrelloStats
         
         private readonly Trello _trello;
 
-        public TrelloService(string key, string token, string inProgressListName, string[] startListNames, string[] doneListNames, string[] extraListsToScan, string[] listNamesToStat, string estimatedList)
+        public TrelloService(string key, string token, string inProgressListName, string inTestListName,
+            string[] startListNames, string[] doneListNames, string[] extraListsToScan, string[] listNamesToStat, string estimatedList)
         {
             _trello = new Trello(key);
             //var url = trello.GetAuthorizationUrl("Trello Stats", Scope.ReadOnly, Expiration.Never);
             _trello.Authorize(token);
-            
 
+
+            InTestListName = inTestListName;
             InProgressListName = inProgressListName;
             StartListNames = startListNames;
             DoneListNames = doneListNames;
@@ -68,6 +71,7 @@ namespace TrelloStats
 
             var listsToScan = new List<List>(doneLists);
             listsToScan.Add(listsInBoard.Single(l => l.Name == InProgressListName));
+            listsToScan.Add(listsInBoard.Single(l => l.Name == InTestListName));
             foreach (var listName in ExtraListNamesToScan)
             {
                 listsToScan.Add(listsInBoard.Single(l => l.Name == listName));

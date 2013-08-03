@@ -246,7 +246,7 @@ margin-bottom:5px;
 
         private string GetWeekStatsHtmlHeader(BoardStats boardStats)
         {
-            var headerTitles = new List<string>(){"Week #","Start","End","In Progress","Stories Completed","Points Completed"};
+            var headerTitles = new List<string>(){"Week #","Start","End","In Progress","In Test","Stories Completed","Points Completed"};
             foreach (var labelName in LabelNames)
             {
                 headerTitles.Insert(headerTitles.Count - 1, labelName);
@@ -271,8 +271,10 @@ margin-bottom:5px;
 
             row.AppendLine(GetWeekStatsRow(w.StartDate.ToShortDateString(), "date"));
             row.AppendLine(GetWeekStatsRow(w.EndDate.ToShortDateString(), "date"));
-            row.AppendLine(GetWeekStatsRow(w.NumberOfCardsInProgress));
-            row.AppendLine(GetWeekStatsRow(w.NumberOfCompletedCards));
+            row.AppendLine(GetWeekStatsRow(GetNumberForTableDisplay(w.NumberOfCardsInProgress)));
+            row.AppendLine(GetWeekStatsRow(GetNumberForTableDisplay(w.NumberOfCardsInTest)));
+            
+            row.AppendLine(GetWeekStatsRow(GetNumberForTableDisplay(w.NumberOfCompletedCards)));
 
             foreach (var labelName in LabelNames)
             {
@@ -286,7 +288,7 @@ margin-bottom:5px;
                 }
                 else
                 {
-                    row.AppendLine(GetWeekStatsRow(w.GetNumberOfCardsWithLabel(labelName)));
+                    row.AppendLine(GetWeekStatsRow(GetNumberForTableDisplay(w.GetNumberOfCardsWithLabel(labelName))));
                 }
             }
            
@@ -296,6 +298,11 @@ margin-bottom:5px;
             row.Append("</tr>");
 
             return row.ToString();
+        }
+
+        private string GetNumberForTableDisplay(int number)
+        {
+            return number > 0 ? number.ToString() : "-";
         }
 
         private string GetWeekStatsRow(object value, string cssClass)

@@ -19,6 +19,8 @@ namespace TrelloStats.Model
 
         public string InProgressListName { get; set; }
 
+        public string InTestListName{ get; set; }
+
         public TimeZoneInfo TimeZone { get; set; }
 
         public bool IsInProgress
@@ -28,6 +30,15 @@ namespace TrelloStats.Model
                 return List.Name == InProgressListName;
             }
             
+        }
+
+        public bool IsInTest
+        {
+            get
+            {
+                return List.Name == InTestListName;
+            }
+
         }
 
         public TrelloNet.Action EffectiveStartAction

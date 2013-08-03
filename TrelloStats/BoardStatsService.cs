@@ -16,6 +16,7 @@ namespace TrelloStats
 
         public double EstimateWindowLowerBoundFactor { get; set; }
         public double EstimateWindowUpperBoundFactor { get; set; }
+        public int WeeksToSkipForVelocityCalculation { get; set; }
 
         public BoardStatsService(TrelloService trelloService, TimeZoneInfo timeZone)
         {
@@ -60,7 +61,7 @@ namespace TrelloStats
         {
             var estimatedPoints = boardStats.EstimatedListPoints;
             var totalDonePoints = boardStats.TotalPoints;
-            var elapsedWeeks = boardStats.CompletedWeeksElapsed;
+            var elapsedWeeks = boardStats.CompletedWeeksElapsed - WeeksToSkipForVelocityCalculation;
 
             var historicalPointsPerWeek = totalDonePoints / elapsedWeeks;
             var projectedWeeksToComplete = estimatedPoints / historicalPointsPerWeek;
@@ -101,15 +102,15 @@ namespace TrelloStats
             {
                 foreach (var card in cards[list])
                 {
-                    var stat = new CardStats() { Card = card, List = list, InProgressListName = _trelloService.InProgressListName, TimeZone = _timeZone };
+                    var stat = new CardStats() { Card = card, List = list,InTestListName = _trelloService.InTestListName, InProgressListName = _trelloService.InProgressListName, TimeZone = _timeZone };
                     
                     AddStartStats(stat, card);
 
-                    if (!stat.IsInProgress)
+                    if (!stat.IsInProgress && !stat.IsInTest)
                     {
                         AddCompleteStats(stat);
                     }
-                    if (stat.IsComplete || stat.IsInProgress)
+                    if (stat.IsComplete || stat.IsInProgress || stat.IsInTest)
                         cardStats.Add(stat);
                     else
                         badCards.Add(stat);

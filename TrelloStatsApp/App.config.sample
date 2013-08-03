@@ -20,6 +20,9 @@
     
     <!--The Trello list to be counted as in progress. Only one is allowed. -->
     <add key="Trello.ListNames.InProgress" value="Doing"/>
+
+    <!--Trello list to be counted as in test. Only one is allowed.-->
+    <add key="Trello.ListNames.InTest" value="In Test"/>
     
     <!--The Trello lists to be considered as the start of a card.-->
     <add key="Trello.ListNames.StartNames" value="Doing,Hotfix"/>
@@ -41,6 +44,9 @@
 
     <!--Factor to multiple projection by to determine pessimistic completion date of all stories.-->
     <add key="Trello.Projections.EstimateWindowUpperBoundFactor" value="1.5"/>
+
+    <!--Number of weeks subtract from total weeks for velocity calculation. Useful for skipping iteration zero week(s)-->
+    <add key="Trello.Projections.WeeksToSkipForVelocityCalculation" value="3"/>
     
     <!--Labels from Trello to treat as TimelineJS tags-->
     <add key="TimelineJS.Tags" value="Hotfix,Support"/>
