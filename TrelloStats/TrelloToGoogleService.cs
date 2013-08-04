@@ -14,15 +14,31 @@ namespace TrelloStats
    
         public TrelloToGoogleService()
         {
+            var listNames = GetListNames();
             TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById(GetAppConfig("TimeZone"));
             _googleService = new GoogleService(GetAppConfig("Gmail.EmailAddress"), GetAppConfig("Gmail.OneTimePassword"), GetAppConfig("Google.SpreadsheetName"), GetAppSettingAsArray("Trello.Labels"), timeZone);
-            _trelloService = new TrelloService(ConfigurationManager.AppSettings["Trello.Key"], ConfigurationManager.AppSettings["Trello.Token"], GetAppConfig("Trello.ListNames.InProgress"), GetAppConfig("Trello.ListNames.InTest"), GetAppSettingAsArray("Trello.ListNames.StartNames"), GetAppSettingAsArray("Trello.ListNames.CompletedNames"), GetAppSettingAsArray("Trello.ListNames.ExtraListsToInclude"), GetAppSettingAsArray("Trello.ListNames.ExtraListsToCount"), ConfigurationManager.AppSettings["Trello.Projections.EstimatedList"]);
-            _boardStatsService = new BoardStatsService(_trelloService, timeZone);
+            _trelloService = new TrelloService(ConfigurationManager.AppSettings["Trello.Key"], ConfigurationManager.AppSettings["Trello.Token"],listNames);
+            _boardStatsService = new BoardStatsService(listNames, timeZone);
 
             _boardStatsService.EstimateWindowLowerBoundFactor = GetAppConfigDouble("Trello.Projections.EstimateWindowLowerBoundFactor",1);
             _boardStatsService.EstimateWindowUpperBoundFactor = GetAppConfigDouble("Trello.Projections.EstimateWindowUpperBoundFactor", 1);
 
             _boardStatsService.WeeksToSkipForVelocityCalculation = GetAppConfigInt("Trello.Projections.WeeksToSkipForVelocityCalculation", 0);
+        }
+
+        private ListNames GetListNames()
+        {
+            return new ListNames()
+            {
+                InProgressListName = GetAppConfig("Trello.ListNames.InProgress"),
+                InTestListName = GetAppConfig("Trello.ListNames.InTest"),
+                StartListNames = GetAppSettingAsArray("Trello.ListNames.StartNames"),
+                DoneListNames = GetAppSettingAsArray("Trello.ListNames.CompletedNames"),
+                ExtraListsToInclude = GetAppSettingAsArray("Trello.ListNames.ExtraListsToInclude").Where(s => !string.IsNullOrWhiteSpace(s)).ToArray(),
+                ExtraListsToCount = GetAppSettingAsArray("Trello.ListNames.ExtraListsToCount").Where(s => !string.IsNullOrWhiteSpace(s)).ToArray(),
+                EstimatedList = ConfigurationManager.AppSettings["Trello.Projections.EstimatedList"]
+            };
+
         }
 
         private int GetAppConfigInt(string p, int defaultValue)

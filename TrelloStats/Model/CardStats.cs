@@ -7,19 +7,25 @@ namespace TrelloStats.Model
 {
     public class CardStats
     {
-        public double Points;
+        public CardData CardData { get; set; }
 
-        public List<Card.Label> Labels;
+        public ListData ListData { get; set; }
 
-        public TrelloNet.Action FirstAction;
+        public TrelloNet.Action FirstAction
+        {
+            get
+            {
+                return Actions.OrderBy(a => a.Date).First();
+            }
+        }
 
-        public IEnumerable<TrelloNet.Action> Actions;
+        public IEnumerable<TrelloNet.Action> Actions
+        {
+            get { return CardData.Actions; }
+        }
 
-        public Card Card { get; set; }
-
-        public string InProgressListName { get; set; }
-
-        public string InTestListName{ get; set; }
+        //TODO:// Move this config out of this stats class
+        public ListNames ListNames { get; set; }
 
         public TimeZoneInfo TimeZone { get; set; }
 
@@ -27,7 +33,7 @@ namespace TrelloStats.Model
         {
             get
             {
-                return List.Name == InProgressListName;
+                return ListData.List.Name == ListNames.InProgressListName;
             }
             
         }
@@ -36,7 +42,7 @@ namespace TrelloStats.Model
         {
             get
             {
-                return List.Name == InTestListName;
+                return ListData.List.Name == ListNames.InTestListName;
             }
 
         }
@@ -45,19 +51,36 @@ namespace TrelloStats.Model
         {
             get
             {
-                return StartAction ?? FirstAction;
+                return GetStartAction() ?? FirstAction;
             }
         }
 
-        public UpdateCardMoveAction StartAction { get; set; }
+        public UpdateCardMoveAction GetStartAction()
+        {
+            return Actions.OfType<UpdateCardMoveAction>().Where(a => ListNames.StartListNames.Contains(a.Data.ListAfter.Name)).OrderBy(a => a.Date).FirstOrDefault();
+        }
 
-        public UpdateCardMoveAction DoneAction { get; set; }
+        public UpdateCardMoveAction GetDoneAction()
+        {
+            if (IsInProgress || IsInTest)
+            {
+                return null;
+            }
+            var action = Actions.OfType<UpdateCardMoveAction>().Where(a => ListNames.DoneListNames.Contains(a.Data.ListAfter.Name)).OrderBy(a => a.Date).FirstOrDefault();
+
+            if (action == null)
+            {
+                action = Actions.OfType<UpdateCardMoveAction>().Last();
+            }
+
+            return action;
+        }
 
         public TimeSpan Duration
         {
             get
             {
-                return DoneAction.DateInTimeZone(TimeZone).Subtract(StartAction.DateInTimeZone(TimeZone));
+                return GetDoneAction().DateInTimeZone(TimeZone).Subtract(GetStartAction().DateInTimeZone(TimeZone));
             }
         }
 
@@ -65,7 +88,7 @@ namespace TrelloStats.Model
         {
             get
             {
-                return EffectiveStartAction.Date.BusinessDaysUntil(DoneAction.Date);
+                return EffectiveStartAction.Date.BusinessDaysUntil(GetDoneAction().Date);
             }
         }
 
@@ -73,13 +96,10 @@ namespace TrelloStats.Model
         {
             get
             {
-                return Card != null && EffectiveStartAction != null && DoneAction != null;
+                return CardData.Card != null && EffectiveStartAction != null && GetDoneAction() != null;
             }
         }
 
-
-
-        public List List { get; set; }
 
         
     }

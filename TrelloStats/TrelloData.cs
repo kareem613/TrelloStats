@@ -7,17 +7,44 @@ namespace TrelloStats
 {
     public class TrelloData
     {
+        private List<ListData> ListData;
+        private List<ListData> ListDataToCount;
+
         public TrelloData()
         {
-            ListsToStat = new List<TrelloNet.List>();
+            ListData = new List<ListData>();
+            ListDataToCount = new List<ListData>();
         }
-        public Dictionary<TrelloNet.List, List<TrelloNet.Card>> Cards { get; set; }
         
-        internal void AddListToStat(TrelloNet.List list)
+        internal void AddListData(ListData listData)
         {
-            ListsToStat.Add(list);
+            ListData.Add(listData);
         }
 
-        public List<TrelloNet.List> ListsToStat { get; set; }
+        internal void AddListToCount(ListData listData)
+        {
+            ListDataToCount.Add(listData);
+        }
+
+        public List<ListData> ListDataCollection
+        {
+            get
+            {
+                return ListData;
+            }
+        }
+
+        public List<ListData> ListsToCount
+        {
+            get
+            {
+                return ListDataToCount;
+            }
+        }
+
+        internal ListData GetListData(string listName)
+        {
+            return ListData.SingleOrDefault(ld => ld.List.Name == listName) ?? ListDataToCount.SingleOrDefault(ld => ld.List.Name == listName);
+        }
     }
 }

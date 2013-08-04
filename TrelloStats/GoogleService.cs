@@ -105,7 +105,7 @@ margin-bottom:5px;
   
         private void AddGoodCards(BoardStats boardStats, ListFeed listFeed)
         {
-            foreach (var dayGroups in boardStats.CompletedCardStats.GroupBy(b => b.DoneAction.DateInTimeZone(TimeZone).ToShortDateString()))
+            foreach (var dayGroups in boardStats.CompletedCardStats.GroupBy(b => b.GetDoneAction().DateInTimeZone(TimeZone).ToShortDateString()))
             {
                 var dayGroupList = dayGroups.ToList();
                 for (int i = 0; i < dayGroupList.Count(); i++)
@@ -139,11 +139,11 @@ margin-bottom:5px;
         private ListEntry GetCompletedCardEntry(CardStats cardStat, TimeSpan timeOffset)
         {
             var row = new ListEntry();
-            row.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = cardStat.DoneAction.DateInTimeZone(TimeZone).Add(timeOffset).ToString() });
+            row.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = cardStat.GetDoneAction().DateInTimeZone(TimeZone).Add(timeOffset).ToString() });
             row.Elements.Add(new ListEntry.Custom() { LocalName = "enddate", Value = "" });
             row.Elements.Add(new ListEntry.Custom() { LocalName = "headline", Value = GetHeadlineForCard(cardStat) });
             row.Elements.Add(new ListEntry.Custom() { LocalName = "text", Value = String.Format("{0} Elapsed Day(s)", cardStat.BusinessDaysElapsed) });
-            row.Elements.Add(new ListEntry.Custom() { LocalName = "media", Value = cardStat.Card.Url });
+            row.Elements.Add(new ListEntry.Custom() { LocalName = "media", Value = cardStat.CardData.Card.Url });
             row.Elements.Add(new ListEntry.Custom() { LocalName = "tag", Value = GetCategory(cardStat) });
             
             return row;
@@ -154,7 +154,7 @@ margin-bottom:5px;
             var tags = ConfigurationManager.AppSettings["TimelineJS.Tags"].Split(',');
             foreach (var tag in tags)
             {
-                if (cardStat.Labels.Any(l => l.Name == tag))
+                if (cardStat.CardData.Card.Labels.Any(l => l.Name == tag))
                     return tag;
             }
 
@@ -183,16 +183,16 @@ margin-bottom:5px;
         private string GetSummaryTextForErrorCards(BoardStats boardStats)
         {
             var errorCards = new StringBuilder();
-            boardStats.BoardData.BadCardStats.ForEach(c => errorCards.AppendFormat("<div><a href=\"{0}\">{1}</a></div>", c.Card.Url, c.Card.Name));
+            boardStats.BoardData.BadCardStats.ForEach(c => errorCards.AppendFormat("<div><a href=\"{0}\">{1}</a></div>", c.CardData.Card.Url, c.CardData.Card.Name));
             return errorCards.ToString();
         }
   
         private string GetHeadlineForCard(CardStats cardStat)
         {
-            if(cardStat.Points > 0)
-                return String.Format("<strong>{0}</strong> <span>({1}pts)</span>", cardStat.Card.Name, cardStat.Points);
+            if(cardStat.CardData.Points > 0)
+                return String.Format("<strong>{0}</strong> <span>({1}pts)</span>", cardStat.CardData.Card.Name, cardStat.CardData.Points);
 
-            return String.Format("<strong>{0}</strong> (NE)", cardStat.Card.Name);
+            return String.Format("<strong>{0}</strong> (NE)", cardStat.CardData.Card.Name);
         }
   
         private string GetSummaryTextForBoardStat(BoardStats boardStats)
@@ -238,7 +238,7 @@ margin-bottom:5px;
             var row = new StringBuilder(@"<table id=""list_stats"" class=""stats""><tbody>");
             foreach (var listStat in boardStats.BoardData.ListStats)
             {
-                row.AppendLine(string.Format("<tr><th>{0}</th><td>{1}</td></tr>",listStat.List.Name, listStat.CardCount));
+                row.AppendLine(string.Format("<tr><th>{0}</th><td>{1}</td></tr>",listStat.ListData.List.Name, listStat.CardCount));
             }
             row.AppendLine("</tbody></table>");
             return row.ToString();

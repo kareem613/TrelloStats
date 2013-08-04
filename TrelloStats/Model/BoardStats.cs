@@ -44,7 +44,7 @@ namespace TrelloStats.Model
         {
             get
             {
-                return LastDoneActivity.DoneAction.DateInTimeZone(_timeZone);
+                return LastDoneActivity.GetDoneAction().DateInTimeZone(_timeZone);
             }
         }
 
@@ -61,7 +61,7 @@ namespace TrelloStats.Model
         {
             get
             {
-                return BoardData.CardStats.Where(c => !c.IsInProgress && !c.IsInTest).OrderByDescending(cs => cs.DoneAction.Date).First();
+                return BoardData.CardStats.Where(c => !c.IsInProgress && !c.IsInTest).OrderByDescending(cs => cs.GetDoneAction().Date).First();
 
             }
         }
@@ -70,7 +70,7 @@ namespace TrelloStats.Model
         {
             get
             {
-                return BoardData.CardStats.Sum(c => c.Points);
+                return BoardData.CardStats.Sum(c => c.CardData.Points);
             }
         }
 
@@ -91,7 +91,7 @@ namespace TrelloStats.Model
                 {
 
                 }
-                var completedCards = BoardData.CardStats.Where(c => !c.IsInProgress && !c.IsInTest && c.DoneAction.DateInTimeZone(_timeZone) >= startDay && c.DoneAction.DateInTimeZone(_timeZone) < endDay);
+                var completedCards = BoardData.CardStats.Where(c => !c.IsInProgress && !c.IsInTest && c.GetDoneAction().DateInTimeZone(_timeZone) >= startDay && c.GetDoneAction().DateInTimeZone(_timeZone) < endDay);
                 var inProgressCards = BoardData.CardStats.Where(c => c.IsInProgress && c.EffectiveStartAction.DateInTimeZone(_timeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_timeZone) < endDay);
                 var inTestCards = BoardData.CardStats.Where(c => c.IsInTest && c.EffectiveStartAction.DateInTimeZone(_timeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_timeZone) < endDay);
                 
@@ -133,13 +133,13 @@ namespace TrelloStats.Model
         {
             get
             {
-                return Cards.Sum(c => c.Points);
+                return Cards.Sum(c => c.CardData.Points);
             }
         }
 
         public int GetNumberOfCardsWithLabel(string label)
         {
-            return Cards.Count(c => c.Labels.Any(l => l.Name == label));
+            return Cards.Count(c => c.CardData.Card.Labels.Any(l => l.Name == label));
         }
 
         public int NumberOfCardsInProgress

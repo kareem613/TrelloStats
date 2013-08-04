@@ -5,8 +5,19 @@ namespace TrelloStats
 {
     public class ListStats
     {
-        public int CardCount { get; set; }
+        public ListData ListData;
 
-        public TrelloNet.List List { get; set; }
+        public ListStats(ListData listData)
+        {
+            ListData = listData;
+        }
+        public int CardCount
+        {
+            get
+            {
+                return ListData.CardDataCollection.Count();
+            }
+        }
+
     }
 }

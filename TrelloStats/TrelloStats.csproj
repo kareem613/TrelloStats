@@ -67,6 +67,9 @@
     <Compile Include="BoardData.cs" />
     <Compile Include="BoardProjections.cs" />
     <Compile Include="BoardStatsService.cs" />
+    <Compile Include="CardData.cs" />
+    <Compile Include="ListData.cs" />
+    <Compile Include="ListNames.cs" />
     <Compile Include="ListStats.cs" />
     <Compile Include="Model\BoardStats.cs" />
     <Compile Include="Model\CardStats.cs" />

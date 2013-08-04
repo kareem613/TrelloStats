@@ -1,42 +1,32 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Text.RegularExpressions;
 using TrelloNet;
 
 namespace TrelloStats
 {
     public class TrelloService
     {
-        public readonly string InTestListName;
-        public readonly string InProgressListName;
-        public readonly string[] StartListNames;
-        public readonly string[] DoneListNames;
-        private readonly string[] ExtraListNamesToScan;
-        private readonly string[] ListNamesToStat;
-        public readonly string EstimatedList;
-        
         private readonly Trello _trello;
+        private readonly ListNames _listNames;
 
-        public TrelloService(string key, string token, string inProgressListName, string inTestListName,
-            string[] startListNames, string[] doneListNames, string[] extraListsToScan, string[] listNamesToStat, string estimatedList)
+        public TrelloService(string key, string token,ListNames listNames)
         {
             _trello = new Trello(key);
             //var url = trello.GetAuthorizationUrl("Trello Stats", Scope.ReadOnly, Expiration.Never);
             _trello.Authorize(token);
-
-
-            InTestListName = inTestListName;
-            InProgressListName = inProgressListName;
-            StartListNames = startListNames;
-            DoneListNames = doneListNames;
-            ExtraListNamesToScan = extraListsToScan.Where(s=>!string.IsNullOrWhiteSpace(s)).ToArray();
-            ListNamesToStat = listNamesToStat.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
-            EstimatedList = estimatedList;
-        }
+            _listNames = listNames;
+}
 
         public IEnumerable<T> GetActionsForCard<T>(Card card)
         {
             return _trello.Actions.ForCard(card).OfType<T>();
+        }
+
+        public List<Action> GetActionsForCard(Card card)
+        {
+            return _trello.Actions.ForCard(card).ToList();
         }
 
 
@@ -48,31 +38,53 @@ namespace TrelloStats
             var listsToScan = GetListsToScan(listsInBoard);
 
             var trelloData = new TrelloData();
-            trelloData.Cards = new Dictionary<List,List<Card>>();
             foreach (var list in listsToScan)
             {
-                var cardList = new List<Card>();
-                cardList.AddRange(_trello.Cards.ForList(list));
-                trelloData.Cards.Add(list, cardList);
+                var listData = CreateListData(list);
+                trelloData.AddListData(listData);
             }
 
-            foreach (var listName in ListNamesToStat)
+            foreach (var listName in _listNames.ExtraListsToCount)
             {
                 var list = listsInBoard.Where(l => listName ==l.Name).Single();
-                trelloData.AddListToStat(list);
+                var listData = CreateListData(list);
+                trelloData.AddListToCount(listData);
             }
             
             return trelloData;
         }
 
+        private ListData CreateListData(List list)
+        {
+            var cardList = GetCardsForList(list);
+            var listData = new ListData(list);
+
+            foreach (var card in cardList)
+            {
+                listData.AddCardData(CreateCardData(card));
+            }
+            return listData;
+        }
+
+        private CardData CreateCardData(Card card)
+        {
+            return new CardData()
+            {
+                Card = card,
+                Points = GetPointsForCard(card),
+                Name = GetCardNameWithoutPoints(card),
+                Actions = GetActionsForCard(card)
+            };
+        }
+
         private IEnumerable<List> GetListsToScan(List<List> listsInBoard)
         {
-            var doneLists = listsInBoard.Where(l => DoneListNames.Contains(l.Name));
+            var doneLists = listsInBoard.Where(l => _listNames.DoneListNames.Contains(l.Name));
 
             var listsToScan = new List<List>(doneLists);
-            listsToScan.Add(listsInBoard.Single(l => l.Name == InProgressListName));
-            listsToScan.Add(listsInBoard.Single(l => l.Name == InTestListName));
-            foreach (var listName in ExtraListNamesToScan)
+            listsToScan.Add(listsInBoard.Single(l => l.Name == _listNames.InProgressListName));
+            listsToScan.Add(listsInBoard.Single(l => l.Name == _listNames.InTestListName));
+            foreach (var listName in _listNames.ExtraListsToInclude)
             {
                 listsToScan.Add(listsInBoard.Single(l => l.Name == listName));
             }
@@ -83,5 +95,31 @@ namespace TrelloStats
         {
             return _trello.Cards.ForList(trelloList).ToList();
         }
+
+        private double GetPointsForCard(Card card)
+        {
+            var match = Regex.Match(card.Name, @"^\((.*)\)(.*)");
+            if (match.Success)
+            {
+                var pointsString = match.Groups[1].Value;
+                double points;
+                if (double.TryParse(pointsString, out points))
+                {
+                    return points;
+                }
+            }
+            return 0;
+        }
+
+        private string GetCardNameWithoutPoints(Card card)
+        {
+            var match = Regex.Match(card.Name, @"^\((.*)\)(.*)");
+            if (match.Success)
+            {
+                return match.Groups[2].Value; 
+            }
+            return card.Name;
+        }
+       
     }
 }
