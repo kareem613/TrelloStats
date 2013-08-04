@@ -17,13 +17,13 @@ namespace TrelloStats
             _configuration = configuration;
         }
 
-        public ListEntry GetBadCardEntry(BoardStats boardStats)
+        public ListEntry GetBadCardEntry(BoardStatsAnalysis boardStatsAnalysis)
         {
             var errorRow = new ListEntry();
-            errorRow.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = boardStats.FirstStartDate.ToString() });
+            errorRow.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = boardStatsAnalysis.FirstStartDate.ToString() });
             errorRow.Elements.Add(new ListEntry.Custom() { LocalName = "enddate", Value = "" });
             errorRow.Elements.Add(new ListEntry.Custom() { LocalName = "headline", Value = "Unproccessed Trello Cards" });
-            errorRow.Elements.Add(new ListEntry.Custom() { LocalName = "text", Value = GetSummaryTextForErrorCards(boardStats) });
+            errorRow.Elements.Add(new ListEntry.Custom() { LocalName = "text", Value = GetSummaryTextForErrorCards(boardStatsAnalysis) });
             return errorRow;
         }
 
@@ -52,21 +52,21 @@ namespace TrelloStats
             return _configuration.TimelineJsDefaultTag;
         }
 
-        public ListEntry GetTitleCardEntry(BoardStats boardStats)
+        public ListEntry GetTitleCardEntry(BoardStatsAnalysis boardStatsAnalysis)
         {
             var titleRow = new ListEntry();
-            titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = boardStats.FirstStartDate.ToString() });
+            titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = boardStatsAnalysis.FirstStartDate.ToString() });
             titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "enddate", Value = "" });
             titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "headline", Value = "Development Timeline" });
-            titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "text", Value = GetSummaryTextForBoardStat(boardStats) });
+            titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "text", Value = GetSummaryTextForBoardStat(boardStatsAnalysis) });
             titleRow.Elements.Add(new ListEntry.Custom() { LocalName = "type", Value = "title" });
             return titleRow;
         }
 
-        private string GetSummaryTextForErrorCards(BoardStats boardStats)
+        private string GetSummaryTextForErrorCards(BoardStatsAnalysis boardStatsAnalysis)
         {
             var errorCards = new StringBuilder();
-            boardStats.BoardData.BadCardStats.ForEach(c => errorCards.AppendFormat("<div><a href=\"{0}\">{1}</a></div>", c.CardData.Card.Url, c.CardData.Card.Name));
+            boardStatsAnalysis.BoardData.BadCardStats.ForEach(c => errorCards.AppendFormat("<div><a href=\"{0}\">{1}</a></div>", c.CardData.Card.Url, c.CardData.Card.Name));
             return errorCards.ToString();
         }
 
@@ -78,25 +78,25 @@ namespace TrelloStats
             return String.Format("<strong>{0}</strong> (NE)", cardStat.CardData.Card.Name);
         }
 
-        private string GetSummaryTextForBoardStat(BoardStats boardStats)
+        private string GetSummaryTextForBoardStat(BoardStatsAnalysis boardStatsAnalysis)
         {
-            var weekStatsHeader = GetWeekStatsHtmlHeader(boardStats);
+            var weekStatsHeader = GetWeekStatsHtmlHeader();
 
-            var weekStatsList = boardStats.GetWeeklyStats();
+            var weekStatsList = boardStatsAnalysis.GetWeeklyStats();
             var weekRows = new StringBuilder();
-            weekStatsList.ForEach(w => weekRows.Append(GetWeekStatsHtmlRow(w, boardStats)));
+            weekStatsList.ForEach(w => weekRows.Append(GetWeekStatsHtmlRow(w, boardStatsAnalysis)));
 
             var summaryText = String.Format(_configuration.SummaryTextTemplate,
-                    boardStats.FirstStartDate.ToLongDateString(),
-                    boardStats.NumberOfCompletedCards,
-                    boardStats.LastDoneDate.ToLongDateString(),
-                    boardStats.BoardData.CreatedDate.ToLongDateString(),
-                    boardStats.BoardData.CreatedDate.ToLongTimeString(),
-                    boardStats.TotalPoints
+                    boardStatsAnalysis.FirstStartDate.ToLongDateString(),
+                    boardStatsAnalysis.NumberOfCompletedCards,
+                    boardStatsAnalysis.LastDoneDate.ToLongDateString(),
+                    boardStatsAnalysis.BoardData.CreatedDate.ToLongDateString(),
+                    boardStatsAnalysis.BoardData.CreatedDate.ToLongTimeString(),
+                    boardStatsAnalysis.TotalPoints
                 );
 
-            summaryText = summaryText.Replace("[[projections_summary]]", GetProjectionsSummaryText(boardStats));
-            summaryText = summaryText.Replace("[[extra_lists_stats_table]]", GetExtraListsStatsTableHtml(boardStats));
+            summaryText = summaryText.Replace("[[projections_summary]]", GetProjectionsSummaryText(boardStatsAnalysis));
+            summaryText = summaryText.Replace("[[extra_lists_stats_table]]", GetExtraListsStatsTableHtml(boardStatsAnalysis));
             summaryText = summaryText.Replace("[[weekly_stats_header]]", weekStatsHeader);
             summaryText = summaryText.Replace("[[weekly_stats_rows]]", weekRows.ToString());
 
@@ -104,22 +104,22 @@ namespace TrelloStats
             return summaryText;
         }
 
-        private string GetProjectionsSummaryText(BoardStats boardStats)
+        private string GetProjectionsSummaryText(BoardStatsAnalysis boardStatsAnalysis)
         {
             var template = "Team Velocity is <strong>[[velocity]]</strong> points per week. Remaining points are <strong>[[remaining_points]]</strong>. Expected completion window is <strong>[[expected_completion_min]] - [[expected_completion_max]]</strong>.";
-            template = template.Replace("[[velocity]]", boardStats.Projections.historicalPointsPerWeek.ToString("##"))
-                .Replace("[[remaining_points]]", boardStats.Projections.EstimatePoints.ToString())
-                .Replace("[[expected_completion_min]]", boardStats.Projections.ProjectedMinimumCompletionDate.ToLongDateString())
-                .Replace("[[expected_completion_max]]", boardStats.Projections.ProjectedMaximumCompletionDate.ToLongDateString());
+            template = template.Replace("[[velocity]]", boardStatsAnalysis.Projections.historicalPointsPerWeek.ToString("##"))
+                .Replace("[[remaining_points]]", boardStatsAnalysis.Projections.EstimatePoints.ToString())
+                .Replace("[[expected_completion_min]]", boardStatsAnalysis.Projections.ProjectedMinimumCompletionDate.ToLongDateString())
+                .Replace("[[expected_completion_max]]", boardStatsAnalysis.Projections.ProjectedMaximumCompletionDate.ToLongDateString());
             return template;
         }
 
 
 
-        private string GetExtraListsStatsTableHtml(BoardStats boardStats)
+        private string GetExtraListsStatsTableHtml(BoardStatsAnalysis boardStatsAnalysis)
         {
             var row = new StringBuilder(@"<table id=""list_stats"" class=""stats""><tbody>");
-            foreach (var listStat in boardStats.BoardData.ListStats)
+            foreach (var listStat in boardStatsAnalysis.BoardData.ListStats)
             {
                 row.AppendLine(string.Format("<tr><th>{0}</th><td>{1}</td></tr>", listStat.ListData.List.Name, listStat.CardCount));
             }
@@ -127,7 +127,7 @@ namespace TrelloStats
             return row.ToString();
         }
 
-        private string GetWeekStatsHtmlHeader(BoardStats boardStats)
+        private string GetWeekStatsHtmlHeader()
         {
             var headerTitles = new List<string>() { "Week #", "Start", "End", "In Progress", "In Test", "Stories Completed", "Points Completed" };
             foreach (var labelName in _configuration.LabelNames)
@@ -147,7 +147,7 @@ namespace TrelloStats
             return header.ToString();
         }
 
-        private string GetWeekStatsHtmlRow(WeekStats w, BoardStats boardStats)
+        private string GetWeekStatsHtmlRow(WeekStats w, BoardStatsAnalysis boardStatsAnalysis)
         {
             var row = new StringBuilder("<tr>");
             row.AppendLine(GetWeekStatsRow(w.WeekNumber));

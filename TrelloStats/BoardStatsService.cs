@@ -17,36 +17,36 @@ namespace TrelloStats
             _configuration = configuration;
         }
 
-        public BoardStats BuildBoardStats(TrelloData trelloData)
+        public BoardStatsAnalysis BuildBoardStatsAnalysis(TrelloData trelloData)
         {
             var boardData = new BoardData();
             BuildCardStats(trelloData, boardData);
             boardData.ListStats = GetListStats(trelloData.ListsToCount);
             
             boardData.ProjectStartDate = ProjectStartDate;
-            var boardStats = new BoardStats(boardData, _configuration.TimeZone);
+            var boardStatsAnalysis = new BoardStatsAnalysis(boardData, _configuration.TimeZone);
             
-            BuildProjections(trelloData, boardStats);
+            BuildProjections(trelloData, boardStatsAnalysis);
 
-            return boardStats;
+            return boardStatsAnalysis;
         }
 
-        private void BuildProjections(TrelloData trelloData, BoardStats boardStats)
+        private void BuildProjections(TrelloData trelloData, BoardStatsAnalysis boardStatsAnalysis)
         {
             var estimatedListData = trelloData.GetListData(_configuration.ListNames.EstimatedList);
             var estimatedPoints = estimatedListData.CardDataCollection.Sum(cd => cd.Points);
 
-            boardStats.EstimatedListPoints = estimatedPoints;
+            boardStatsAnalysis.EstimatedListPoints = estimatedPoints;
             
-            var totalDonePoints = boardStats.TotalPoints;
-            var elapsedWeeks = boardStats.CompletedWeeksElapsed - _configuration.WeeksToSkipForVelocityCalculation;
+            var totalDonePoints = boardStatsAnalysis.TotalPoints;
+            var elapsedWeeks = boardStatsAnalysis.CompletedWeeksElapsed - _configuration.WeeksToSkipForVelocityCalculation;
 
             var historicalPointsPerWeek = totalDonePoints / elapsedWeeks;
             var projectedWeeksToComplete = estimatedPoints / historicalPointsPerWeek;
             var projectedWeeksMin = projectedWeeksToComplete * _configuration.TrelloProjectionsEstimateWindowLowerBoundFactor;
             var projectedWeeksMax = projectedWeeksToComplete * _configuration.TrelloProjectionsEstimateWindowUpperBoundFactor;
 
-            boardStats.Projections = new BoardProjections()
+            boardStatsAnalysis.Projections = new BoardProjections()
             {
                 EstimatePoints = estimatedPoints,
                 TotalPointsCompleted = totalDonePoints,

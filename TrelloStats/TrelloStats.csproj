@@ -66,21 +66,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoardData.cs" />
+    <Compile Include="Model\Stats\BoardData.cs" />
     <Compile Include="BoardProjections.cs" />
     <Compile Include="BoardStatsService.cs" />
-    <Compile Include="CardData.cs" />
+    <Compile Include="Model\Data\CardData.cs" />
     <Compile Include="TrelloClient.cs" />
     <Compile Include="TypeConfigurationManager.cs" />
-    <Compile Include="ListData.cs" />
+    <Compile Include="Model\Data\ListData.cs" />
     <Compile Include="ListNameConfiguration.cs" />
-    <Compile Include="ListStats.cs" />
-    <Compile Include="Model\BoardStats.cs" />
-    <Compile Include="Model\CardStats.cs" />
+    <Compile Include="Model\Stats\ListStats.cs" />
+    <Compile Include="BoardStatsAnalysis.cs" />
+    <Compile Include="Model\Stats\CardStats.cs" />
     <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="GoogleService.cs" />
     <Compile Include="SpreadsheetEntryFactory.cs" />
-    <Compile Include="TrelloData.cs" />
+    <Compile Include="Model\Data\TrelloData.cs" />
     <Compile Include="TrelloService.cs" />
     <Compile Include="TrelloStatsConfiguration.cs" />
     <Compile Include="TrelloToGoogleService.cs" />

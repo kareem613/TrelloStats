@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using TrelloNet;
+using TrelloStats.Model;
 
-namespace TrelloStats.Model
+namespace TrelloStats
 {
-    public class BoardStats
+    public class BoardStatsAnalysis
     {
         private readonly TimeZoneInfo _timeZone;
         public BoardData BoardData { get; set; }
-        public BoardStats(BoardData data, TimeZoneInfo timeZone)
+        public BoardStatsAnalysis(BoardData data, TimeZoneInfo timeZone)
         {
             BoardData = data;
             _timeZone = timeZone;

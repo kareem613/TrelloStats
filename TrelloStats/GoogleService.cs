@@ -25,12 +25,12 @@ namespace TrelloStats
             
         }
 
-        public void PushToGoogleSpreadsheet(BoardStats boardStats)
+        public void PushToGoogleSpreadsheet(BoardStatsAnalysis boardStatsAnalysis)
         {
             var listFeed = GetListFeedForSpreadsheet();
-            AddTitleCard(boardStats, listFeed);
-            AddGoodCards(boardStats, listFeed);
-            AddBadCards(boardStats, listFeed);
+            AddTitleCard(boardStatsAnalysis, listFeed);
+            AddGoodCards(boardStatsAnalysis, listFeed);
+            AddBadCards(boardStatsAnalysis, listFeed);
             
         }
 
@@ -48,18 +48,18 @@ namespace TrelloStats
             return listFeed;
         }
   
-        private void AddBadCards(BoardStats boardStats, ListFeed listFeed)
+        private void AddBadCards(BoardStatsAnalysis boardStatsAnalysis, ListFeed listFeed)
         {
-            if (boardStats.BoardData.BadCardStats.Count > 0)
+            if (boardStatsAnalysis.BoardData.BadCardStats.Count > 0)
             {
-                var errorRow = _spreadsheetEntryFactory.GetBadCardEntry(boardStats);
+                var errorRow = _spreadsheetEntryFactory.GetBadCardEntry(boardStatsAnalysis);
                 _service.Insert(listFeed, errorRow);
             }
         }
   
-        private void AddGoodCards(BoardStats boardStats, ListFeed listFeed)
+        private void AddGoodCards(BoardStatsAnalysis boardStatsAnalysis, ListFeed listFeed)
         {
-            foreach (var dayGroups in boardStats.CompletedCardStats.GroupBy(b => b.GetDoneAction().DateInTimeZone(_configuration.TimeZone).ToShortDateString()))
+            foreach (var dayGroups in boardStatsAnalysis.CompletedCardStats.GroupBy(b => b.GetDoneAction().DateInTimeZone(_configuration.TimeZone).ToShortDateString()))
             {
                 var dayGroupList = dayGroups.ToList();
                 for (int i = 0; i < dayGroupList.Count(); i++)
@@ -74,9 +74,9 @@ namespace TrelloStats
             }
         }
   
-        private void AddTitleCard(BoardStats boardStats, ListFeed listFeed)
+        private void AddTitleCard(BoardStatsAnalysis boardStatsAnalysis, ListFeed listFeed)
         {
-            var titleRow = _spreadsheetEntryFactory.GetTitleCardEntry(boardStats);
+            var titleRow = _spreadsheetEntryFactory.GetTitleCardEntry(boardStatsAnalysis);
             _service.Insert(listFeed, titleRow);
         }
   

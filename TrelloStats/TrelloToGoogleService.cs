@@ -33,7 +33,7 @@ namespace TrelloStats
             
             stopwatch.Restart();
             Console.Write("Calculating stats...");
-            BoardStats boardStats = _boardStatsService.BuildBoardStats(trelloData);
+            BoardStatsAnalysis boardStatsAnalysis = _boardStatsService.BuildBoardStatsAnalysis(trelloData);
             Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
             
             stopwatch.Restart();
@@ -43,7 +43,7 @@ namespace TrelloStats
 
             stopwatch.Restart();
             Console.Write("Pushing results to Google...");
-            _googleService.PushToGoogleSpreadsheet(boardStats);
+            _googleService.PushToGoogleSpreadsheet(boardStatsAnalysis);
             Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
         }
   
