@@ -2,9 +2,10 @@
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
+using TrelloStats.Configuration;
 using TrelloStats.Model;
 
-namespace TrelloStats
+namespace TrelloStats.Services
 {
     public class TrelloToGoogleService
     {

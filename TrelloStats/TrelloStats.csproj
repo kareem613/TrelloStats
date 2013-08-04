@@ -67,23 +67,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Stats\BoardStats.cs" />
-    <Compile Include="BoardProjections.cs" />
-    <Compile Include="BoardStatsService.cs" />
+    <Compile Include="Model\Stats\BoardProjections.cs" />
+    <Compile Include="Services\BoardStatsService.cs" />
     <Compile Include="Model\Data\CardData.cs" />
-    <Compile Include="TrelloClient.cs" />
-    <Compile Include="TypeConfigurationManager.cs" />
+    <Compile Include="Services\TrelloClient.cs" />
+    <Compile Include="Configuration\TypeConfigurationManager.cs" />
     <Compile Include="Model\Data\ListData.cs" />
-    <Compile Include="ListNameConfiguration.cs" />
+    <Compile Include="Configuration\ListNameConfiguration.cs" />
     <Compile Include="Model\Stats\ListStats.cs" />
     <Compile Include="BoardStatsAnalysis.cs" />
     <Compile Include="Model\Stats\CardStats.cs" />
     <Compile Include="DateTimeExtensions.cs" />
-    <Compile Include="GoogleService.cs" />
+    <Compile Include="Services\GoogleService.cs" />
     <Compile Include="SpreadsheetEntryFactory.cs" />
     <Compile Include="Model\Data\TrelloData.cs" />
-    <Compile Include="TrelloService.cs" />
-    <Compile Include="TrelloStatsConfiguration.cs" />
-    <Compile Include="TrelloToGoogleService.cs" />
+    <Compile Include="Services\TrelloService.cs" />
+    <Compile Include="Configuration\TrelloStatsConfiguration.cs" />
+    <Compile Include="Services\TrelloToGoogleService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using TrelloNet;
 
-namespace TrelloStats
+namespace TrelloStats.Model.Data
 {
     public class ListData
     {

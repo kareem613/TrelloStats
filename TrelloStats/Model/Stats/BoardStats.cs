@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TrelloStats.Model;
 
-namespace TrelloStats
+namespace TrelloStats.Model.Stats
 {
     public class BoardStats
     {
@@ -24,12 +24,12 @@ namespace TrelloStats
 
         public List<ListStats> ListStats { get; set; }
 
-        internal void AddGoodCardStat(Model.CardStats stat)
+        internal void AddGoodCardStat(CardStats stat)
         {
             CardStats.Add(stat);
         }
 
-        internal void AddBadCardStat(Model.CardStats stat)
+        internal void AddBadCardStat(CardStats stat)
         {
             BadCardStats.Add(stat);
         }

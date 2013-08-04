@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 
-namespace TrelloStats
+namespace TrelloStats.Configuration
 {
     public class TrelloStatsConfiguration : TypeConfigurationManager
     {

@@ -3,8 +3,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TrelloNet;
+using TrelloStats.Configuration;
 
-namespace TrelloStats
+namespace TrelloStats.Services
 {
     public class TrelloClient
     {

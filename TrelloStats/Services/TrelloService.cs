@@ -3,8 +3,10 @@ using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TrelloNet;
+using TrelloStats.Configuration;
+using TrelloStats.Model.Data;
 
-namespace TrelloStats
+namespace TrelloStats.Services
 {
     public class TrelloService
     {

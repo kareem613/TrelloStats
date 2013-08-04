@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TrelloNet;
+using TrelloStats.Configuration;
 using TrelloStats.Model;
+using TrelloStats.Model.Data;
+using TrelloStats.Model.Stats;
 
-namespace TrelloStats
+namespace TrelloStats.Services
 {
     public class BoardStatsService
     {

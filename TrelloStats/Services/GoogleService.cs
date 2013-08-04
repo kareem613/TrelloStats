@@ -6,8 +6,9 @@ using Google.GData.Client;
 using Google.GData.Spreadsheets;
 using TrelloStats.Model;
 using System.Configuration;
+using TrelloStats.Configuration;
 
-namespace TrelloStats
+namespace TrelloStats.Services
 {
     public class GoogleService
     {

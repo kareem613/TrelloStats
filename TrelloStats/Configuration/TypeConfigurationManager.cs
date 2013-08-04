@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TrelloStats
+namespace TrelloStats.Configuration
 {
     public class TypeConfigurationManager
     {

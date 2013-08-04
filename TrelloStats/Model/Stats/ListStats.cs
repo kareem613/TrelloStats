@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
+using TrelloStats.Model.Data;
 
-namespace TrelloStats
+namespace TrelloStats.Model.Stats
 {
     public class ListStats
     {

@@ -1,5 +1,6 @@
 ﻿
 using System;
+using TrelloStats.Services;
 namespace TrelloStatsApp
 {
     class Program
@@ -8,14 +9,14 @@ namespace TrelloStatsApp
         {
             try
             {
-                var stats = new TrelloStats.TrelloToGoogleService();
+                var stats = new TrelloToGoogleService();
                 stats.CalculateStats();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-                
+
             }
 
             Console.WriteLine("Press enter to exit...");

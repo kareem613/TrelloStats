@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using TrelloNet;
 using System.Linq;
+using TrelloStats.Model.Data;
+using TrelloStats.Configuration;
 
-namespace TrelloStats.Model
+namespace TrelloStats.Model.Stats
 {
     public class CardStats
     {
