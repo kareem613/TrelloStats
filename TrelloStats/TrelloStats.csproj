@@ -66,6 +66,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\IListNameConfiguration.cs" />
     <Compile Include="Model\Stats\BoardStats.cs" />
     <Compile Include="Model\Stats\BoardProjections.cs" />
     <Compile Include="Model\Stats\WeekStats.cs" />

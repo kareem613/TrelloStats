@@ -6,7 +6,7 @@ using System.Text;
 
 namespace TrelloStats.Configuration
 {
-    public class ListNameConfiguration: TypeConfigurationManager
+    public class ListNameConfiguration: TypeConfigurationManager, TrelloStats.Configuration.IListNameConfiguration
     {
         public string InProgressListName
         {
