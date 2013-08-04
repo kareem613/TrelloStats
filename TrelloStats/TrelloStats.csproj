@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="Model\Stats\BoardStats.cs" />
     <Compile Include="Model\Stats\BoardProjections.cs" />
+    <Compile Include="Model\Stats\WeekStats.cs" />
     <Compile Include="Services\BoardStatsService.cs" />
     <Compile Include="Model\Data\CardData.cs" />
     <Compile Include="Services\TrelloClient.cs" />
