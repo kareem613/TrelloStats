@@ -14,6 +14,9 @@
       startdate,enddate,headline,text,type
     -->
     <add key="Google.SpreadsheetName" value="TrinityTimeline"/>
+
+    <!--This is the name of the Trello board to analyse-->
+    <add key="Trello.Board" value="Development" />
     
     <!--List of Trello labels to count and display as a column in the title stats. Delimit a set with a '/' to display them in the same table column. -->
     <add key="Trello.Labels" value="Feature,Bug/Hotfix" />

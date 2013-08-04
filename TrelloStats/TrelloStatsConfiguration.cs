@@ -92,6 +92,14 @@ namespace TrelloStats
             }
         }
 
+        public string TrelloBoard
+        {
+            get
+            {
+                return GetAppConfig("Trello.Board");
+            }
+        }
+
         public double TrelloProjectionsEstimateWindowLowerBoundFactor
         {
             get
@@ -162,6 +170,8 @@ margin-bottom:5px;
 <tbody>
 </table>
 ";
+
+
 
         
     }

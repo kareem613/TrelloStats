@@ -19,7 +19,7 @@ namespace TrelloStats
 
         public TrelloData GetCardsToExamine()
         {
-            var trinityStoriesBoard = _trelloClient.GetBoard("Trinity Stories");
+            var trinityStoriesBoard = _trelloClient.GetBoard(_configuration.TrelloBoard);
             var listsInBoard = _trelloClient.GetListsForBoard(trinityStoriesBoard);
             
             var listsToScan = GetListsToScan(listsInBoard);
