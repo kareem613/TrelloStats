@@ -17,11 +17,11 @@ namespace TrelloStats
             
             var config = new TrelloStatsConfiguration();
             var spreadsheetEntryFactory = new SpreadsheetEntryFactory(config);
-            _googleService = new GoogleService(config, spreadsheetEntryFactory);
-            _trelloService = new TrelloService(config);
-            _boardStatsService = new BoardStatsService(config);
+            var trelloClient = new TrelloClient(config);
 
-            
+            _googleService = new GoogleService(config, spreadsheetEntryFactory);
+            _trelloService = new TrelloService(config, trelloClient);
+            _boardStatsService = new BoardStatsService(config);
         }
 
         public void CalculateStats()
@@ -35,7 +35,7 @@ namespace TrelloStats
             Console.Write("Calculating stats...");
             BoardStats boardStats = _boardStatsService.BuildBoardStats(trelloData);
             Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
-
+            return;
             stopwatch.Restart();
             Console.Write("Deleting old records from Google...");
             _googleService.ClearSpreadsheet();

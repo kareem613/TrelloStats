@@ -9,33 +9,19 @@ namespace TrelloStats
     public class TrelloService
     {
         private readonly TrelloStatsConfiguration _configuration;
-        private readonly Trello _trello;
+        private readonly TrelloClient _trelloClient;
         
-        public TrelloService(TrelloStatsConfiguration configuration)
+        public TrelloService(TrelloStatsConfiguration configuration, TrelloClient trelloClient)
         {
             _configuration = configuration;
-            _trello = new Trello(configuration.TrelloKey);
-            //var url = trello.GetAuthorizationUrl("Trello Stats", Scope.ReadOnly, Expiration.Never);
-            _trello.Authorize(configuration.TrelloToken);
-            
-}
-
-        public IEnumerable<T> GetActionsForCard<T>(Card card)
-        {
-            return _trello.Actions.ForCard(card, new List<ActionType>() { ActionType.CreateCard, ActionType.UpdateCard }).OfType<T>();
+            _trelloClient = trelloClient;
         }
-
-        public List<Action> GetActionsForCard(Card card)
-        {
-            return _trello.Actions.ForCard(card, new List<ActionType>(){ActionType.CreateCard, ActionType.UpdateCard}).ToList();
-        }
-
 
         public TrelloData GetCardsToExamine()
         {
-            var trinityStoriesBoard = _trello.Boards.Search("Trinity Stories").Single();
-            var listsInBoard = _trello.Lists.ForBoard(trinityStoriesBoard).ToList();
-
+            var trinityStoriesBoard = _trelloClient.GetBoard("Trinity Stories");
+            var listsInBoard = _trelloClient.GetListsForBoard(trinityStoriesBoard);
+            
             var listsToScan = GetListsToScan(listsInBoard);
 
             var trelloData = new TrelloData();
@@ -57,7 +43,7 @@ namespace TrelloStats
 
         private ListData CreateListData(List list)
         {
-            var cardList = GetCardsForList(list);
+            var cardList = _trelloClient.GetCardsForList(list);
             var listData = new ListData(list);
 
             foreach (var card in cardList)
@@ -74,7 +60,7 @@ namespace TrelloStats
                 Card = card,
                 Points = GetPointsForCard(card),
                 Name = GetCardNameWithoutPoints(card),
-                Actions = GetActionsForCard(card)
+                Actions = _trelloClient.GetActionsForCard(card)
             };
         }
 
@@ -92,10 +78,7 @@ namespace TrelloStats
             return listsToScan.Distinct();
         }
 
-        internal List<Card> GetCardsForList(List trelloList)
-        {
-            return _trello.Cards.ForList(trelloList).ToList();
-        }
+        
 
         private double GetPointsForCard(Card card)
         {
