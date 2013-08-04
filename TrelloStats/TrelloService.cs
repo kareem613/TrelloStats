@@ -22,12 +22,12 @@ namespace TrelloStats
 
         public IEnumerable<T> GetActionsForCard<T>(Card card)
         {
-            return _trello.Actions.ForCard(card).OfType<T>();
+            return _trello.Actions.ForCard(card, new List<ActionType>() { ActionType.CreateCard, ActionType.UpdateCard }).OfType<T>();
         }
 
         public List<Action> GetActionsForCard(Card card)
         {
-            return _trello.Actions.ForCard(card).ToList();
+            return _trello.Actions.ForCard(card, new List<ActionType>(){ActionType.CreateCard, ActionType.UpdateCard}).ToList();
         }
 
 

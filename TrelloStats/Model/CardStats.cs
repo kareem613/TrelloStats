@@ -11,14 +11,6 @@ namespace TrelloStats.Model
 
         public ListData ListData { get; set; }
 
-        public TrelloNet.Action FirstAction
-        {
-            get
-            {
-                return Actions.OrderBy(a => a.Date).First();
-            }
-        }
-
         public IEnumerable<TrelloNet.Action> Actions
         {
             get { return CardData.Actions; }
@@ -47,11 +39,22 @@ namespace TrelloStats.Model
 
         }
 
+        public TrelloNet.CreateCardAction CreateAction
+        {
+            get
+            {
+                return Actions.OfType<CreateCardAction>().Single();
+            }
+        }
+
         public TrelloNet.Action EffectiveStartAction
         {
             get
             {
-                return GetStartAction() ?? FirstAction;
+                var action = GetStartAction();
+                if(action == null)
+                    return CreateAction;
+                return action;
             }
         }
 
