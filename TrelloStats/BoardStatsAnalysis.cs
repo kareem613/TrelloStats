@@ -9,10 +9,10 @@ namespace TrelloStats
     public class BoardStatsAnalysis
     {
         private readonly TimeZoneInfo _timeZone;
-        public BoardData BoardData { get; set; }
-        public BoardStatsAnalysis(BoardData data, TimeZoneInfo timeZone)
+        public BoardStats BoardStats { get; set; }
+        public BoardStatsAnalysis(BoardStats boardStats, TimeZoneInfo timeZone)
         {
-            BoardData = data;
+            BoardStats = boardStats;
             _timeZone = timeZone;
         }
         
@@ -21,7 +21,7 @@ namespace TrelloStats
         {
             get
             {
-                return BoardData.CardStats.Count(c => !c.IsInProgress && !c.IsInTest);
+                return BoardStats.CardStats.Count(c => !c.IsInProgress && !c.IsInTest);
             }
         }
 
@@ -53,7 +53,7 @@ namespace TrelloStats
         {
             get
             {
-                return BoardData.CardStats.OrderBy(cs => cs.EffectiveStartAction.Date).First();
+                return BoardStats.CardStats.OrderBy(cs => cs.EffectiveStartAction.Date).First();
             }
             
         }
@@ -62,7 +62,7 @@ namespace TrelloStats
         {
             get
             {
-                return BoardData.CardStats.Where(c => !c.IsInProgress && !c.IsInTest).OrderByDescending(cs => cs.GetDoneAction().Date).First();
+                return BoardStats.CardStats.Where(c => !c.IsInProgress && !c.IsInTest).OrderByDescending(cs => cs.GetDoneAction().Date).First();
 
             }
         }
@@ -71,7 +71,7 @@ namespace TrelloStats
         {
             get
             {
-                return BoardData.CardStats.Sum(c => c.CardData.Points);
+                return BoardStats.CardStats.Sum(c => c.CardData.Points);
             }
         }
 
@@ -82,7 +82,7 @@ namespace TrelloStats
             for (int week = 1; week <= CompletedWeeksElapsed +1; week++)
             {
 
-                var startDay = BoardData.ProjectStartDate.AddDays(week * 7);
+                var startDay = BoardStats.ProjectStartDate.AddDays(week * 7);
                 
                 //TODO: Why does this occasionally go past the current week. Occured on July 31st and august 1st.
                 if (startDay > DateTime.Now)
@@ -92,9 +92,9 @@ namespace TrelloStats
                 {
 
                 }
-                var completedCards = BoardData.CardStats.Where(c => !c.IsInProgress && !c.IsInTest && c.GetDoneAction().DateInTimeZone(_timeZone) >= startDay && c.GetDoneAction().DateInTimeZone(_timeZone) < endDay);
-                var inProgressCards = BoardData.CardStats.Where(c => c.IsInProgress && c.EffectiveStartAction.DateInTimeZone(_timeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_timeZone) < endDay);
-                var inTestCards = BoardData.CardStats.Where(c => c.IsInTest && c.EffectiveStartAction.DateInTimeZone(_timeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_timeZone) < endDay);
+                var completedCards = BoardStats.CardStats.Where(c => !c.IsInProgress && !c.IsInTest && c.GetDoneAction().DateInTimeZone(_timeZone) >= startDay && c.GetDoneAction().DateInTimeZone(_timeZone) < endDay);
+                var inProgressCards = BoardStats.CardStats.Where(c => c.IsInProgress && c.EffectiveStartAction.DateInTimeZone(_timeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_timeZone) < endDay);
+                var inTestCards = BoardStats.CardStats.Where(c => c.IsInTest && c.EffectiveStartAction.DateInTimeZone(_timeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_timeZone) < endDay);
                 
                 WeekStats weekStats = new WeekStats() { Cards = completedCards, CardsInProgress = inProgressCards,CardsInTest = inTestCards, WeekNumber = week, StartDate = startDay, EndDate = endDay };
                 weekStatsList.Add(weekStats);
@@ -106,7 +106,7 @@ namespace TrelloStats
         {
             get
             {
-                return BoardData.CardStats.Where(c=> !c.IsInProgress && !c.IsInTest);
+                return BoardStats.CardStats.Where(c => !c.IsInProgress && !c.IsInTest);
             }
         }
 

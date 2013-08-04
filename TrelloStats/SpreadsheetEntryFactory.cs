@@ -66,7 +66,7 @@ namespace TrelloStats
         private string GetSummaryTextForErrorCards(BoardStatsAnalysis boardStatsAnalysis)
         {
             var errorCards = new StringBuilder();
-            boardStatsAnalysis.BoardData.BadCardStats.ForEach(c => errorCards.AppendFormat("<div><a href=\"{0}\">{1}</a></div>", c.CardData.Card.Url, c.CardData.Card.Name));
+            boardStatsAnalysis.BoardStats.BadCardStats.ForEach(c => errorCards.AppendFormat("<div><a href=\"{0}\">{1}</a></div>", c.CardData.Card.Url, c.CardData.Card.Name));
             return errorCards.ToString();
         }
 
@@ -90,8 +90,8 @@ namespace TrelloStats
                     boardStatsAnalysis.FirstStartDate.ToLongDateString(),
                     boardStatsAnalysis.NumberOfCompletedCards,
                     boardStatsAnalysis.LastDoneDate.ToLongDateString(),
-                    boardStatsAnalysis.BoardData.CreatedDate.ToLongDateString(),
-                    boardStatsAnalysis.BoardData.CreatedDate.ToLongTimeString(),
+                    boardStatsAnalysis.BoardStats.CreatedDate.ToLongDateString(),
+                    boardStatsAnalysis.BoardStats.CreatedDate.ToLongTimeString(),
                     boardStatsAnalysis.TotalPoints
                 );
 
@@ -119,7 +119,7 @@ namespace TrelloStats
         private string GetExtraListsStatsTableHtml(BoardStatsAnalysis boardStatsAnalysis)
         {
             var row = new StringBuilder(@"<table id=""list_stats"" class=""stats""><tbody>");
-            foreach (var listStat in boardStatsAnalysis.BoardData.ListStats)
+            foreach (var listStat in boardStatsAnalysis.BoardStats.ListStats)
             {
                 row.AppendLine(string.Format("<tr><th>{0}</th><td>{1}</td></tr>", listStat.ListData.List.Name, listStat.CardCount));
             }

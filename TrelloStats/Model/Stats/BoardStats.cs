@@ -7,7 +7,7 @@ using TrelloStats.Model;
 
 namespace TrelloStats
 {
-    public class BoardData
+    public class BoardStats
     {
         public List<CardStats> CardStats { get; private set; }
         public List<CardStats> BadCardStats { get; private set; }
@@ -15,7 +15,7 @@ namespace TrelloStats
         public DateTime CreatedDate { get; private set; }
         public DateTime ProjectStartDate { get; set; }
 
-        public BoardData()
+        public BoardStats()
         {
             CardStats = new List<CardStats>();
             BadCardStats = new List<CardStats>();

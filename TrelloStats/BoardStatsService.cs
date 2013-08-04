@@ -19,12 +19,12 @@ namespace TrelloStats
 
         public BoardStatsAnalysis BuildBoardStatsAnalysis(TrelloData trelloData)
         {
-            var boardData = new BoardData();
-            BuildCardStats(trelloData, boardData);
-            boardData.ListStats = GetListStats(trelloData.ListsToCount);
+            var boardStats = new BoardStats();
+            BuildCardStats(trelloData, boardStats);
+            boardStats.ListStats = GetListStats(trelloData.ListsToCount);
             
-            boardData.ProjectStartDate = ProjectStartDate;
-            var boardStatsAnalysis = new BoardStatsAnalysis(boardData, _configuration.TimeZone);
+            boardStats.ProjectStartDate = ProjectStartDate;
+            var boardStatsAnalysis = new BoardStatsAnalysis(boardStats, _configuration.TimeZone);
             
             BuildProjections(trelloData, boardStatsAnalysis);
 
@@ -75,7 +75,7 @@ namespace TrelloStats
             return listStats;
         }
 
-        private void BuildCardStats(TrelloData trelloData, BoardData boardData)
+        private void BuildCardStats(TrelloData trelloData, BoardStats boardStats)
         {
             foreach (var listData in trelloData.ListDataCollection)
             {
@@ -84,9 +84,9 @@ namespace TrelloStats
                     var stat = new CardStats() { CardData = cardData, ListData = listData, ListNames = _configuration.ListNames, TimeZone = _configuration.TimeZone };
                     
                     if (stat.IsComplete || stat.IsInProgress || stat.IsInTest)
-                        boardData.AddGoodCardStat(stat);
+                        boardStats.AddGoodCardStat(stat);
                     else
-                        boardData.AddBadCardStat(stat);
+                        boardStats.AddBadCardStat(stat);
                 }
             }
         }

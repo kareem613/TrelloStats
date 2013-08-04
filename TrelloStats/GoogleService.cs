@@ -50,7 +50,7 @@ namespace TrelloStats
   
         private void AddBadCards(BoardStatsAnalysis boardStatsAnalysis, ListFeed listFeed)
         {
-            if (boardStatsAnalysis.BoardData.BadCardStats.Count > 0)
+            if (boardStatsAnalysis.BoardStats.BadCardStats.Count > 0)
             {
                 var errorRow = _spreadsheetEntryFactory.GetBadCardEntry(boardStatsAnalysis);
                 _service.Insert(listFeed, errorRow);
