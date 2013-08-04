@@ -25,7 +25,7 @@ namespace TrelloStats.Model
         }
 
         //TODO:// Move this config out of this stats class
-        public ListNames ListNames { get; set; }
+        public ListNameConfiguration ListNames { get; set; }
 
         public TimeZoneInfo TimeZone { get; set; }
 

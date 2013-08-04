@@ -14,59 +14,17 @@ namespace TrelloStats
    
         public TrelloToGoogleService()
         {
-            var listNames = GetListNames();
-            TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById(GetAppConfig("TimeZone"));
-            _googleService = new GoogleService(GetAppConfig("Gmail.EmailAddress"), GetAppConfig("Gmail.OneTimePassword"), GetAppConfig("Google.SpreadsheetName"), GetAppSettingAsArray("Trello.Labels"), timeZone);
-            _trelloService = new TrelloService(ConfigurationManager.AppSettings["Trello.Key"], ConfigurationManager.AppSettings["Trello.Token"],listNames);
-            _boardStatsService = new BoardStatsService(listNames, timeZone);
+            
+            var config = new TrelloStatsConfiguration();
+            var spreadsheetEntryFactory = new SpreadsheetEntryFactory(config);
+            _googleService = new GoogleService(config, spreadsheetEntryFactory);
+            _trelloService = new TrelloService(config);
+            _boardStatsService = new BoardStatsService(config);
 
-            _boardStatsService.EstimateWindowLowerBoundFactor = GetAppConfigDouble("Trello.Projections.EstimateWindowLowerBoundFactor",1);
-            _boardStatsService.EstimateWindowUpperBoundFactor = GetAppConfigDouble("Trello.Projections.EstimateWindowUpperBoundFactor", 1);
+            _boardStatsService.EstimateWindowLowerBoundFactor = config.GetAppConfigDouble("Trello.Projections.EstimateWindowLowerBoundFactor",1);
+            _boardStatsService.EstimateWindowUpperBoundFactor = config.GetAppConfigDouble("Trello.Projections.EstimateWindowUpperBoundFactor", 1);
 
-            _boardStatsService.WeeksToSkipForVelocityCalculation = GetAppConfigInt("Trello.Projections.WeeksToSkipForVelocityCalculation", 0);
-        }
-
-        private ListNames GetListNames()
-        {
-            return new ListNames()
-            {
-                InProgressListName = GetAppConfig("Trello.ListNames.InProgress"),
-                InTestListName = GetAppConfig("Trello.ListNames.InTest"),
-                StartListNames = GetAppSettingAsArray("Trello.ListNames.StartNames"),
-                DoneListNames = GetAppSettingAsArray("Trello.ListNames.CompletedNames"),
-                ExtraListsToInclude = GetAppSettingAsArray("Trello.ListNames.ExtraListsToInclude").Where(s => !string.IsNullOrWhiteSpace(s)).ToArray(),
-                ExtraListsToCount = GetAppSettingAsArray("Trello.ListNames.ExtraListsToCount").Where(s => !string.IsNullOrWhiteSpace(s)).ToArray(),
-                EstimatedList = ConfigurationManager.AppSettings["Trello.Projections.EstimatedList"]
-            };
-
-        }
-
-        private int GetAppConfigInt(string p, int defaultValue)
-        {
-            var configString = ConfigurationManager.AppSettings[p];
-            int value;
-            if (int.TryParse(configString, out value))
-                return value;
-            else return defaultValue;
-        }
-
-        private double GetAppConfigDouble(string p, double defaultValue)
-        {
-            var configString = ConfigurationManager.AppSettings[p];
-            double value;
-            if(double.TryParse(configString, out value))
-                return value;
-            else return defaultValue;
-        }
-  
-        private string[] GetAppSettingAsArray(string key)
-        {
-            return ConfigurationManager.AppSettings[key].Split(',');
-        }
-  
-        private string GetAppConfig(string key)
-        {
-            return ConfigurationManager.AppSettings[key];
+            _boardStatsService.WeeksToSkipForVelocityCalculation = config.GetAppConfigInt("Trello.Projections.WeeksToSkipForVelocityCalculation", 0);
         }
 
         public void CalculateStats()

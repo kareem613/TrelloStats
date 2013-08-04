@@ -8,15 +8,16 @@ namespace TrelloStats
 {
     public class TrelloService
     {
+        private readonly TrelloStatsConfiguration _configuration;
         private readonly Trello _trello;
-        private readonly ListNames _listNames;
-
-        public TrelloService(string key, string token,ListNames listNames)
+        
+        public TrelloService(TrelloStatsConfiguration configuration)
         {
-            _trello = new Trello(key);
+            _configuration = configuration;
+            _trello = new Trello(configuration.TrelloKey);
             //var url = trello.GetAuthorizationUrl("Trello Stats", Scope.ReadOnly, Expiration.Never);
-            _trello.Authorize(token);
-            _listNames = listNames;
+            _trello.Authorize(configuration.TrelloToken);
+            
 }
 
         public IEnumerable<T> GetActionsForCard<T>(Card card)
@@ -44,7 +45,7 @@ namespace TrelloStats
                 trelloData.AddListData(listData);
             }
 
-            foreach (var listName in _listNames.ExtraListsToCount)
+            foreach (var listName in _configuration.ListNames.ExtraListsToCount)
             {
                 var list = listsInBoard.Where(l => listName ==l.Name).Single();
                 var listData = CreateListData(list);
@@ -79,12 +80,12 @@ namespace TrelloStats
 
         private IEnumerable<List> GetListsToScan(List<List> listsInBoard)
         {
-            var doneLists = listsInBoard.Where(l => _listNames.DoneListNames.Contains(l.Name));
+            var doneLists = listsInBoard.Where(l => _configuration.ListNames.DoneListNames.Contains(l.Name));
 
             var listsToScan = new List<List>(doneLists);
-            listsToScan.Add(listsInBoard.Single(l => l.Name == _listNames.InProgressListName));
-            listsToScan.Add(listsInBoard.Single(l => l.Name == _listNames.InTestListName));
-            foreach (var listName in _listNames.ExtraListsToInclude)
+            listsToScan.Add(listsInBoard.Single(l => l.Name == _configuration.ListNames.InProgressListName));
+            listsToScan.Add(listsInBoard.Single(l => l.Name == _configuration.ListNames.InTestListName));
+            foreach (var listName in _configuration.ListNames.ExtraListsToInclude)
             {
                 listsToScan.Add(listsInBoard.Single(l => l.Name == listName));
             }

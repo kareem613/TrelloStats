@@ -9,19 +9,17 @@ namespace TrelloStats
 {
     public class BoardStatsService
     {
-        private readonly ListNames _listNames;
-        private readonly TimeZoneInfo _timeZone;
+        private readonly TrelloStatsConfiguration _configuration;
         private DateTime ProjectStartDate = new DateTime(2013,6,4,14,0,0);
 
         public double EstimateWindowLowerBoundFactor { get; set; }
         public double EstimateWindowUpperBoundFactor { get; set; }
         public int WeeksToSkipForVelocityCalculation { get; set; }
 
-        public BoardStatsService(ListNames listNames, TimeZoneInfo timeZone)
+        public BoardStatsService(TrelloStatsConfiguration configuration)
         {
-            _listNames = listNames;
-            _timeZone = timeZone;
-
+            _configuration = configuration;
+        
             EstimateWindowLowerBoundFactor = 0.5;
             EstimateWindowUpperBoundFactor= 1.5;
         }
@@ -44,10 +42,10 @@ namespace TrelloStats
             boardData.AddBadCardStats(badCards);
             boardData.ListStats = listStats;
 
-            var estimatedListData = trelloData.GetListData(_listNames.EstimatedList);
+            var estimatedListData = trelloData.GetListData(_configuration.ListNames.EstimatedList);
             var estimatedPoints = estimatedListData.CardDataCollection.Sum(cd => cd.Points);
 
-            var boardStats =  new BoardStats(boardData, _timeZone);
+            var boardStats = new BoardStats(boardData, _configuration.TimeZone);
             boardStats.EstimatedListPoints = estimatedPoints;
 
             BuildProjections(boardStats);
@@ -100,7 +98,7 @@ namespace TrelloStats
             {
                 foreach (var cardData in listData.CardDataCollection)
                 {
-                    var stat = new CardStats() {CardData = cardData, ListData = listData, ListNames = _listNames, TimeZone = _timeZone };
+                    var stat = new CardStats() { CardData = cardData, ListData = listData, ListNames = _configuration.ListNames, TimeZone = _configuration.TimeZone };
                     
                     if (stat.IsComplete || stat.IsInProgress || stat.IsInTest)
                         cardStats.Add(stat);
