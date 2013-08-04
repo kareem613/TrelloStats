@@ -35,7 +35,7 @@ namespace TrelloStats
             Console.Write("Calculating stats...");
             BoardStats boardStats = _boardStatsService.BuildBoardStats(trelloData);
             Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
-            return;
+            
             stopwatch.Restart();
             Console.Write("Deleting old records from Google...");
             _googleService.ClearSpreadsheet();
