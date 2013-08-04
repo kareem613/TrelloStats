@@ -19,37 +19,25 @@ namespace TrelloStats
 
         public BoardStats BuildBoardStats(TrelloData trelloData)
         {
-            var cardStats = new List<CardStats>();
-            var badCards = new List<CardStats>();
-
-            BuildCardStats(trelloData.ListDataCollection, badCards, cardStats);
-
-            var listStats = new List<ListStats>();
-            BuildListStats(trelloData.ListsToCount, listStats);
-            
-            
-
             var boardData = new BoardData();
+            BuildCardStats(trelloData, boardData);
+            boardData.ListStats = GetListStats(trelloData.ListsToCount);
+            
             boardData.ProjectStartDate = ProjectStartDate;
-            boardData.AddCardStats(cardStats);
-            boardData.AddBadCardStats(badCards);
-            boardData.ListStats = listStats;
-
-            var estimatedListData = trelloData.GetListData(_configuration.ListNames.EstimatedList);
-            var estimatedPoints = estimatedListData.CardDataCollection.Sum(cd => cd.Points);
-
             var boardStats = new BoardStats(boardData, _configuration.TimeZone);
-            boardStats.EstimatedListPoints = estimatedPoints;
-
-            BuildProjections(boardStats);
-
+            
+            BuildProjections(trelloData, boardStats);
 
             return boardStats;
         }
 
-        private void BuildProjections(BoardStats boardStats)
+        private void BuildProjections(TrelloData trelloData, BoardStats boardStats)
         {
-            var estimatedPoints = boardStats.EstimatedListPoints;
+            var estimatedListData = trelloData.GetListData(_configuration.ListNames.EstimatedList);
+            var estimatedPoints = estimatedListData.CardDataCollection.Sum(cd => cd.Points);
+
+            boardStats.EstimatedListPoints = estimatedPoints;
+            
             var totalDonePoints = boardStats.TotalPoints;
             var elapsedWeeks = boardStats.CompletedWeeksElapsed - _configuration.WeeksToSkipForVelocityCalculation;
 
@@ -76,27 +64,29 @@ namespace TrelloStats
             return DateTime.Now.AddDays(weeks * 7);
         }
 
-        private void BuildListStats(List<ListData> listDataCollection, List<ListStats> listStats)
+        private List<ListStats> GetListStats(List<ListData> listDataCollection)
         {
+            var listStats = new List<ListStats>();
             foreach (var listData in listDataCollection)
             {
                 var listStat = new ListStats(listData);
                 listStats.Add(listStat);
             }
+            return listStats;
         }
 
-        private void BuildCardStats(List<ListData> listDataCollection, List<CardStats> badCards, List<CardStats> cardStats)
+        private void BuildCardStats(TrelloData trelloData, BoardData boardData)
         {
-            foreach (var listData in listDataCollection)
+            foreach (var listData in trelloData.ListDataCollection)
             {
                 foreach (var cardData in listData.CardDataCollection)
                 {
                     var stat = new CardStats() { CardData = cardData, ListData = listData, ListNames = _configuration.ListNames, TimeZone = _configuration.TimeZone };
                     
                     if (stat.IsComplete || stat.IsInProgress || stat.IsInTest)
-                        cardStats.Add(stat);
+                        boardData.AddGoodCardStat(stat);
                     else
-                        badCards.Add(stat);
+                        boardData.AddBadCardStat(stat);
                 }
             }
         }

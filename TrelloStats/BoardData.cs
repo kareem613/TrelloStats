@@ -22,16 +22,16 @@ namespace TrelloStats
             CreatedDate = DateTime.Now;
         }
 
-        public void AddBadCardStats(List<CardStats> badCards)
-        {
-            BadCardStats.AddRange(badCards);
-        }
-
-        public void AddCardStats(List<CardStats> cardStats)
-        {
-            CardStats.AddRange(cardStats);
-        }
-
         public List<ListStats> ListStats { get; set; }
+
+        internal void AddGoodCardStat(Model.CardStats stat)
+        {
+            CardStats.Add(stat);
+        }
+
+        internal void AddBadCardStat(Model.CardStats stat)
+        {
+            BadCardStats.Add(stat);
+        }
     }
 }
