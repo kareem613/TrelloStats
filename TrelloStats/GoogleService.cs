@@ -65,7 +65,7 @@ namespace TrelloStats
                 for (int i = 0; i < dayGroupList.Count(); i++)
                 {
                     var cardStat = dayGroupList[i];
-                    var minutesConfig = i * int.Parse(ConfigurationManager.AppSettings["TimelineJS.OffsetMinutesPerCard"]);
+                    var minutesConfig = i * _configuration.TimelineJsOffsetMinutesPerCard;
                     var timeOffset = new TimeSpan(0, minutesConfig, 0);
 
                     var row = _spreadsheetEntryFactory.GetCompletedCardEntry(cardStat, timeOffset);

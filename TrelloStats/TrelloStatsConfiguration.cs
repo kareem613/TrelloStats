@@ -31,6 +31,14 @@ namespace TrelloStats
             }
         }
 
+        public int TimelineJsOffsetMinutesPerCard
+        {
+            get
+            {
+                return GetAppConfigInt("TimelineJS.OffsetMinutesPerCard", 0);
+            }
+        }
+
         public string[] LabelNames
         {
             get
@@ -84,6 +92,30 @@ namespace TrelloStats
             }
         }
 
+        public double TrelloProjectionsEstimateWindowLowerBoundFactor
+        {
+            get
+            {
+                return GetAppConfigDouble("Trello.Projections.EstimateWindowLowerBoundFactor", 1);
+            }
+        }
+
+        public double TrelloProjectionsEstimateWindowUpperBoundFactor
+        {
+            get
+            {
+                return GetAppConfigDouble("Trello.Projections.EstimateWindowUpperBoundFactor", 1);
+            }
+        }
+
+        public int WeeksToSkipForVelocityCalculation
+        {
+            get
+            {
+                return GetAppConfigInt("Trello.Projections.WeeksToSkipForVelocityCalculation", 0);
+            }
+        }
+
         public string SummaryTextTemplate = @"
 Work started on <strong>{0}</strong> with the most recent of <strong>{1}</strong> stories completed on <strong>{2}</strong>. Total points completed is <strong>{5}</strong>.<br/>
 [[projections_summary]]
@@ -130,5 +162,7 @@ margin-bottom:5px;
 <tbody>
 </table>
 ";
+
+        
     }
 }

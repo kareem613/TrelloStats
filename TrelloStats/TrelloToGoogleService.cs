@@ -21,10 +21,7 @@ namespace TrelloStats
             _trelloService = new TrelloService(config);
             _boardStatsService = new BoardStatsService(config);
 
-            _boardStatsService.EstimateWindowLowerBoundFactor = config.GetAppConfigDouble("Trello.Projections.EstimateWindowLowerBoundFactor",1);
-            _boardStatsService.EstimateWindowUpperBoundFactor = config.GetAppConfigDouble("Trello.Projections.EstimateWindowUpperBoundFactor", 1);
-
-            _boardStatsService.WeeksToSkipForVelocityCalculation = config.GetAppConfigInt("Trello.Projections.WeeksToSkipForVelocityCalculation", 0);
+            
         }
 
         public void CalculateStats()

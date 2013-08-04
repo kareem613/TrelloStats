@@ -12,16 +12,9 @@ namespace TrelloStats
         private readonly TrelloStatsConfiguration _configuration;
         private DateTime ProjectStartDate = new DateTime(2013,6,4,14,0,0);
 
-        public double EstimateWindowLowerBoundFactor { get; set; }
-        public double EstimateWindowUpperBoundFactor { get; set; }
-        public int WeeksToSkipForVelocityCalculation { get; set; }
-
         public BoardStatsService(TrelloStatsConfiguration configuration)
         {
             _configuration = configuration;
-        
-            EstimateWindowLowerBoundFactor = 0.5;
-            EstimateWindowUpperBoundFactor= 1.5;
         }
 
         public BoardStats BuildBoardStats(TrelloData trelloData)
@@ -58,12 +51,12 @@ namespace TrelloStats
         {
             var estimatedPoints = boardStats.EstimatedListPoints;
             var totalDonePoints = boardStats.TotalPoints;
-            var elapsedWeeks = boardStats.CompletedWeeksElapsed - WeeksToSkipForVelocityCalculation;
+            var elapsedWeeks = boardStats.CompletedWeeksElapsed - _configuration.WeeksToSkipForVelocityCalculation;
 
             var historicalPointsPerWeek = totalDonePoints / elapsedWeeks;
             var projectedWeeksToComplete = estimatedPoints / historicalPointsPerWeek;
-            var projectedWeeksMin = projectedWeeksToComplete * EstimateWindowLowerBoundFactor;
-            var projectedWeeksMax = projectedWeeksToComplete * EstimateWindowUpperBoundFactor;
+            var projectedWeeksMin = projectedWeeksToComplete * _configuration.TrelloProjectionsEstimateWindowLowerBoundFactor;
+            var projectedWeeksMax = projectedWeeksToComplete * _configuration.TrelloProjectionsEstimateWindowUpperBoundFactor;
 
             boardStats.Projections = new BoardProjections()
             {

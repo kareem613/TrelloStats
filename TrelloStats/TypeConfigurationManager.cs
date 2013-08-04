@@ -9,22 +9,30 @@ namespace TrelloStats
 {
     public class TypeConfigurationManager
     {
-        public int GetAppConfigInt(string p, int defaultValue)
+        public int GetAppConfigInt(string key, int defaultValue)
         {
-            var configString = ConfigurationManager.AppSettings[p];
+            var configString = ConfigurationManager.AppSettings[key];
             int value;
             if (int.TryParse(configString, out value))
                 return value;
-            else return defaultValue;
+            else
+            {
+                Console.WriteLine(string.Format("Failed to parse config '{0}' value of '{1}'", key, configString));
+                return defaultValue;
+            }
         }
 
-        public double GetAppConfigDouble(string p, double defaultValue)
+        public double GetAppConfigDouble(string key, double defaultValue)
         {
-            var configString = ConfigurationManager.AppSettings[p];
+            var configString = ConfigurationManager.AppSettings[key];
             double value;
             if (double.TryParse(configString, out value))
                 return value;
-            else return defaultValue;
+            else
+            {
+                Console.WriteLine(string.Format("Failed to parse config '{0}' value of '{1}'", key, configString));
+                return defaultValue;
+            }
         }
 
         public string[] GetAppSettingAsArray(string key)
