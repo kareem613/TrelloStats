@@ -9,7 +9,7 @@ using System.Linq;
 namespace TrelloStats.Tests.CardStats
 {
     [TestClass]
-    public class CardStatsEffectiveDate
+    public class EffectiveDate
     {
 
         private IListNameConfiguration ListNameConfigStub;

@@ -5,7 +5,7 @@ using TrelloStats.Model.Data;
 namespace TrelloStats.Tests
 {
     [TestClass]
-    public class CardStatsState
+    public class State
     {
         private IListNameConfiguration ListNameConfigStub;
         private ITrelloStatsConfiguration TrelloStatsConfigStub;
