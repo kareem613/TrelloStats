@@ -10,13 +10,13 @@ namespace TrelloStats.Tests.CardStats
     [TestClass]
     public class CardStatsEffectiveDate
     {
-        private const string START_LIST_NAME = "Start";
+        
         private IListNameConfiguration ListNameConfigStub;
 
         [TestInitialize]
         public void Initialize()
         {
-            ListNameConfigStub = CreateListNamesConfigurationStub();
+            ListNameConfigStub = ConfigurationFactory.CreateListNamesConfigurationStub();
         }
 
         [TestMethod]
@@ -24,7 +24,7 @@ namespace TrelloStats.Tests.CardStats
         {
             var createDate = DateTime.Now;
             var createCardAction = CardActionFactory.CardAction(createDate);
-            var startCardAction = CardActionFactory.UpdateCardMoveAction(createDate.AddDays(1), "ListBefore", START_LIST_NAME);
+            var startCardAction = CardActionFactory.UpdateCardMoveAction(createDate.AddDays(1), "ListBefore", ConfigurationFactory.DEFAULT_START_LIST_NAME);
 
             var actions = CardActionFactory.GetActionList(createCardAction, startCardAction);
 
@@ -47,17 +47,6 @@ namespace TrelloStats.Tests.CardStats
 
             Assert.AreEqual(createCardAction, cardStats.EffectiveStartAction);
         }
-
-        #region Helpers
-        private static IListNameConfiguration CreateListNamesConfigurationStub()
-        {
-            var configStub = Substitute.For<IListNameConfiguration>();
-            configStub.StartListNames.Returns(new string[] { START_LIST_NAME });
-            return configStub;
-        }
-
-        #endregion
-
 
     }
 }
