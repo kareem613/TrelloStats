@@ -66,6 +66,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CardActionFactory.cs" />
+    <Compile Include="CardStatsFactory.cs" />
     <Compile Include="CardStats\CardStatsEffectiveDate.cs" />
     <Compile Include="CardStats\DoneAction.cs" />
     <Compile Include="ConfigurationFactory.cs" />
