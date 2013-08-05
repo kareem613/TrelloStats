@@ -89,6 +89,7 @@ namespace TrelloStats.Model.Stats
             }
         }
 
+        //TODO: Drop this business days feature or test the hell out of it
         public int BusinessDaysElapsed
         {
             get

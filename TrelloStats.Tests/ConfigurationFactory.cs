@@ -25,5 +25,12 @@ namespace TrelloStats.Tests
             configStub.DoneListNames.Returns(new string[] { DEFAULT_DONE_LIST_NAME });
             return configStub;
         }
+
+        public static ITrelloStatsConfiguration CreateConfigurationStub()
+        {
+            var configStub = Substitute.For<ITrelloStatsConfiguration>();
+            configStub.TimeZone.Returns(TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"));
+            return configStub;
+        }
     }
 }
