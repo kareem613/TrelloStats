@@ -6,7 +6,7 @@ using System.Text;
 
 namespace TrelloStats.Configuration
 {
-    public class TrelloStatsConfiguration : TypeConfigurationManager
+    public class TrelloStatsConfiguration : TypeConfigurationManager, ITrelloStatsConfiguration
     {
         
         public ListNameConfiguration ListNames { get; set; }

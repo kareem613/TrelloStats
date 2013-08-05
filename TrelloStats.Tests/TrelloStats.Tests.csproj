@@ -67,9 +67,11 @@
   <ItemGroup>
     <Compile Include="CardActionFactory.cs" />
     <Compile Include="CardStats\CardStatsEffectiveDate.cs" />
+    <Compile Include="CardStats\DoneAction.cs" />
     <Compile Include="ConfigurationFactory.cs" />
+    <Compile Include="ListDataFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="CardStats\CardStatsState.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
