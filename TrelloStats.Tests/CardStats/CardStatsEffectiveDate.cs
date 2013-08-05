@@ -4,34 +4,35 @@ using System.Collections.Generic;
 using TrelloStats.Model.Data;
 using TrelloStats.Configuration;
 using NSubstitute;
+using System.Linq;
 
 namespace TrelloStats.Tests.CardStats
 {
     [TestClass]
     public class CardStatsEffectiveDate
     {
-        
+
         private IListNameConfiguration ListNameConfigStub;
+        private ITrelloStatsConfiguration TrelloStatsConfigStub;
+        private CardStatsFactory CardStatsFactory;
 
         [TestInitialize]
         public void Initialize()
         {
             ListNameConfigStub = ConfigurationFactory.CreateListNamesConfigurationStub();
+            TrelloStatsConfigStub = ConfigurationFactory.CreateConfigurationStub();
+            CardStatsFactory = new CardStatsFactory(ListNameConfigStub, TrelloStatsConfigStub);
         }
 
         [TestMethod]
         public void GivenCreateAndStartActionExpectEffectiveStartActionDateIsStartAction()
         {
-            var createDate = DateTime.Now;
-            var createCardAction = CardActionFactory.CardAction(createDate);
-            var startCardAction = CardActionFactory.UpdateCardMoveAction(createDate.AddDays(1), "ListBefore", ConfigurationFactory.DEFAULT_START_LIST_NAME);
+            var actions = CardActionFactory.GetActionsForStartedCard();
+            var cardStats = CardStatsFactory.GetCardStats(actions);
 
-            var actions = CardActionFactory.GetActionList(createCardAction, startCardAction);
+            var expectedStartAction = actions.Last();
 
-            var cardData = new CardData() { Actions = actions };
-            var cardStats = new TrelloStats.Model.Stats.CardStats() { CardData = cardData, ListNames = ListNameConfigStub };
-
-            Assert.AreEqual(startCardAction, cardStats.EffectiveStartAction);
+            Assert.AreEqual(expectedStartAction, cardStats.EffectiveStartAction);
         }
 
         [TestMethod]
@@ -42,8 +43,7 @@ namespace TrelloStats.Tests.CardStats
             
             var actions = CardActionFactory.GetActionList(createCardAction);
 
-            var cardData = new CardData() { Actions = actions };
-            var cardStats = new TrelloStats.Model.Stats.CardStats() { CardData = cardData, ListNames = ListNameConfigStub };
+            var cardStats = CardStatsFactory.GetCardStats(actions);
 
             Assert.AreEqual(createCardAction, cardStats.EffectiveStartAction);
         }

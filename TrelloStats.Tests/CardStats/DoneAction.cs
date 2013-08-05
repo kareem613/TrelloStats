@@ -114,7 +114,7 @@ namespace TrelloStats.Tests.CardStats
             var expectedTotalDaysDuration = doneDate.Subtract(startDate).TotalDays;
 
             var actions = CardActionFactory.GetActionsForCompletedCard(createDate, startDate, doneDate);
-            var cardStats = CardStatsFactory.GetCardStats(ConfigurationFactory.DEFAULT_DONE_LIST_NAME, actions);
+            var cardStats = CardStatsFactory.GetCardStats(actions);
 
             Assert.AreEqual(expectedTotalDaysDuration, cardStats.Duration.TotalDays);
         }

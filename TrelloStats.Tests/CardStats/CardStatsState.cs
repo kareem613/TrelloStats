@@ -43,7 +43,7 @@ namespace TrelloStats.Tests
         public void GivenMinimumDataExpectIsComplete()
         {
             var actions = CardActionFactory.GetActionsForCompletedCard();
-            var cardStats = CardStatsFactory.GetCardStats(ConfigurationFactory.DEFAULT_DONE_LIST_NAME, actions);
+            var cardStats = CardStatsFactory.GetCardStats(actions);
 
             Assert.IsTrue(cardStats.IsComplete);
         }
@@ -52,7 +52,7 @@ namespace TrelloStats.Tests
         public void GivenMissingCardExpectIsCompleteFalse()
         {
             var actions = CardActionFactory.GetActionsForCompletedCard();
-            var cardStats = CardStatsFactory.GetCardStats(ConfigurationFactory.DEFAULT_DONE_LIST_NAME, actions);
+            var cardStats = CardStatsFactory.GetCardStats(actions);
             cardStats.CardData.Card = null;
             
             Assert.IsFalse(cardStats.IsComplete);
