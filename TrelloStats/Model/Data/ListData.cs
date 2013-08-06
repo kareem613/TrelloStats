@@ -19,7 +19,7 @@ namespace TrelloStats.Model.Data
 
 
 
-        internal void AddCardData(CardData cardData)
+        public void AddCardData(CardData cardData)
         {
             CardDataCollection.Add(cardData);
         }
