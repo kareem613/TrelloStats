@@ -3,12 +3,14 @@
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
 <script src="output.json"></script>
 
-<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div id="weeklyStats" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div id="projections" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
 
 <script type="text/javascript">
 
 $(function () {
-        $('#container').highcharts({
+    $('#weeklyStats').highcharts({
     
             chart: {
                 type: 'column'
@@ -46,7 +48,45 @@ $(function () {
                 }
             },
     
-            series: data.WeeklyStats
+            series: data.weeklyStats
         });
     });
    </script>
+
+<script type="text/javascript">
+    $(function () {
+        $('#projections').highcharts({
+            chart: {
+                type: 'line'
+            },
+            title: {
+                text: 'Projections'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                type: 'datetime',
+                
+            },
+            yAxis: {
+                title: {
+                    text: 'Points'
+                },
+                min: 0
+            },
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.series.name + '</b><br/>' +
+                    Highcharts.dateFormat('%e. %b', this.x) + ': ' + this.y + ' m';
+                }
+            },
+
+            series: data.projections
+        });
+    });
+
+
+</script>
+
+   

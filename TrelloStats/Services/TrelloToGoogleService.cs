@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.Dynamic;
@@ -78,15 +80,37 @@ namespace TrelloStats.Services
                 series = CreateSeries("Hotfix", "Hotfix", boardStatsAnalysis.WeekStats.Select(w => w.GetNumberOfCardsWithLabel("Hotfix")).ToArray());
                 seriesCollection.Add(series);
 
-                data.WeeklyStats = seriesCollection;
-                data.CompletedCards = boardStatsAnalysis.CompletedCardStats.Select(c => new {CardTitle = c.CardData.Card.Name, CompletionDate = c.DoneAction.Date, ElapsedDays = c.BusinessDaysElapsed, Points = c.CardData.Points });
+                data.weeklyStats = seriesCollection;
+                //data.CompletedCards = boardStatsAnalysis.CompletedCardStats.Select(c => new {CardTitle = c.CardData.Card.Name, CompletionDate = c.DoneAction.Date, ElapsedDays = c.BusinessDaysElapsed, Points = c.CardData.Points });
 
-                string json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
-                //string json = Newtonsoft.Json.JsonConvert.SerializeObject(boardStatsAnalysis);
+                dynamic projectPointBestCase = GetCompletionProjectionPoint("Best Case", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectedMinimumCompletionDate);
+                dynamic projectPointWorstCase = GetCompletionProjectionPoint("Worst Case", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectedMaximumCompletionDate);
+                dynamic projectPointIdeal= GetCompletionProjectionPoint("Ideal", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectionCompletionDate);
 
+                dynamic projectionSeries = new object[] { projectPointBestCase, projectPointWorstCase, projectPointIdeal };
+
+                data.projections = projectionSeries;
+
+
+                string json = JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented, new JavaScriptDateTimeConverter());
+                
                 var fileInfo = new FileInfo(_configuration.JsonOutputFilename);
                 File.WriteAllText(fileInfo.FullName, "var data = " + json);
             }
+        }
+  
+        private dynamic GetCompletionProjectionPoint(string name, double estimatedPoints, DateTime completionDate)
+        {
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0);
+            var todayEpoch = ((long)(DateTime.Now - epoch).TotalMilliseconds);
+            var completionEpoch = ((long)(completionDate - epoch).TotalMilliseconds);
+
+            dynamic projectPoint = new ExpandoObject();
+            projectPoint.name = name;
+            var point1 = new object[] { todayEpoch, estimatedPoints };
+            var point2 = new object[] { completionEpoch, 0 };
+            projectPoint.data = new object[] { point1, point2 };
+            return projectPoint;
         }
 
         private static dynamic CreateSeries(string seriesName, string stackName, int[] data)

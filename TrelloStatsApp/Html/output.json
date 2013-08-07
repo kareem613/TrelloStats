@@ -1,1 +1,135 @@
-var data = {"WeeklyStats":[{"name":"In Progress","data":[0,0,0,0,0,0,0,3,1],"stack":"In Progress"},{"name":"In Test","data":[0,0,0,0,0,0,0,2,0],"stack":"In Test"},{"name":"Trinity","data":[4,3,0,6,5,11,11,7,0],"stack":"Stories Completed"},{"name":"Classic","data":[0,0,2,1,1,1,9,1,2],"stack":"Stories Completed"},{"name":"Implemented Prior to Estimate","data":[4,3,2,2,0,3,20,3,2],"stack":"Implemented Prior to Estimate"},{"name":"Hotfix","data":[0,0,2,0,0,0,2,0,1],"stack":"Hotfix"}],"CompletedCards":[{"CardTitle":"(8) Salesforce name, description, price override","CompletionDate":"2013-08-07T14:02:22.108Z","ElapsedDays":7,"Points":8.0},{"CardTitle":"(2) Month prorate on annual subscription dollar bug","CompletionDate":"2013-08-06T20:40:44.07Z","ElapsedDays":5,"Points":2.0},{"CardTitle":"(5) Account Ledger View","CompletionDate":"2013-08-06T15:24:01.059Z","ElapsedDays":4,"Points":5.0},{"CardTitle":"(.5) Determining if plan is deletable.","CompletionDate":"2013-08-06T15:20:59.235Z","ElapsedDays":4,"Points":0.5},{"CardTitle":"(3) Plan Summary View-  Switch to View","CompletionDate":"2013-08-06T15:16:47.12Z","ElapsedDays":5,"Points":3.0},{"CardTitle":"(5) Account Branding Fields","CompletionDate":"2013-08-06T15:03:18.603Z","ElapsedDays":3,"Points":5.0},{"CardTitle":"(5) Customer Billing Settings - Change Terms Affects Invoices","CompletionDate":"2013-08-02T03:40:39.224Z","ElapsedDays":3,"Points":5.0},{"CardTitle":"(3) Invoice Settings - Invoice Numbering","CompletionDate":"2013-07-31T16:48:04.209Z","ElapsedDays":3,"Points":3.0},{"CardTitle":"(5) Invoice Settings - Account Invoice Signature","CompletionDate":"2013-07-31T16:53:02.618Z","ElapsedDays":3,"Points":5.0},{"CardTitle":"(0.5) Marketing Changes","CompletionDate":"2013-08-06T16:19:55.845Z","ElapsedDays":1,"Points":0.5},{"CardTitle":"(3) Customer - Activate","CompletionDate":"2013-07-19T19:02:56.554Z","ElapsedDays":2,"Points":3.0},{"CardTitle":"(5) Subscription - Edit","CompletionDate":"2013-07-18T14:58:20.843Z","ElapsedDays":4,"Points":5.0},{"CardTitle":"(8) Subscription - Create","CompletionDate":"2013-07-18T14:54:28.681Z","ElapsedDays":7,"Points":8.0},{"CardTitle":"(5) Subscription - Summary","CompletionDate":"2013-07-18T14:54:25.154Z","ElapsedDays":7,"Points":5.0},{"CardTitle":"(2) Customer Billing Profile","CompletionDate":"2013-07-19T19:20:10.62Z","ElapsedDays":3,"Points":2.0},{"CardTitle":"(5) Customer - Overview","CompletionDate":"2013-07-22T17:02:53.38Z","ElapsedDays":4,"Points":5.0},{"CardTitle":"(8) Customer - Summary Advanced Search","CompletionDate":"2013-07-22T20:58:03.565Z","ElapsedDays":6,"Points":8.0},{"CardTitle":"(8) Admin - General: Timezone selection","CompletionDate":"2013-07-22T17:06:32.78Z","ElapsedDays":8,"Points":8.0},{"CardTitle":"(8) Customer - Edit","CompletionDate":"2013-07-11T14:00:30.757Z","ElapsedDays":4,"Points":8.0},{"CardTitle":"(2) Plan - Delete","CompletionDate":"2013-07-11T20:05:54.851Z","ElapsedDays":3,"Points":2.0},{"CardTitle":"(3) Customer - Summary Quick Search","CompletionDate":"2013-07-15T17:02:33.526Z","ElapsedDays":3,"Points":3.0},{"CardTitle":"(2) Plan - Retire","CompletionDate":"2013-07-10T20:23:55.927Z","ElapsedDays":2,"Points":2.0},{"CardTitle":"(8) Plan - Edit. standing data, revisions","CompletionDate":"2013-07-10T19:36:46.299Z","ElapsedDays":3,"Points":8.0},{"CardTitle":"(3) Customer - Create New","CompletionDate":"2013-07-08T21:11:24.511Z","ElapsedDays":4,"Points":3.0},{"CardTitle":"(5) Plan - Create. standing data","CompletionDate":"2013-07-08T16:35:57.974Z","ElapsedDays":11,"Points":5.0},{"CardTitle":"(8) System Authentication","CompletionDate":"2013-07-08T19:08:29.757Z","ElapsedDays":4,"Points":8.0},{"CardTitle":"(3) Customer - Summary View","CompletionDate":"2013-07-08T16:45:08.286Z","ElapsedDays":1,"Points":3.0},{"CardTitle":"(5) SS - Admin Detail. Set admin password for an account","CompletionDate":"2013-07-03T15:04:31.445Z","ElapsedDays":19,"Points":5.0},{"CardTitle":"(3) Account Invoice - Posted Invoice Grid","CompletionDate":"2013-07-29T20:35:56.583Z","ElapsedDays":2,"Points":3.0},{"CardTitle":"(2) Account Invoice - Draft Invoice Grid","CompletionDate":"2013-07-29T01:40:51.174Z","ElapsedDays":4,"Points":2.0},{"CardTitle":"(3) The Account Ledger","CompletionDate":"2013-07-26T20:34:31.779Z","ElapsedDays":2,"Points":3.0},{"CardTitle":"(5) The Customer Ledger","CompletionDate":"2013-07-26T20:40:44.477Z","ElapsedDays":5,"Points":5.0},{"CardTitle":"(5) Customer  - Posted Invoice Drilldown","CompletionDate":"2013-07-29T17:30:26.588Z","ElapsedDays":4,"Points":5.0},{"CardTitle":"(5) Customer - Posted Invoice Grid","CompletionDate":"2013-07-29T17:30:19.97Z","ElapsedDays":4,"Points":5.0},{"CardTitle":"(13) Invoice - Post Action","CompletionDate":"2013-07-26T20:42:25.546Z","ElapsedDays":4,"Points":13.0},{"CardTitle":"(5) Invoice - Draft Invoice Drilldown","CompletionDate":"2013-07-24T20:10:20.794Z","ElapsedDays":4,"Points":5.0},{"CardTitle":"(5) Customer - Draft Invoice Grid","CompletionDate":"2013-07-24T19:46:39.871Z","ElapsedDays":4,"Points":5.0},{"CardTitle":"(3) Draft Invoice - Generate on Customer Activation","CompletionDate":"2013-07-22T19:47:25.56Z","ElapsedDays":1,"Points":3.0},{"CardTitle":"(8) Subscription - Activate","CompletionDate":"2013-07-20T02:06:44.475Z","ElapsedDays":1,"Points":8.0},{"CardTitle":"(2) Delete a Draft Subscription","CompletionDate":"2013-07-23T13:46:17.456Z","ElapsedDays":1,"Points":2.0},{"CardTitle":"(.5) Add a Customer Overview to Invoice Draft Drilldown and Invoice Posted Drilldown","CompletionDate":"2013-07-26T17:42:18.685Z","ElapsedDays":2,"Points":0.5},{"CardTitle":"(3) Single Subscription Activate","CompletionDate":"2013-07-30T17:05:38.576Z","ElapsedDays":2,"Points":3.0},{"CardTitle":"Login","CompletionDate":"2013-07-03T15:04:20.006Z","ElapsedDays":19,"Points":0.0},{"CardTitle":"Staffside (SS) webapp","CompletionDate":"2013-06-10T14:39:46.65Z","ElapsedDays":3,"Points":0.0},{"CardTitle":"Staffside Layout - UI","CompletionDate":"2013-06-11T18:23:24.798Z","ElapsedDays":3,"Points":0.0},{"CardTitle":"Primary nav","CompletionDate":"2013-06-13T13:59:36.787Z","ElapsedDays":5,"Points":0.0},{"CardTitle":"Secondary nav pattern","CompletionDate":"2013-06-13T15:05:14.038Z","ElapsedDays":5,"Points":0.0},{"CardTitle":"Layout with utility nav (logout and help)","CompletionDate":"2013-06-13T15:05:29.219Z","ElapsedDays":5,"Points":0.0},{"CardTitle":"SS - Account summary","CompletionDate":"2013-06-21T20:35:18.58Z","ElapsedDays":11,"Points":0.0},{"CardTitle":"SS - Create account page","CompletionDate":"2013-06-24T14:02:17.62Z","ElapsedDays":12,"Points":0.0},{"CardTitle":"Plan - Summary View","CompletionDate":"2013-06-24T15:45:30.247Z","ElapsedDays":11,"Points":0.0},{"CardTitle":"(0.5) Marketing Changes for Mon 24th","CompletionDate":"2013-07-09T18:20:46.812Z","ElapsedDays":4,"Points":0.5},{"CardTitle":"(1) Marketing site board member changes (due 17th ish)","CompletionDate":"2013-07-17T13:27:02.535Z","ElapsedDays":6,"Points":0.0},{"CardTitle":"Increase field size of Units and Costs to accomodate more metered ranges","CompletionDate":"2013-07-30T12:55:07.799Z","ElapsedDays":4,"Points":0.0},{"CardTitle":"SSP configurations - Allow Credit card type selection for SSP","CompletionDate":"2013-07-30T12:55:17.585Z","ElapsedDays":3,"Points":0.0},{"CardTitle":"Add support for US military bases","CompletionDate":"2013-07-30T12:55:26.251Z","ElapsedDays":1,"Points":0.0},{"CardTitle":"Remove \"Paymentech Orbital Gateway\" from our Gateway List","CompletionDate":"2013-07-30T12:55:39.6Z","ElapsedDays":4,"Points":0.0},{"CardTitle":"Marketing Site - Remove \"Paymentech Orbital Gateway\" from Marketing Site","CompletionDate":"2013-07-30T12:55:42.659Z","ElapsedDays":4,"Points":0.0},{"CardTitle":"Allow Manual Payment descriptions to be 250 characters  Protect from UI","CompletionDate":"2013-07-30T12:55:55.444Z","ElapsedDays":4,"Points":0.0},{"CardTitle":"Add Australlian Dollars to Currency","CompletionDate":"2013-07-30T12:56:01.518Z","ElapsedDays":3,"Points":0.0},{"CardTitle":"Fix problem with \"&\" character and email merge points","CompletionDate":"2013-07-30T12:56:50.862Z","ElapsedDays":3,"Points":0.0},{"CardTitle":"Salesforce link update & release","CompletionDate":"2013-07-25T19:38:48.308Z","ElapsedDays":3,"Points":0.0},{"CardTitle":"Expiry Card Handling for Stripe","CompletionDate":"2013-07-02T13:13:39.627Z","ElapsedDays":11,"Points":0.0},{"CardTitle":"Roam Import","CompletionDate":"2013-07-02T13:14:56.457Z","ElapsedDays":6,"Points":0.0},{"CardTitle":"PayJunction","CompletionDate":"2013-07-08T19:53:40.458Z","ElapsedDays":5,"Points":0.0}]}
+var data = {
+  "weeklyStats": [
+    {
+      "name": "In Progress",
+      "data": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        1
+      ],
+      "stack": "In Progress"
+    },
+    {
+      "name": "In Test",
+      "data": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      "stack": "In Test"
+    },
+    {
+      "name": "Trinity",
+      "data": [
+        4,
+        3,
+        0,
+        6,
+        5,
+        11,
+        11,
+        7,
+        0
+      ],
+      "stack": "Stories Completed"
+    },
+    {
+      "name": "Classic",
+      "data": [
+        0,
+        0,
+        2,
+        1,
+        1,
+        1,
+        9,
+        1,
+        2
+      ],
+      "stack": "Stories Completed"
+    },
+    {
+      "name": "Implemented Prior to Estimate",
+      "data": [
+        4,
+        3,
+        2,
+        2,
+        0,
+        3,
+        20,
+        3,
+        2
+      ],
+      "stack": "Implemented Prior to Estimate"
+    },
+    {
+      "name": "Hotfix",
+      "data": [
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        2,
+        0,
+        1
+      ],
+      "stack": "Hotfix"
+    }
+  ],
+  "projections": [
+    {
+      "name": "Best Case",
+      "data": [
+        [
+          1375894872919,
+          89.0
+        ],
+        [
+          1376934453551,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "Worst Case",
+      "data": [
+        [
+          1375894872921,
+          89.0
+        ],
+        [
+          1377627507628,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "Ideal",
+      "data": [
+        [
+          1375894872921,
+          89.0
+        ],
+        [
+          1377049962564,
+          0
+        ]
+      ]
+    }
+  ]
+}
