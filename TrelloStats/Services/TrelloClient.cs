@@ -12,7 +12,7 @@ namespace TrelloStats.Services
         private readonly Trello _trello;
         private readonly TrelloStatsConfiguration _configuration;
 
-        private readonly List<ActionType> IncludeActions = new List<ActionType>() { ActionType.CreateCard, ActionType.UpdateCard };
+        private readonly List<ActionType> IncludeActions = new List<ActionType>() { ActionType.CreateCard, ActionType.UpdateCard, ActionType.ConvertToCardFromCheckItem };
 
         public TrelloClient(TrelloStatsConfiguration configuration)
         {

@@ -10,9 +10,7 @@ namespace TrelloStats.Model.Stats
     public class CardStats
     {
         public CardData CardData { get; set; }
-
         public ListData ListData { get; set; }
-
         public IEnumerable<TrelloNet.Action> Actions
         {
             get { return CardData.Actions; }
@@ -41,11 +39,14 @@ namespace TrelloStats.Model.Stats
 
         }
 
-        public TrelloNet.CreateCardAction CreateAction
+        public TrelloNet.Action CreateAction
         {
             get
             {
-                return Actions.OfType<CreateCardAction>().Single();
+                TrelloNet.Action action = Actions.OfType<CreateCardAction>().SingleOrDefault();
+                if (action == null)
+                    action = Actions.OfType<ConvertToCardFromCheckItemAction>().First();
+                return action;
             }
         }
 
@@ -60,12 +61,26 @@ namespace TrelloStats.Model.Stats
             }
         }
 
-        public UpdateCardMoveAction GetStartAction()
+        public TrelloNet.Action DoneAction
         {
-            return Actions.OfType<UpdateCardMoveAction>().Where(a => ListNames.StartListNames.Contains(a.Data.ListAfter.Name)).OrderBy(a => a.Date).FirstOrDefault();
+            get
+            {
+                return GetDoneAction();
+            }
         }
 
-        public UpdateCardMoveAction GetDoneAction()
+        public TrelloNet.Action GetStartAction()
+        {
+            TrelloNet.Action action = Actions.OfType<UpdateCardMoveAction>().Where(a => ListNames.StartListNames.Contains(a.Data.ListAfter.Name)).OrderBy(a => a.Date).FirstOrDefault();
+            if (action == null)
+                action = Actions.OfType<CreateCardAction>().Where(a => ListNames.StartListNames.Contains(a.Data.List.Name)).FirstOrDefault();
+            if(action == null)
+                action = Actions.OfType<ConvertToCardFromCheckItemAction>().Where(a => ListNames.StartListNames.Contains(a.Data.CardSource.Name)).FirstOrDefault();
+            return action;
+
+        }
+
+        private UpdateCardMoveAction GetDoneAction()
         {
             if (IsInProgress || IsInTest)
             {
@@ -85,7 +100,10 @@ namespace TrelloStats.Model.Stats
         {
             get
             {
-                return GetDoneAction().DateInTimeZone(TimeZone).Subtract(GetStartAction().DateInTimeZone(TimeZone));
+                if (!IsInTest && !IsInProgress)
+                    return GetDoneAction().DateInTimeZone(TimeZone).Subtract(EffectiveStartAction.DateInTimeZone(TimeZone));
+                else
+                    return TimeSpan.Zero;
             }
         }
 
@@ -94,7 +112,9 @@ namespace TrelloStats.Model.Stats
         {
             get
             {
-                return EffectiveStartAction.Date.BusinessDaysUntil(GetDoneAction().Date);
+                if (!IsInProgress && !IsInTest)
+                    return EffectiveStartAction.Date.BusinessDaysUntil(GetDoneAction().Date);
+                else return 0;
             }
         }
 

@@ -51,12 +51,16 @@
     <None Include="App.config.sample">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Html\output.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TrelloStats\TrelloStats.csproj">
       <Project>{4202fe81-8ab3-48f6-828b-5f8e653f2cb0}</Project>
       <Name>TrelloStats</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Html\highcharts_fromtable.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

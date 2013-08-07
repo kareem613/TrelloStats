@@ -10,6 +10,7 @@ namespace TrelloStats
     public class BoardStatsAnalysis
     {
         private readonly TimeZoneInfo _timeZone;
+        
         public BoardStats BoardStats { get; set; }
         public BoardStatsAnalysis(BoardStats boardStats, TimeZoneInfo timeZone)
         {
@@ -46,7 +47,7 @@ namespace TrelloStats
         {
             get
             {
-                return LastDoneActivity.GetDoneAction().DateInTimeZone(_timeZone);
+                return LastDoneActivity.DoneAction.DateInTimeZone(_timeZone);
             }
         }
 
@@ -63,7 +64,7 @@ namespace TrelloStats
         {
             get
             {
-                return BoardStats.CardStats.Where(c => !c.IsInProgress && !c.IsInTest).OrderByDescending(cs => cs.GetDoneAction().Date).First();
+                return BoardStats.CardStats.Where(c => !c.IsInProgress && !c.IsInTest).OrderByDescending(cs => cs.DoneAction.Date).First();
 
             }
         }
@@ -76,7 +77,15 @@ namespace TrelloStats
             }
         }
 
-        public List<WeekStats> GetWeeklyStats()
+        public List<WeekStats> WeekStats
+        {
+            get
+            {
+                return GetWeeklyStats();
+            }
+        }
+
+        private List<WeekStats> GetWeeklyStats()
         {
             var weekStatsList = new List<WeekStats>();
 
@@ -93,7 +102,7 @@ namespace TrelloStats
                 {
 
                 }
-                var completedCards = BoardStats.CardStats.Where(c => !c.IsInProgress && !c.IsInTest && c.GetDoneAction().DateInTimeZone(_timeZone) >= startDay && c.GetDoneAction().DateInTimeZone(_timeZone) < endDay);
+                var completedCards = BoardStats.CardStats.Where(c => !c.IsInProgress && !c.IsInTest && c.DoneAction.DateInTimeZone(_timeZone) >= startDay && c.DoneAction.DateInTimeZone(_timeZone) < endDay);
                 var inProgressCards = BoardStats.CardStats.Where(c => c.IsInProgress && c.EffectiveStartAction.DateInTimeZone(_timeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_timeZone) < endDay);
                 var inTestCards = BoardStats.CardStats.Where(c => c.IsInTest && c.EffectiveStartAction.DateInTimeZone(_timeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_timeZone) < endDay);
                 

@@ -9,6 +9,7 @@ namespace TrelloStats.Model.Data
     public class ListData
     {
         public List List { get; set; }
+
         public List<CardData> CardDataCollection { get; set; }
 
         public ListData(List list)

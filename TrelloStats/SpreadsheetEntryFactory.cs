@@ -32,7 +32,7 @@ namespace TrelloStats
         public ListEntry GetCompletedCardEntry(CardStats cardStat, TimeSpan timeOffset)
         {
             var row = new ListEntry();
-            row.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = cardStat.GetDoneAction().DateInTimeZone(_configuration.TimeZone).Add(timeOffset).ToString() });
+            row.Elements.Add(new ListEntry.Custom() { LocalName = "startdate", Value = cardStat.DoneAction.DateInTimeZone(_configuration.TimeZone).Add(timeOffset).ToString() });
             row.Elements.Add(new ListEntry.Custom() { LocalName = "enddate", Value = "" });
             row.Elements.Add(new ListEntry.Custom() { LocalName = "headline", Value = GetHeadlineForCard(cardStat) });
             row.Elements.Add(new ListEntry.Custom() { LocalName = "text", Value = String.Format("{0} Elapsed Day(s)", cardStat.BusinessDaysElapsed) });
@@ -84,7 +84,7 @@ namespace TrelloStats
         {
             var weekStatsHeader = GetWeekStatsHtmlHeader();
 
-            var weekStatsList = boardStatsAnalysis.GetWeeklyStats();
+            var weekStatsList = boardStatsAnalysis.WeekStats;
             var weekRows = new StringBuilder();
             weekStatsList.ForEach(w => weekRows.Append(GetWeekStatsHtmlRow(w, boardStatsAnalysis)));
 

@@ -65,6 +65,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="BoardStats\BoardStatsTests.cs" />
     <Compile Include="CardActionFactory.cs" />
     <Compile Include="CardStatsFactory.cs" />
     <Compile Include="CardStats\EffectiveDate.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="ConfigurationFactory.cs" />
     <Compile Include="ListDataFactory.cs" />
     <Compile Include="ListStats\ListStatsTests.cs" />
+    <Compile Include="WeekStats\WeekStatsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CardStats\State.cs" />
   </ItemGroup>
@@ -85,6 +87,7 @@
       <Name>TrelloStats</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
