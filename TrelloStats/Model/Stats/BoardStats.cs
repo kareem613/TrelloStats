@@ -24,12 +24,12 @@ namespace TrelloStats.Model.Stats
 
         public List<ListStats> ListStats { get; set; }
 
-        internal void AddGoodCardStat(CardStats stat)
+        public void AddGoodCardStat(CardStats stat)
         {
             CardStats.Add(stat);
         }
 
-        internal void AddBadCardStat(CardStats stat)
+        public void AddBadCardStat(CardStats stat)
         {
             BadCardStats.Add(stat);
         }
