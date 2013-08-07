@@ -108,7 +108,7 @@ namespace TrelloStats
 
         private string GetProjectionsSummaryText(BoardStatsAnalysis boardStatsAnalysis)
         {
-            var template = "Team Velocity is <strong>[[velocity]]</strong> points per week. Remaining points are <strong>[[remaining_points]]</strong>. Expected completion window is <strong>[[expected_completion_min]] - [[expected_completion_max]]</strong>.";
+            var template = "Team Velocity is <strong>[[velocity]]</strong> points per week. Incomplete estimated points are <strong>[[remaining_points]]</strong>. Expected completion window is <strong>[[expected_completion_min]] - [[expected_completion_max]]</strong>.";
             template = template.Replace("[[velocity]]", boardStatsAnalysis.Projections.historicalPointsPerWeek.ToString("##"))
                 .Replace("[[remaining_points]]", boardStatsAnalysis.Projections.EstimatePoints.ToString())
                 .Replace("[[expected_completion_min]]", boardStatsAnalysis.Projections.ProjectedMinimumCompletionDate.ToLongDateString())
@@ -120,10 +120,13 @@ namespace TrelloStats
 
         private string GetExtraListsStatsTableHtml(BoardStatsAnalysis boardStatsAnalysis)
         {
-            var row = new StringBuilder(@"<table id=""list_stats"" class=""stats""><tbody>");
+            var row = new StringBuilder(@"<table id=""list_stats"" class=""stats"">");
+            row.AppendLine("<thead><th>List</th><th>Cards</th><th>Points</th></thead>");
+            row.AppendLine("<tbody>");
             foreach (var listStat in boardStatsAnalysis.BoardStats.ListStats)
             {
-                row.AppendLine(string.Format("<tr><th>{0}</th><td>{1}</td></tr>", listStat.ListData.List.Name, listStat.CardCount));
+                var pointsForList = listStat.ListData.CardDataCollection.Sum(c=>c.Points);
+                row.AppendLine(string.Format("<tr><th>{0}</th><td>{1}</td><td>{2}</td></tr>", listStat.ListData.List.Name, listStat.CardCount, pointsForList == 0? "-" : pointsForList.ToString()));
             }
             row.AppendLine("</tbody></table>");
             return row.ToString();

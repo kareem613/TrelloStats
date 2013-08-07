@@ -15,17 +15,18 @@ namespace TrelloStats.Services
         private readonly GoogleService _googleService;
         private readonly TrelloService _trelloService;
         private readonly BoardStatsService _boardStatsService;
-   
+        private readonly TrelloStatsConfiguration _configuration;
+
         public TrelloToGoogleService()
         {
-            
-            var config = new TrelloStatsConfiguration();
-            var spreadsheetEntryFactory = new SpreadsheetEntryFactory(config);
-            var trelloClient = new TrelloClient(config);
 
-            _googleService = new GoogleService(config, spreadsheetEntryFactory);
-            _trelloService = new TrelloService(config, trelloClient);
-            _boardStatsService = new BoardStatsService(config);
+            _configuration = new TrelloStatsConfiguration();
+            var spreadsheetEntryFactory = new SpreadsheetEntryFactory(_configuration);
+            var trelloClient = new TrelloClient(_configuration);
+
+            _googleService = new GoogleService(_configuration, spreadsheetEntryFactory);
+            _trelloService = new TrelloService(_configuration, trelloClient);
+            _boardStatsService = new BoardStatsService(_configuration);
         }
 
         public void CalculateStats(bool pushToGoogle, bool createJson)
@@ -57,6 +58,8 @@ namespace TrelloStats.Services
             {
                 var seriesCollection = new System.Collections.Generic.List<dynamic>();
 
+                dynamic data = new ExpandoObject();
+
                 dynamic series = CreateSeries("In Progress", "In Progress", boardStatsAnalysis.WeekStats.Select(w => w.NumberOfCardsInProgress).ToArray());
                 seriesCollection.Add(series);
 
@@ -74,12 +77,15 @@ namespace TrelloStats.Services
 
                 series = CreateSeries("Hotfix", "Hotfix", boardStatsAnalysis.WeekStats.Select(w => w.GetNumberOfCardsWithLabel("Hotfix")).ToArray());
                 seriesCollection.Add(series);
-                
-                string json = Newtonsoft.Json.JsonConvert.SerializeObject(seriesCollection);
+
+                data.WeeklyStats = seriesCollection;
+                data.CompletedCards = boardStatsAnalysis.CompletedCardStats.Select(c => new {CardTitle = c.CardData.Card.Name, CompletionDate = c.DoneAction.Date, ElapsedDays = c.BusinessDaysElapsed, Points = c.CardData.Points });
+
+                string json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
                 //string json = Newtonsoft.Json.JsonConvert.SerializeObject(boardStatsAnalysis);
 
-
-                File.WriteAllText("output.json", json);
+                var fileInfo = new FileInfo(_configuration.JsonOutputFilename);
+                File.WriteAllText(fileInfo.FullName, "var data = " + json);
             }
         }
 

@@ -36,8 +36,9 @@ namespace TrelloStats.Services
 
         private void BuildProjections(TrelloData trelloData, BoardStatsAnalysis boardStatsAnalysis)
         {
-            var estimatedListData = trelloData.GetListData(_configuration.ListNames.EstimatedList);
-            var estimatedPoints = estimatedListData.CardDataCollection.Sum(cd => cd.Points);
+            var estimatedPoints = GetEstimatedPointsForList(trelloData, _configuration.ListNames.EstimatedList);
+            estimatedPoints += GetEstimatedPointsForList(trelloData, _configuration.ListNames.InProgressListName);
+            estimatedPoints += GetEstimatedPointsForList(trelloData, _configuration.ListNames.InTestListName);
 
             boardStatsAnalysis.EstimatedListPoints = estimatedPoints;
             
@@ -60,6 +61,13 @@ namespace TrelloStats.Services
                 ProjectedMinimumCompletionDate = GetCompletionDate(projectedWeeksMin),
                 ProjectedMaximumCompletionDate = GetCompletionDate(projectedWeeksMax)
             };
+        }
+  
+        private double GetEstimatedPointsForList(TrelloData trelloData, string listName)
+        {
+            var estimatedListData = trelloData.GetListData(listName);
+            var estimatedPoints = estimatedListData.CardDataCollection.Sum(cd => cd.Points);
+            return estimatedPoints;
         }
 
         private DateTime GetCompletionDate(double weeks)

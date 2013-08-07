@@ -173,6 +173,14 @@ margin-bottom:5px;
 
 
 
-        
+
+
+        public string JsonOutputFilename
+        {
+            get
+            {
+                return GetAppConfig("JsonOutputFilename");
+            }
+        }
     }
 }
