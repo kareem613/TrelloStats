@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using TrelloStats.Configuration;
 using TrelloStats.Model;
+using TrelloStats.Model.Stats;
 
 namespace TrelloStats.Services
 {
@@ -56,32 +57,39 @@ namespace TrelloStats.Services
             {
                 var seriesCollection = new System.Collections.Generic.List<dynamic>();
 
-                dynamic series = new ExpandoObject();
-                series.name = "In Progress";
-                series.data = boardStatsAnalysis.WeekStats.Select(w => w.NumberOfCardsInProgress).ToArray();
-                series.stack = "In Progress";
-
-                
+                dynamic series = CreateSeries("In Progress", "In Progress", boardStatsAnalysis.WeekStats.Select(w => w.NumberOfCardsInProgress).ToArray());
                 seriesCollection.Add(series);
 
-                dynamic series2 = new ExpandoObject();
-                series2.name = "Trinity";
-                series2.data = boardStatsAnalysis.WeekStats.Select(w => w.GetNumberOfCardsWithLabel("Trinity")).ToArray();
-                series2.stack = "Stories Completed";
-                seriesCollection.Add(series2);
+                series = CreateSeries("In Test", "In Test", boardStatsAnalysis.WeekStats.Select(w => w.NumberOfCardsInTest).ToArray());
+                seriesCollection.Add(series);
 
-                dynamic series3 = new ExpandoObject();
-                series3.name = "Classic";
-                series3.data = boardStatsAnalysis.WeekStats.Select(w => w.GetNumberOfCardsWithLabel("Classic")).ToArray();
-                series3.stack = "Stories Completed";
-                seriesCollection.Add(series3);
+                series = CreateSeries("Trinity", "Stories Completed", boardStatsAnalysis.WeekStats.Select(w => w.GetNumberOfCardsWithLabel("Trinity")).ToArray());
+                seriesCollection.Add(series);
 
+                series = CreateSeries("Classic", "Stories Completed", boardStatsAnalysis.WeekStats.Select(w => w.GetNumberOfCardsWithLabel("Classic")).ToArray());
+                seriesCollection.Add(series);
+
+                series = CreateSeries("Implemented Prior to Estimate", "Implemented Prior to Estimate", boardStatsAnalysis.WeekStats.Select(w => w.GetNumberOfCardsWithLabel("Implemented Prior to Estimate")).ToArray());
+                seriesCollection.Add(series);
+
+                series = CreateSeries("Hotfix", "Hotfix", boardStatsAnalysis.WeekStats.Select(w => w.GetNumberOfCardsWithLabel("Hotfix")).ToArray());
+                seriesCollection.Add(series);
+                
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(seriesCollection);
                 //string json = Newtonsoft.Json.JsonConvert.SerializeObject(boardStatsAnalysis);
 
 
                 File.WriteAllText("output.json", json);
             }
+        }
+
+        private static dynamic CreateSeries(string seriesName, string stackName, int[] data)
+        {
+            dynamic series = new ExpandoObject();
+            series.name = seriesName;
+            series.data = data;
+            series.stack = stackName;
+            return series;
         }
   
        
