@@ -27,7 +27,7 @@ namespace TrelloStats.Services
             boardStats.ListStats = GetListStats(trelloData.ListsToCount);
             
             boardStats.ProjectStartDate = ProjectStartDate;
-            var boardStatsAnalysis = new BoardStatsAnalysis(boardStats, _configuration.TimeZone);
+            var boardStatsAnalysis = new BoardStatsAnalysis(_configuration, boardStats);
             
             BuildProjections(trelloData, boardStatsAnalysis);
 
