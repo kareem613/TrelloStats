@@ -27,9 +27,8 @@ namespace TrelloStats.Services
             dynamic data = new ExpandoObject();
             data.weeklyStats = CreateWeeklyStatsSeriesCollection(boardStatsAnalysis);
             
-            
             var burndownData = GetBurndownData(boardStatsAnalysis);
-            var burndownSeries = CreateSeries("Actual",burndownData);
+            var burndownSeries = CreateSeries("Historical",burndownData);
             var projectionSeries = CreateProjectionsSeries(boardStatsAnalysis);
             projectionSeries.Add(burndownSeries);
 
@@ -48,10 +47,14 @@ namespace TrelloStats.Services
 
             File.WriteAllText(htmlFileInfo.FullName, html);
 
-            var cssFileInfo = new FileInfo(Path.Combine(_configuration.WebsiteOutputFolder, "bootstrap.min.css"));
-            File.Copy("Html\\bootstrap.min.css", cssFileInfo.FullName, true);
-            
-
+            CopyFileToOutputFolder("style.css");
+            CopyFileToOutputFolder("bootstrap.min.css");
+        }
+  
+        private void CopyFileToOutputFolder(string filename)
+        {
+            var cssFileInfo = new FileInfo(Path.Combine(_configuration.WebsiteOutputFolder, filename));
+            File.Copy("Html\\" + filename, cssFileInfo.FullName, true);
         }
 
         private List<dynamic> GetBurndownData(BoardStatsAnalysis boardStatsAnalysis)

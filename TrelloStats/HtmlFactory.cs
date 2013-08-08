@@ -70,10 +70,10 @@ namespace TrelloStats
 
             row.AppendLine(GetWeekStatsRow(w.StartDate.ToShortDateString(), "date"));
             row.AppendLine(GetWeekStatsRow(w.EndDate.ToShortDateString(), "date"));
-            row.AppendLine(GetWeekStatsRow(GetNumberForTableDisplay(w.NumberOfCardsInProgress)));
-            row.AppendLine(GetWeekStatsRow(GetNumberForTableDisplay(w.NumberOfCardsInTest)));
+            row.AppendLine(GetWeekStatsRow(GetNumberForTableDisplay(w.NumberOfCardsInProgress),"text-center"));
+            row.AppendLine(GetWeekStatsRow(GetNumberForTableDisplay(w.NumberOfCardsInTest),"text-center"));
 
-            row.AppendLine(GetWeekStatsRow(GetNumberForTableDisplay(w.NumberOfCompletedCards)));
+            row.AppendLine(GetWeekStatsRow(GetNumberForTableDisplay(w.NumberOfCompletedCards),"text-center"));
 
             foreach (var labelName in _configuration.LabelNames)
             {
@@ -83,15 +83,15 @@ namespace TrelloStats
                     var value1 = w.GetNumberOfCardsWithLabel(labelNameSet[0]);
                     var value2 = w.GetNumberOfCardsWithLabel(labelNameSet[1]);
                     var valueSet = String.Format("{0}/{1}", value1, value2);
-                    row.AppendLine(GetWeekStatsRow(valueSet));
+                    row.AppendLine(GetWeekStatsRow(valueSet,"text-center"));
                 }
                 else
                 {
-                    row.AppendLine(GetWeekStatsRow(GetNumberForTableDisplay(w.GetNumberOfCardsWithLabel(labelName))));
+                    row.AppendLine(GetWeekStatsRow(GetNumberForTableDisplay(w.GetNumberOfCardsWithLabel(labelName)),"text-center"));
                 }
             }
 
-            row.AppendLine(GetWeekStatsRow(w.PointsCompleted));
+            row.AppendLine(GetWeekStatsRow(w.PointsCompleted,"text-center"));
 
 
             row.Append("</tr>");
@@ -113,13 +113,13 @@ namespace TrelloStats
 
         private string GetExtraListsStatsTableHtml(BoardStatsAnalysis boardStatsAnalysis)
         {
-            var row = new StringBuilder(@"<table id=""list_stats"" class=""table-condensed"">");
+            var row = new StringBuilder(@"<table id=""list_stats"" class=""table-condensed table-bordered table-striped"">");
             row.AppendLine("<thead><th>List</th><th>Cards</th><th>Points</th></thead>");
             row.AppendLine("<tbody>");
             foreach (var listStat in boardStatsAnalysis.BoardStats.ListStats)
             {
                 var pointsForList = listStat.ListData.CardDataCollection.Sum(c => c.Points);
-                row.AppendLine(string.Format("<tr><th>{0}</th><td>{1}</td><td>{2}</td></tr>", listStat.ListData.List.Name, listStat.CardCount, pointsForList == 0 ? "-" : pointsForList.ToString()));
+                row.AppendLine(string.Format(@"<tr><th>{0}</th><td class=""text-center"">{1}</td><td class=""text-center"">{2}</td></tr>", listStat.ListData.List.Name, listStat.CardCount, pointsForList == 0 ? "-" : pointsForList.ToString()));
             }
             row.AppendLine("</tbody></table>");
             return row.ToString();

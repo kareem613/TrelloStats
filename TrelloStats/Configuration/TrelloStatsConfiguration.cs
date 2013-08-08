@@ -155,10 +155,10 @@ Work started on <strong>{0}</strong> with the most recent of <strong>{1}</strong
 [[projections_summary]]
 <br/> Timeline last updated {3} {4}.
 <div class=""row"">
-    <div class=""col-2"">
+    <div class=""col-lg-2"">
         [[extra_lists_stats_table]]
     </div>
-    <div class=""col-10"">
+    <div class=""col-lg-10"">
         <table id=""week_stats"" class=""table-condensed table-bordered table-striped"">
         <tbody>
             [[weekly_stats_header]]
