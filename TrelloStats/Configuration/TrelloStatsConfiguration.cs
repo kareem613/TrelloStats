@@ -124,42 +124,36 @@ namespace TrelloStats.Configuration
             }
         }
 
-        public string SummaryTextTemplate = @"
+        public string WebsiteJsonFilename
+        {
+            get
+            {
+                return GetAppConfig("WebsiteJsonFilename");
+            }
+        }
+        public string WebsiteHtmlFilename
+        {
+            get
+            {
+                return GetAppConfig("WebsiteHtmlFilename");
+            }
+        }
+        public string WebsiteOutputFolder
+        {
+            get
+            {
+                return GetAppConfig("WebsiteOutputFolder");
+            }
+        }
+
+        public string SummaryTextTemplate
+        {
+            get
+            {
+               return @"
 Work started on <strong>{0}</strong> with the most recent of <strong>{1}</strong> stories completed on <strong>{2}</strong>. Total points completed is <strong>{5}</strong>.<br/>
 [[projections_summary]]
 <br/> Timeline last updated {3} {4}.
-<style>
-.stats th {{font-weight:bold;
-background:#f4f9fe;
-text-align:center;
-color:#66a3d3;
-padding: 1px 5px;
-}}
-#week_stats {{
-width:100%;
-border-top:1px solid #e5eff8;
-border-right:1px solid #e5eff8;
-border-collapse:collapse;
-}}
-.stats .date {{
-white-space:nowrap;
-}}
-.stats td {{
-color:#678197;
-border-bottom:1px solid #e5eff8;
-border-left:1px solid #e5eff8;
-padding:.3em 1em;
-text-align:center;
-}}
-#week_stats tr:last-child td {{ 
-background:#f4f9fe !important
-color:#66a3d3 !important;
-font-weight: bold !important;
-}}
-#list_stats {{
-margin-bottom:5px;
-}}
-</style>
 <div>
 [[extra_lists_stats_table]]
 </div>
@@ -170,17 +164,12 @@ margin-bottom:5px;
 <tbody>
 </table>
 ";
-
-
-
-
-
-        public string JsonOutputFilename
-        {
-            get
-            {
-                return GetAppConfig("JsonOutputFilename");
             }
         }
+
+
+        
+
+       
     }
 }

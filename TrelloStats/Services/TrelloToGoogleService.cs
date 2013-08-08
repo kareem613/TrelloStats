@@ -24,12 +24,13 @@ namespace TrelloStats.Services
         {
 
             _configuration = new TrelloStatsConfiguration();
-            var spreadsheetEntryFactory = new SpreadsheetEntryFactory(_configuration);
+            var htmlFactory = new HtmlFactory(_configuration);
+            var spreadsheetEntryFactory = new SpreadsheetEntryFactory(_configuration, htmlFactory);
             var trelloClient = new TrelloClient(_configuration);
 
             _googleService = new GoogleService(_configuration, spreadsheetEntryFactory);
             _trelloService = new TrelloService(_configuration, trelloClient);
-            _highChartsJsonService = new HighChartsJsonService();
+            _highChartsJsonService = new HighChartsJsonService(_configuration, htmlFactory);
             _boardStatsService = new BoardStatsService(_configuration);
         }
 
@@ -62,9 +63,8 @@ namespace TrelloStats.Services
             {
                 stopwatch.Restart();
                 Console.Write("Creating json output for highcharts...");
-                var json = _highChartsJsonService.CreateJsonData(boardStatsAnalysis);
-                var fileInfo = new FileInfo(_configuration.JsonOutputFilename);
-                File.WriteAllText(fileInfo.FullName, "var data = " + json);
+                _highChartsJsonService.CreateJsonData(boardStatsAnalysis);
+                
                 Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
             }
         }

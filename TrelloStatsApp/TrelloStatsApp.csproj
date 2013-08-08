@@ -51,7 +51,6 @@
     <None Include="App.config.sample">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Html\output.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TrelloStats\TrelloStats.csproj">
@@ -60,7 +59,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Html\highcharts_fromtable.html" />
+    <Content Include="Html\bootstrap.min.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Html\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

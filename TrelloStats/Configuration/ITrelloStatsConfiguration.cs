@@ -18,5 +18,9 @@ namespace TrelloStats.Configuration
         double TrelloProjectionsEstimateWindowUpperBoundFactor { get; }
         string TrelloToken { get; }
         int WeeksToSkipForVelocityCalculation { get; }
+        string WebsiteJsonFilename { get; }
+        string WebsiteHtmlFilename { get; }
+        string WebsiteOutputFolder { get; }
+        string SummaryTextTemplate { get; }
     }
 }

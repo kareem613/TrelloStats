@@ -7,12 +7,22 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TrelloStats.Configuration;
 
 namespace TrelloStats.Services
 {
     class HighChartsJsonService
     {
-        public string CreateJsonData(BoardStatsAnalysis boardStatsAnalysis)
+        private readonly ITrelloStatsConfiguration _configuration;
+        private readonly HtmlFactory _htmlFactory;
+
+        public HighChartsJsonService(ITrelloStatsConfiguration configuration, HtmlFactory htmlFactory)
+        {
+            _configuration = configuration;
+            _htmlFactory = htmlFactory;
+        }
+
+        public void CreateJsonData(BoardStatsAnalysis boardStatsAnalysis)
         {
             dynamic data = new ExpandoObject();
             data.weeklyStats = CreateWeeklyStatsSeriesCollection(boardStatsAnalysis);
@@ -25,7 +35,23 @@ namespace TrelloStats.Services
 
             data.burndown = projectionSeries;
 
-            return JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented, new JavaScriptDateTimeConverter());
+            var json = JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented, new JavaScriptDateTimeConverter());
+
+            var jsonFileInfo = new FileInfo(Path.Combine(_configuration.WebsiteOutputFolder,_configuration.WebsiteJsonFilename));
+            File.WriteAllText(jsonFileInfo.FullName, "var data = " + json);
+
+            var htmlFileInfo = new FileInfo(Path.Combine(_configuration.WebsiteOutputFolder, _configuration.WebsiteHtmlFilename));
+            var htmlSourceFileInfo = new FileInfo("Html\\index.html");
+
+            var html = File.ReadAllText(htmlSourceFileInfo.FullName);
+            html = html.Replace("[[summary]]",_htmlFactory.GetSummaryTextForBoardStat(boardStatsAnalysis));
+
+            File.WriteAllText(htmlFileInfo.FullName, html);
+
+            var cssFileInfo = new FileInfo(Path.Combine(_configuration.WebsiteOutputFolder, "bootstrap.min.css"));
+            File.Copy("Html\\bootstrap.min.css", cssFileInfo.FullName, true);
+            
+
         }
 
         private List<dynamic> GetBurndownData(BoardStatsAnalysis boardStatsAnalysis)
