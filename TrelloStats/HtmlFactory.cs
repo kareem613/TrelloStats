@@ -113,7 +113,7 @@ namespace TrelloStats
 
         private string GetExtraListsStatsTableHtml(BoardStatsAnalysis boardStatsAnalysis)
         {
-            var row = new StringBuilder(@"<table id=""list_stats"" class=""stats"">");
+            var row = new StringBuilder(@"<table id=""list_stats"" class=""table-condensed"">");
             row.AppendLine("<thead><th>List</th><th>Cards</th><th>Points</th></thead>");
             row.AppendLine("<tbody>");
             foreach (var listStat in boardStatsAnalysis.BoardStats.ListStats)
