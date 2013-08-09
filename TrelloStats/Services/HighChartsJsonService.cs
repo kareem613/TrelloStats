@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TrelloStats.Configuration;
+using TrelloStats.Model.Stats;
 
 namespace TrelloStats.Services
 {
@@ -56,21 +57,21 @@ namespace TrelloStats.Services
         private List<dynamic> GetMilestonesSeries(BoardStatsAnalysis boardStatsAnalysis)
         {
             var totalPoints = boardStatsAnalysis.TotalPoints + boardStatsAnalysis.EstimatedListPoints;
-            var milestones = _configuration.ProjectionMilestones;
+            List<Milestone> milestones = boardStatsAnalysis.Milestones;
             var milestoneSeries = new List<dynamic>();
             foreach (var milestone in milestones)
             {
 
-                var topPoint = GetDateEstimatePoint(milestone.Value, totalPoints);
-                topPoint.milestoneName = milestone.Key;
+                var topPoint = GetDateEstimatePoint(milestone.TargetDate, totalPoints);
+                topPoint.milestoneName = milestone.Name;
                 topPoint.isTopPoint = true;
-                var bottomPoint = GetDateEstimatePoint(milestone.Value, 0);
-                bottomPoint.milestoneName = milestone.Key;
+                var bottomPoint = GetDateEstimatePoint(milestone.TargetDate, 0);
+                bottomPoint.milestoneName = milestone.Name;
                 bottomPoint.isTopPoint = false;
                 
 
                 var series = CreateSeries("Milestones", new List<dynamic>() { bottomPoint, topPoint });
-                series.color = "#000000";
+                series.color = "#AFAFC1";
                 series.marker = new ExpandoObject();
                 series.marker.enabled = false;
                 milestoneSeries.Add(series);

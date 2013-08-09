@@ -63,5 +63,13 @@ namespace TrelloStats.Configuration
                 return ConfigurationManager.AppSettings["Trello.Projections.EstimatedList"];
             }
         }
+
+        public string MilestoneList
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["Trello.ListNames.MilestoneList"];
+            }
+        }
     }
 }

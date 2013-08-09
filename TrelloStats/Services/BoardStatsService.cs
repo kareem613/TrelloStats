@@ -31,6 +31,19 @@ namespace TrelloStats.Services
             
             BuildProjections(trelloData, boardStatsAnalysis);
 
+            if (trelloData.MilestoneList != null)
+            {
+                var milestones = new List<Milestone>();
+                foreach (var card in trelloData.MilestoneList.CardDataCollection)
+                {
+                    if (card.Card.Due.HasValue)
+                    {
+                        milestones.Add(new Milestone() { Name = card.Card.Name, TargetDate = card.Card.Due.Value });
+                    }
+                }
+                boardStatsAnalysis.Milestones = milestones;
+            }
+
             return boardStatsAnalysis;
         }
 

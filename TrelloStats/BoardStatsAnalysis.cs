@@ -16,6 +16,7 @@ namespace TrelloStats
         {
             BoardStats = boardStats;
             _configuration = configuration;
+            Milestones = new List<Milestone>();
         }
         
 
@@ -130,6 +131,8 @@ namespace TrelloStats
         public double EstimatedListPoints { get; set; }
 
         internal BoardProjections Projections { get; set; }
+
+        public List<Milestone> Milestones { get; set; }
     }
     
 }

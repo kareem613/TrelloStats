@@ -10,10 +10,10 @@ namespace TrelloStats.Services
 {
     public class TrelloService
     {
-        private readonly TrelloStatsConfiguration _configuration;
+        private readonly ITrelloStatsConfiguration _configuration;
         private readonly TrelloClient _trelloClient;
         
-        public TrelloService(TrelloStatsConfiguration configuration, TrelloClient trelloClient)
+        public TrelloService(ITrelloStatsConfiguration configuration, TrelloClient trelloClient)
         {
             _configuration = configuration;
             _trelloClient = trelloClient;
@@ -39,7 +39,13 @@ namespace TrelloStats.Services
                 var listData = CreateListData(list);
                 trelloData.AddListToCount(listData);
             }
-            
+
+            var milestoneList = listsInBoard.Where(l => l.Name == _configuration.ListNames.MilestoneList).SingleOrDefault();
+            if(milestoneList != null)
+            {
+                trelloData.MilestoneList = CreateListData(milestoneList);
+            }
+
             return trelloData;
         }
 

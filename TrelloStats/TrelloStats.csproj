@@ -75,6 +75,7 @@
     <Compile Include="Services\BoardStatsService.cs" />
     <Compile Include="Model\Data\CardData.cs" />
     <Compile Include="Services\HighChartsJsonService.cs" />
+    <Compile Include="Model\Stats\Milestone.cs" />
     <Compile Include="Services\TrelloClient.cs" />
     <Compile Include="Configuration\TypeConfigurationManager.cs" />
     <Compile Include="Model\Data\ListData.cs" />
