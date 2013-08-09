@@ -31,8 +31,10 @@ namespace TrelloStats.Services
             var burndownSeries = CreateSeries("Historical",burndownData);
             var projectionSeries = CreateProjectionsSeries(boardStatsAnalysis);
             projectionSeries.Add(burndownSeries);
-
             data.burndown = projectionSeries;
+
+            var milestoneSeries = GetMilestonesSeries(boardStatsAnalysis);
+            projectionSeries.AddRange(milestoneSeries);
 
             var json = JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented, new JavaScriptDateTimeConverter());
 
@@ -49,6 +51,31 @@ namespace TrelloStats.Services
 
             CopyFileToOutputFolder("style.css");
             CopyFileToOutputFolder("bootstrap.min.css");
+        }
+
+        private List<dynamic> GetMilestonesSeries(BoardStatsAnalysis boardStatsAnalysis)
+        {
+            var totalPoints = boardStatsAnalysis.TotalPoints + boardStatsAnalysis.EstimatedListPoints;
+            var milestones = _configuration.ProjectionMilestones;
+            var milestoneSeries = new List<dynamic>();
+            foreach (var milestone in milestones)
+            {
+
+                var topPoint = GetDateEstimatePoint(milestone.Value, totalPoints);
+                topPoint.milestoneName = milestone.Key;
+                topPoint.isTopPoint = true;
+                var bottomPoint = GetDateEstimatePoint(milestone.Value, 0);
+                bottomPoint.milestoneName = milestone.Key;
+                bottomPoint.isTopPoint = false;
+                
+
+                var series = CreateSeries("Milestones", new List<dynamic>() { bottomPoint, topPoint });
+                series.color = "#000000";
+                series.marker = new ExpandoObject();
+                series.marker.enabled = false;
+                milestoneSeries.Add(series);
+            }
+            return milestoneSeries;
         }
   
         private void CopyFileToOutputFolder(string filename)
@@ -113,18 +140,26 @@ namespace TrelloStats.Services
 
         private dynamic GetCompletionProjectionSeries(string name, double estimatedPoints, DateTime completionDate)
         {
-            dynamic projectPoint = new ExpandoObject();
-            projectPoint.name = name;
-            var point1 = GetDateEstimatePoint(DateTime.Now, estimatedPoints);
-            var point2 = GetDateEstimatePoint(completionDate, 0);
-            projectPoint.data = new object[] { point1, point2 };
-            return projectPoint;
+            dynamic series = new ExpandoObject();
+            series.name = name;
+            var startPoint = GetDateEstimatePoint(DateTime.Now, estimatedPoints);
+            startPoint.isStartPoint = true;
+
+            var endPoint = GetDateEstimatePoint(completionDate, 0);
+            endPoint.isStartPoint = false;
+
+            series.data = new object[] { startPoint, endPoint };
+            series.isProjection = true;
+            return series;
         }
 
         private dynamic GetDateEstimatePoint(DateTime date, double points)
         {
             var epochTime = GetEpochTime(date);
-            return new object[] { epochTime, points };
+            dynamic point = new ExpandoObject() ;
+            point.x = epochTime;
+            point.y = points;
+            return point;
         }
 
         private static long GetEpochTime(DateTime date)

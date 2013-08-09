@@ -146,6 +146,18 @@ namespace TrelloStats.Configuration
             }
         }
 
+        public List<KeyValuePair<string,DateTime>> ProjectionMilestones
+        {
+            get
+            {
+                var milestones = new List<KeyValuePair<string, DateTime>>();
+                var milestone = new KeyValuePair<string, DateTime>("Milestone 1", DateTime.Parse("2013-09-01"));
+                milestones.Add(milestone);
+                return milestones;
+                //return GetAppConfig("Projection.Milestones");
+            }
+        }
+
         public string SummaryTextTemplate
         {
             get

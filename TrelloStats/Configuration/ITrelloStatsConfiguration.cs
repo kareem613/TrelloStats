@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 namespace TrelloStats.Configuration
 {
     public interface ITrelloStatsConfiguration
@@ -16,6 +17,7 @@ namespace TrelloStats.Configuration
         string TrelloKey { get; }
         double TrelloProjectionsEstimateWindowLowerBoundFactor { get; }
         double TrelloProjectionsEstimateWindowUpperBoundFactor { get; }
+        List<KeyValuePair<string, DateTime>> ProjectionMilestones { get; }
         string TrelloToken { get; }
         int WeeksToSkipForVelocityCalculation { get; }
         string WebsiteJsonFilename { get; }

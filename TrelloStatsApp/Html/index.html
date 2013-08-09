@@ -95,8 +95,25 @@
             },
             tooltip: {
                 formatter: function () {
-                    return '<b>' + this.series.name + '</b><br/>' +
-                    Highcharts.dateFormat('%e. %b', this.x) + ': ' + this.y + ' pts';
+                    if (this.series.name == "Milestones") {
+                        if (this.point.isTopPoint) {
+                            return '<strong>' + this.point.milestoneName + '</strong><br/>' +
+                                Highcharts.dateFormat('%e. %b', this.x);
+                        } else {
+                            return false;
+                        }
+                    } else if (this.series.options.isProjection) {
+                        if (this.point.isStartPoint) {
+                            return false;//'<b>' + this.series.name + '</b><br/>';
+                        } else {
+                            return '<b>' + this.series.name + '</b><br/>' +
+                            Highcharts.dateFormat('%e. %b', this.x);
+                        }
+                    }
+                    else {
+                     return '<b>' + this.series.name + '</b><br/>' +
+                        Highcharts.dateFormat('%e. %b', this.x) + ': ' + this.y + ' pts';
+                    }
                 }
             },
 
