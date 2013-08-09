@@ -60,7 +60,7 @@ namespace TrelloStats.Services
   
         private void AddGoodCards(BoardStatsAnalysis boardStatsAnalysis, ListFeed listFeed)
         {
-            foreach (var dayGroups in boardStatsAnalysis.CompletedCardStats.GroupBy(b => b.GetDoneAction().DateInTimeZone(_configuration.TimeZone).ToShortDateString()))
+            foreach (var dayGroups in boardStatsAnalysis.CompletedCardStats.GroupBy(b => b.DoneAction.DateInTimeZone(_configuration.TimeZone).ToShortDateString()))
             {
                 var dayGroupList = dayGroups.ToList();
                 for (int i = 0; i < dayGroupList.Count(); i++)

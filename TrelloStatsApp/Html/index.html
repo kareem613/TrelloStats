@@ -1,0 +1,126 @@
+<head>
+    <title>Trello Stats</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+    <script src="trellostats.json"></script>
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Development Metrics</h1>
+        <p>
+            [[summary]]
+   
+        </p>
+
+        <div class="row">
+            <div id="weeklyStats" class="col-lg-6 col-sm-12"></div>
+            <div id="projections" class="col-lg-6 col-sm-12"></div>
+        </div>
+    </div>
+</body>
+
+
+<script type="text/javascript">
+
+    $(function () {
+        $('#weeklyStats').highcharts({
+
+            chart: {
+                type: 'column'
+            },
+
+            title: {
+                text: 'Total Stories'
+            },
+
+            xAxis: {
+                title: {
+                    text: "Week"
+                }
+            },
+
+            yAxis: {
+                allowDecimals: false,
+                min: 0,
+                title: {
+                    text: 'Stories'
+                }
+            },
+
+            tooltip: {
+                formatter: function () {
+                    return '<b>Week ' + this.x + '</b><br/>' +
+                        this.series.name + ': ' + this.y + '<br/>' +
+                        'Total: ' + this.point.stackTotal;
+                }
+            },
+
+            plotOptions: {
+                column: {
+                    stacking: 'normal'
+                }
+            },
+
+            series: data.weeklyStats
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        $('#projections').highcharts({
+            chart: {
+                type: 'line'
+            },
+            title: {
+                text: 'Projections'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                type: 'datetime',
+
+            },
+            yAxis: {
+                title: {
+                    text: 'Points'
+                },
+                min: 0
+            },
+            tooltip: {
+                formatter: function () {
+                    if (this.series.name == "Milestones") {
+                        if (this.point.isTopPoint) {
+                            return '<strong>' + this.point.milestoneName + '</strong><br/>' +
+                                Highcharts.dateFormat('%e. %b', this.x);
+                        } else {
+                            return false;
+                        }
+                    } else if (this.series.options.isProjection) {
+                        if (this.point.isStartPoint) {
+                            return false;//'<b>' + this.series.name + '</b><br/>';
+                        } else {
+                            return '<b>' + this.series.name + '</b><br/>' +
+                            Highcharts.dateFormat('%e. %b', this.x);
+                        }
+                    }
+                    else {
+                     return '<b>' + this.series.name + '</b><br/>' +
+                        Highcharts.dateFormat('%e. %b', this.x) + ': ' + this.y + ' pts';
+                    }
+                }
+            },
+
+            series: data.burndown
+        });
+    });
+
+
+</script>
+

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TrelloNet;
+using TrelloStats.Configuration;
 using TrelloStats.Model;
 using TrelloStats.Model.Stats;
 
@@ -9,12 +10,13 @@ namespace TrelloStats
 {
     public class BoardStatsAnalysis
     {
-        private readonly TimeZoneInfo _timeZone;
+        private readonly TrelloStatsConfiguration _configuration;
         public BoardStats BoardStats { get; set; }
-        public BoardStatsAnalysis(BoardStats boardStats, TimeZoneInfo timeZone)
+        public BoardStatsAnalysis(TrelloStatsConfiguration configuration, BoardStats boardStats)
         {
             BoardStats = boardStats;
-            _timeZone = timeZone;
+            _configuration = configuration;
+            Milestones = new List<Milestone>();
         }
         
 
@@ -38,7 +40,7 @@ namespace TrelloStats
         {
             get
             {
-                return FirstStartedActivity.EffectiveStartAction.DateInTimeZone(_timeZone);
+                return FirstStartedActivity.EffectiveStartAction.DateInTimeZone(_configuration.TimeZone);
             }
         }
 
@@ -46,7 +48,7 @@ namespace TrelloStats
         {
             get
             {
-                return LastDoneActivity.GetDoneAction().DateInTimeZone(_timeZone);
+                return LastDoneActivity.DoneAction.DateInTimeZone(_configuration.TimeZone);
             }
         }
 
@@ -63,7 +65,7 @@ namespace TrelloStats
         {
             get
             {
-                return BoardStats.CardStats.Where(c => !c.IsInProgress && !c.IsInTest).OrderByDescending(cs => cs.GetDoneAction().Date).First();
+                return BoardStats.CardStats.Where(c => !c.IsInProgress && !c.IsInTest).OrderByDescending(cs => cs.DoneAction.Date).First();
 
             }
         }
@@ -72,11 +74,26 @@ namespace TrelloStats
         {
             get
             {
-                return BoardStats.CardStats.Sum(c => c.CardData.Points);
+                var doneCards = BoardStats.CardStats.Where(c=>_configuration.ListNames.DoneListNames.Contains(c.ListData.List.Name));
+                var totalPoints = doneCards.Sum(cs => cs.CardData.Points);
+                return totalPoints;
             }
         }
 
-        public List<WeekStats> GetWeeklyStats()
+        public List<WeekStats> WeekStats
+        {
+            get
+            {
+                return GetWeeklyStats();
+            }
+        }
+
+        //public void GetTotalCompletedPointsAsOfDate(DateTime date)
+        //{
+        //    var points = BoardStats.CardStats.Where(c => c.DoneAction.Date < date).Sum(c => c.CardData.Points);
+        //}
+
+        private List<WeekStats> GetWeeklyStats()
         {
             var weekStatsList = new List<WeekStats>();
 
@@ -93,9 +110,9 @@ namespace TrelloStats
                 {
 
                 }
-                var completedCards = BoardStats.CardStats.Where(c => !c.IsInProgress && !c.IsInTest && c.GetDoneAction().DateInTimeZone(_timeZone) >= startDay && c.GetDoneAction().DateInTimeZone(_timeZone) < endDay);
-                var inProgressCards = BoardStats.CardStats.Where(c => c.IsInProgress && c.EffectiveStartAction.DateInTimeZone(_timeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_timeZone) < endDay);
-                var inTestCards = BoardStats.CardStats.Where(c => c.IsInTest && c.EffectiveStartAction.DateInTimeZone(_timeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_timeZone) < endDay);
+                var completedCards = BoardStats.CardStats.Where(c => !c.IsInProgress && !c.IsInTest && c.DoneAction.DateInTimeZone(_configuration.TimeZone) >= startDay && c.DoneAction.DateInTimeZone(_configuration.TimeZone) < endDay);
+                var inProgressCards = BoardStats.CardStats.Where(c => c.IsInProgress && c.EffectiveStartAction.DateInTimeZone(_configuration.TimeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_configuration.TimeZone) < endDay);
+                var inTestCards = BoardStats.CardStats.Where(c => c.IsInTest && c.EffectiveStartAction.DateInTimeZone(_configuration.TimeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_configuration.TimeZone) < endDay);
                 
                 WeekStats weekStats = new WeekStats() { Cards = completedCards, CardsInProgress = inProgressCards,CardsInTest = inTestCards, WeekNumber = week, StartDate = startDay, EndDate = endDay };
                 weekStatsList.Add(weekStats);
@@ -114,6 +131,8 @@ namespace TrelloStats
         public double EstimatedListPoints { get; set; }
 
         internal BoardProjections Projections { get; set; }
+
+        public List<Milestone> Milestones { get; set; }
     }
     
 }

@@ -9,6 +9,7 @@ namespace TrelloStats.Model.Data
     public class ListData
     {
         public List List { get; set; }
+
         public List<CardData> CardDataCollection { get; set; }
 
         public ListData(List list)
@@ -19,7 +20,7 @@ namespace TrelloStats.Model.Data
 
 
 
-        internal void AddCardData(CardData cardData)
+        public void AddCardData(CardData cardData)
         {
             CardDataCollection.Add(cardData);
         }

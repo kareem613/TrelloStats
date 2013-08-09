@@ -35,7 +35,7 @@ namespace TrelloStats.Tests.CardStats
             var cardData = new CardData() { Actions = actions };
             var cardStats = new TrelloStats.Model.Stats.CardStats() { CardData = cardData,ListData = listData, ListNames = ListNameConfigStub };
 
-            Assert.AreEqual(doneAction, cardStats.GetDoneAction());
+            Assert.AreEqual(doneAction, cardStats.DoneAction);
         }
 
         [TestMethod]//TODO: Is this funcationality necessary? When not in done list, you're either in test or in progress which returns null.
@@ -48,7 +48,7 @@ namespace TrelloStats.Tests.CardStats
             var cardData = new CardData() { Actions = actions };
             var cardStats = new TrelloStats.Model.Stats.CardStats() { CardData = cardData, ListData = listData, ListNames = ListNameConfigStub };
 
-            Assert.AreEqual(startAction, cardStats.GetDoneAction());
+            Assert.AreEqual(startAction, cardStats.DoneAction);
         }
 
         
@@ -60,7 +60,7 @@ namespace TrelloStats.Tests.CardStats
             var listData = ListDataFactory.GetListData(ConfigurationFactory.DEFAULT_IN_PROGRESS_LIST_NAME);
             var cardStats = new TrelloStats.Model.Stats.CardStats() { ListData = listData, ListNames = ListNameConfigStub };
 
-            Assert.IsNull(cardStats.GetDoneAction());
+            Assert.IsNull(cardStats.DoneAction);
         }
 
         [TestMethod]
@@ -70,7 +70,7 @@ namespace TrelloStats.Tests.CardStats
             var listData = ListDataFactory.GetListData(ConfigurationFactory.DEFAULT_IN_TEST_LIST_NAME);
             var cardStats = new TrelloStats.Model.Stats.CardStats() { ListData = listData, ListNames = ListNameConfigStub };
 
-            Assert.IsNull(cardStats.GetDoneAction());
+            Assert.IsNull(cardStats.DoneAction);
         }
 
         [TestMethod]
@@ -114,7 +114,7 @@ namespace TrelloStats.Tests.CardStats
             var expectedTotalDaysDuration = doneDate.Subtract(startDate).TotalDays;
 
             var actions = CardActionFactory.GetActionsForCompletedCard(createDate, startDate, doneDate);
-            var cardStats = CardStatsFactory.GetCardStats(ConfigurationFactory.DEFAULT_DONE_LIST_NAME, actions);
+            var cardStats = CardStatsFactory.GetCardStats(actions);
 
             Assert.AreEqual(expectedTotalDaysDuration, cardStats.Duration.TotalDays);
         }

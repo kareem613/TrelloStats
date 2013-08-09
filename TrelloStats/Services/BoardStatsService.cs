@@ -27,17 +27,31 @@ namespace TrelloStats.Services
             boardStats.ListStats = GetListStats(trelloData.ListsToCount);
             
             boardStats.ProjectStartDate = ProjectStartDate;
-            var boardStatsAnalysis = new BoardStatsAnalysis(boardStats, _configuration.TimeZone);
+            var boardStatsAnalysis = new BoardStatsAnalysis(_configuration, boardStats);
             
             BuildProjections(trelloData, boardStatsAnalysis);
+
+            if (trelloData.MilestoneList != null)
+            {
+                var milestones = new List<Milestone>();
+                foreach (var card in trelloData.MilestoneList.CardDataCollection)
+                {
+                    if (card.Card.Due.HasValue)
+                    {
+                        milestones.Add(new Milestone() { Name = card.Card.Name, TargetDate = card.Card.Due.Value });
+                    }
+                }
+                boardStatsAnalysis.Milestones = milestones;
+            }
 
             return boardStatsAnalysis;
         }
 
         private void BuildProjections(TrelloData trelloData, BoardStatsAnalysis boardStatsAnalysis)
         {
-            var estimatedListData = trelloData.GetListData(_configuration.ListNames.EstimatedList);
-            var estimatedPoints = estimatedListData.CardDataCollection.Sum(cd => cd.Points);
+            var estimatedPoints = GetEstimatedPointsForList(trelloData, _configuration.ListNames.EstimatedList);
+            estimatedPoints += GetEstimatedPointsForList(trelloData, _configuration.ListNames.InProgressListName);
+            estimatedPoints += GetEstimatedPointsForList(trelloData, _configuration.ListNames.InTestListName);
 
             boardStatsAnalysis.EstimatedListPoints = estimatedPoints;
             
@@ -60,6 +74,13 @@ namespace TrelloStats.Services
                 ProjectedMinimumCompletionDate = GetCompletionDate(projectedWeeksMin),
                 ProjectedMaximumCompletionDate = GetCompletionDate(projectedWeeksMax)
             };
+        }
+  
+        private double GetEstimatedPointsForList(TrelloData trelloData, string listName)
+        {
+            var estimatedListData = trelloData.GetListData(listName);
+            var estimatedPoints = estimatedListData.CardDataCollection.Sum(cd => cd.Points);
+            return estimatedPoints;
         }
 
         private DateTime GetCompletionDate(double weeks)

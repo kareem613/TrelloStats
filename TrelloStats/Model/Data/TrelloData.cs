@@ -47,6 +47,8 @@ namespace TrelloStats.Model.Data
             return ListData.SingleOrDefault(ld => ld.List.Name == listName) ?? ListDataToCount.SingleOrDefault(ld => ld.List.Name == listName);
         }
 
-       
+
+
+        public Data.ListData MilestoneList { get; set; }
     }
 }

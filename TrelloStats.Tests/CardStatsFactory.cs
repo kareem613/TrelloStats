@@ -18,6 +18,12 @@ namespace TrelloStats.Tests
             ListNameConfigStub = listNameConfig;
             TrelloStatsConfigStub = trelloStatsConfig;
         }
+
+        public Model.Stats.CardStats GetCardStats(List<Action> actions)
+        {
+            return GetCardStats(null, actions);
+        }
+
         public Model.Stats.CardStats GetCardStats(string listName, List<Action> actions)
         {
             var listData = ListDataFactory.GetListData(listName);

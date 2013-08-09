@@ -10,7 +10,7 @@ namespace TrelloStatsApp
             try
             {
                 var stats = new TrelloToGoogleService();
-                stats.CalculateStats();
+                stats.CalculateStats(false, true);
             }
             catch (Exception ex)
             {

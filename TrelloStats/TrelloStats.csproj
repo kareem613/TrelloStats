@@ -68,11 +68,14 @@
   <ItemGroup>
     <Compile Include="Configuration\IListNameConfiguration.cs" />
     <Compile Include="Configuration\ITrelloStatsConfiguration.cs" />
+    <Compile Include="HtmlFactory.cs" />
     <Compile Include="Model\Stats\BoardStats.cs" />
     <Compile Include="Model\Stats\BoardProjections.cs" />
     <Compile Include="Model\Stats\WeekStats.cs" />
     <Compile Include="Services\BoardStatsService.cs" />
     <Compile Include="Model\Data\CardData.cs" />
+    <Compile Include="Services\HighChartsJsonService.cs" />
+    <Compile Include="Model\Stats\Milestone.cs" />
     <Compile Include="Services\TrelloClient.cs" />
     <Compile Include="Configuration\TypeConfigurationManager.cs" />
     <Compile Include="Model\Data\ListData.cs" />
