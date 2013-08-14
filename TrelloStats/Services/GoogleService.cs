@@ -12,15 +12,15 @@ namespace TrelloStats.Services
 {
     public class GoogleService
     {
-        private readonly SpreadsheetsService _service;
-        
-        TrelloStatsConfiguration _configuration;
+        private readonly GoogleClient _googleClient;
+        private readonly TrelloStatsConfiguration _configuration;
+
         private SpreadsheetEntryFactory _spreadsheetEntryFactory;
-        public GoogleService(TrelloStatsConfiguration configuration, SpreadsheetEntryFactory spreadsheetEntryFactory)
+        
+        public GoogleService(TrelloStatsConfiguration configuration, SpreadsheetEntryFactory spreadsheetEntryFactory, GoogleClient googleClient)
         {
             _configuration = configuration;
-            _service = new SpreadsheetsService("trelloStats");
-            _service.setUserCredentials(_configuration.GmailEmailAddress, _configuration.GmailPassword);
+            _googleClient = googleClient;
             
             _spreadsheetEntryFactory = spreadsheetEntryFactory;
             
@@ -28,33 +28,19 @@ namespace TrelloStats.Services
 
         public void PushToGoogleSpreadsheet(BoardStatsAnalysis boardStatsAnalysis)
         {
-            var listFeed = GetListFeedForSpreadsheet();
+            var listFeed = _googleClient.GetListFeedForSpreadsheet();
             AddTitleCard(boardStatsAnalysis, listFeed);
             AddGoodCards(boardStatsAnalysis, listFeed);
             AddBadCards(boardStatsAnalysis, listFeed);
             
         }
 
-        private ListFeed GetListFeedForSpreadsheet()
-        {
-            SpreadsheetQuery query = new SpreadsheetQuery();
-            query.Title = _configuration.GoogleSpreadsheetName;
-            SpreadsheetFeed feed = _service.Query(query);
-
-            if (feed.Entries.Count != 1)
-                throw new Exception("Did not find exactly 1 shiftmylist datasource.");
-
-            WorksheetEntry timelineWorksheet = GetWorksheet(feed, "Data");
-            var listFeed = GetListFeed(timelineWorksheet);
-            return listFeed;
-        }
-  
         private void AddBadCards(BoardStatsAnalysis boardStatsAnalysis, ListFeed listFeed)
         {
             if (boardStatsAnalysis.BoardStats.BadCardStats.Count > 0)
             {
                 var errorRow = _spreadsheetEntryFactory.GetBadCardEntry(boardStatsAnalysis);
-                _service.Insert(listFeed, errorRow);
+                _googleClient.Insert(listFeed, errorRow);
             }
         }
   
@@ -70,7 +56,7 @@ namespace TrelloStats.Services
                     var timeOffset = new TimeSpan(0, minutesConfig, 0);
 
                     var row = _spreadsheetEntryFactory.GetCompletedCardEntry(cardStat, timeOffset);
-                    _service.Insert(listFeed, row);
+                    _googleClient.Insert(listFeed, row);
                 }
             }
         }
@@ -78,43 +64,10 @@ namespace TrelloStats.Services
         private void AddTitleCard(BoardStatsAnalysis boardStatsAnalysis, ListFeed listFeed)
         {
             var titleRow = _spreadsheetEntryFactory.GetTitleCardEntry(boardStatsAnalysis);
-            _service.Insert(listFeed, titleRow);
+            _googleClient.Insert(listFeed, titleRow);
         }
   
-        private void DeleteAllDataInWorksheet(ListFeed listFeed)
-        {
-            foreach (var row in listFeed.Entries)
-            {
-                row.Delete();
-            }
-        }
-  
-        private WorksheetEntry GetWorksheet(SpreadsheetFeed feed, string worksheetName)
-        {
-            var link = feed.Entries[0].Links.FindService(GDataSpreadsheetsNameTable.WorksheetRel, null);
-            var worksheetQuery = new WorksheetQuery(link.HRef.ToString());
-            worksheetQuery.Title = worksheetName;
-            var worksheetFeed = _service.Query(worksheetQuery);
-
-            if (worksheetFeed.Entries.Count != 1) throw new Exception(String.Format("Did not find exactly 1 {0} worksheet.", worksheetName));
-
-            return (WorksheetEntry)worksheetFeed.Entries[0];
-        }
-
-        private ListFeed GetListFeed(WorksheetEntry worksheetEntry)
-        {
-            AtomLink listFeedLink = worksheetEntry.Links.FindService(GDataSpreadsheetsNameTable.ListRel, null);
-
-            ListQuery listQuery = new ListQuery(listFeedLink.HRef.ToString());
-            ListFeed listFeed = _service.Query(listQuery);
-            return listFeed;
-        }
-
-        internal void ClearSpreadsheet()
-        {
-            var listFeed = GetListFeedForSpreadsheet();
-
-            DeleteAllDataInWorksheet(listFeed);
-        }
+       
+       
     }
 }

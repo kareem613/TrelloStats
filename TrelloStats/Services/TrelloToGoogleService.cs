@@ -19,6 +19,7 @@ namespace TrelloStats.Services
         private readonly BoardStatsService _boardStatsService;
         private readonly HighChartsJsonService _highChartsJsonService;
         private readonly TrelloStatsConfiguration _configuration;
+        private readonly GoogleClient _googleClient;
 
         public TrelloToGoogleService()
         {
@@ -28,7 +29,8 @@ namespace TrelloStats.Services
             var spreadsheetEntryFactory = new SpreadsheetEntryFactory(_configuration, htmlFactory);
             var trelloClient = new TrelloClient(_configuration);
 
-            _googleService = new GoogleService(_configuration, spreadsheetEntryFactory);
+            _googleClient = new GoogleClient(_configuration);
+            _googleService = new GoogleService(_configuration, spreadsheetEntryFactory, _googleClient);
             _trelloService = new TrelloService(_configuration, trelloClient);
             _highChartsJsonService = new HighChartsJsonService(_configuration, htmlFactory);
             _boardStatsService = new BoardStatsService(_configuration);
@@ -50,7 +52,7 @@ namespace TrelloStats.Services
             {
                 stopwatch.Restart();
                 Console.Write("Deleting old records from Google...");
-                _googleService.ClearSpreadsheet();
+                _googleClient.ClearSpreadsheet();
                 Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
 
                 stopwatch.Restart();
