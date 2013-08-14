@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TrelloNet;
+using TrelloStats.Clients;
 using TrelloStats.Configuration;
 using TrelloStats.Model.Data;
 

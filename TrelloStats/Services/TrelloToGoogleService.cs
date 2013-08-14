@@ -1,14 +1,8 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System;
-using System.Configuration;
+﻿using System;
 using System.Diagnostics;
-using System.Dynamic;
-using System.IO;
 using System.Linq;
+using TrelloStats.Clients;
 using TrelloStats.Configuration;
-using TrelloStats.Model;
-using TrelloStats.Model.Stats;
 
 namespace TrelloStats.Services
 {

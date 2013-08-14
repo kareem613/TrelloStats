@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using TrelloStats.Services;
 namespace TrelloStatsApp
 {

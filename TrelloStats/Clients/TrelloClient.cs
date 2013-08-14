@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TrelloNet;
 using TrelloStats.Configuration;
 
-namespace TrelloStats.Services
+namespace TrelloStats.Clients
 {
     public class TrelloClient
     {
