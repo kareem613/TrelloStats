@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TrelloStats.Model;
+using TrelloStats.Model.Data;
 
 namespace TrelloStats.Model.Stats
 {
@@ -33,5 +34,7 @@ namespace TrelloStats.Model.Stats
         {
             BadCardStats.Add(stat);
         }
+
+        public List<TimesheetData> TimesheetData { get; set; }
     }
 }

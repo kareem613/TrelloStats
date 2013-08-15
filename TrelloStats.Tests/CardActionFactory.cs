@@ -17,6 +17,8 @@ namespace TrelloStats.Tests
         public static TrelloNet.CreateCardAction CardAction(System.DateTime createDate)
         {
             var createCardAction = new TrelloNet.CreateCardAction() { Date = createDate };
+            createCardAction.Data = new CreateCardAction.ActionData();
+            createCardAction.Data.List = new ListName() { Name = "dummy list name" };
             return createCardAction;
         }
 

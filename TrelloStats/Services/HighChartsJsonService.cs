@@ -25,15 +25,22 @@ namespace TrelloStats.Services
         {
             dynamic data = new ExpandoObject();
             data.weeklyStats = CreateWeeklyStatsSeriesCollection(boardStatsAnalysis);
-            
-            var burndownData = GetBurndownData(boardStatsAnalysis);
-            var burndownSeries = CreateSeries("Historical",burndownData);
-            var projectionSeries = CreateProjectionsSeries(boardStatsAnalysis);
-            projectionSeries.Add(burndownSeries);
-            data.burndown = projectionSeries;
+            data.burndown = new ExpandoObject();
+            var burndownPointsData = GetBurndownData(boardStatsAnalysis);
+            var historicalPointsSeries = CreateSeries("Historical", burndownPointsData);
+            data.burndown.historicalPoints = historicalPointsSeries;
+            AddProjectionsSeries(boardStatsAnalysis, data.burndown);
 
-            var milestoneSeries = GetMilestonesSeries(boardStatsAnalysis);
-            projectionSeries.AddRange(milestoneSeries);
+            var burndownHoursData = GetBurndownHoursData(boardStatsAnalysis);
+            var burndownHoursSeries = CreateSeries("HistoricalHours", burndownHoursData);
+            data.historicalHours = burndownHoursSeries;
+
+            var burndownExcludedHoursData = GetBurndownExcludedHoursData(boardStatsAnalysis);
+            var burndownExcludedHoursSeries = CreateSeries("HistoricalExcludedHours", burndownExcludedHoursData);
+            data.historicalExcludedHours = burndownExcludedHoursSeries;
+
+            data.milestoneSeries = GetMilestonesSeries(boardStatsAnalysis);
+            
 
             var json = JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented, new JavaScriptDateTimeConverter());
 
@@ -60,10 +67,10 @@ namespace TrelloStats.Services
             foreach (var milestone in milestones)
             {
 
-                var topPoint = GetDateEstimatePoint(milestone.TargetDate, totalPoints);
+                var topPoint = GetDateValuePoint(milestone.TargetDate, totalPoints);
                 topPoint.milestoneName = milestone.Name;
                 topPoint.isTopPoint = true;
-                var bottomPoint = GetDateEstimatePoint(milestone.TargetDate, 0);
+                var bottomPoint = GetDateValuePoint(milestone.TargetDate, 0);
                 bottomPoint.milestoneName = milestone.Name;
                 bottomPoint.isTopPoint = false;
                 
@@ -92,24 +99,54 @@ namespace TrelloStats.Services
             foreach (var weekStats in boardStatsAnalysis.WeekStats.Take(boardStatsAnalysis.WeekStats.Count - 1))
             {
                 totalPointsRemaining -= weekStats.PointsCompleted;
-                var point = GetDateEstimatePoint(weekStats.EndDate, totalPointsRemaining);
+                var point = GetDateValuePoint(weekStats.EndDate, totalPointsRemaining);
                 burnDownData.Add(point);
             }
 
             var lastWeekStats = boardStatsAnalysis.WeekStats.Last();
             totalPointsRemaining -= lastWeekStats.PointsCompleted;
-            var lastPoint = GetDateEstimatePoint(DateTime.Now, totalPointsRemaining);
+            var lastPoint = GetDateValuePoint(DateTime.Now, totalPointsRemaining);
             burnDownData.Add(lastPoint);
             return burnDownData;
         }
 
-        private List<dynamic> CreateProjectionsSeries(BoardStatsAnalysis boardStatsAnalysis)
+        private List<dynamic> GetBurndownHoursData(BoardStatsAnalysis boardStatsAnalysis)
         {
-            dynamic projectPointBestCase = GetCompletionProjectionSeries("Best Case", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectedMinimumCompletionDate);
-            dynamic projectPointWorstCase = GetCompletionProjectionSeries("Worst Case", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectedMaximumCompletionDate);
-            dynamic projectPointIdeal = GetCompletionProjectionSeries("Ideal", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectionCompletionDate);
+            var burndownHoursData = new List<dynamic>();
+            foreach (var weekStats in boardStatsAnalysis.WeekStats.Take(boardStatsAnalysis.WeekStats.Count - 1))
+            {
+                var point = GetDateValuePoint(weekStats.EndDate, weekStats.TotalHours);
+                burndownHoursData.Add(point);
+            }
 
-            return new List<dynamic>(){ projectPointBestCase, projectPointWorstCase, projectPointIdeal };
+            var lastWeekStats = boardStatsAnalysis.WeekStats.Last();
+            var lastPoint = GetDateValuePoint(DateTime.Now, lastWeekStats.TotalHours);
+            burndownHoursData.Add(lastPoint);
+            return burndownHoursData;
+        }
+
+        private List<dynamic> GetBurndownExcludedHoursData(BoardStatsAnalysis boardStatsAnalysis)
+        {
+            var burndownHoursData = new List<dynamic>();
+            foreach (var weekStats in boardStatsAnalysis.WeekStats.Take(boardStatsAnalysis.WeekStats.Count - 1))
+            {
+                var point = GetDateValuePoint(weekStats.EndDate, weekStats.TotalExcludedHours);
+                burndownHoursData.Add(point);
+            }
+
+            var lastWeekStats = boardStatsAnalysis.WeekStats.Last();
+            var lastPoint = GetDateValuePoint(DateTime.Now, lastWeekStats.TotalExcludedHours);
+            burndownHoursData.Add(lastPoint);
+            return burndownHoursData;
+        }
+
+        private void AddProjectionsSeries(BoardStatsAnalysis boardStatsAnalysis, dynamic burndownSeries)
+        {
+            burndownSeries.projectionSeriesBestCase = GetCompletionProjectionSeries("Best Case", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectedMinimumCompletionDate);
+            burndownSeries.projectionSeriesWorstCase = GetCompletionProjectionSeries("Worst Case", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectedMaximumCompletionDate);
+            burndownSeries.projectionSeriesIdeal = GetCompletionProjectionSeries("Ideal", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectionCompletionDate);
+
+            //return new List<dynamic>(){ projectionSeriesBestCase, projectionSeriesWorstCase, projectionSeriesIdeal };
         }
 
         private List<dynamic> CreateWeeklyStatsSeriesCollection(BoardStatsAnalysis boardStatsAnalysis)
@@ -141,10 +178,10 @@ namespace TrelloStats.Services
         {
             dynamic series = new ExpandoObject();
             series.name = name;
-            var startPoint = GetDateEstimatePoint(DateTime.Now, estimatedPoints);
+            var startPoint = GetDateValuePoint(DateTime.Now, estimatedPoints);
             startPoint.isStartPoint = true;
 
-            var endPoint = GetDateEstimatePoint(completionDate, 0);
+            var endPoint = GetDateValuePoint(completionDate, 0);
             endPoint.isStartPoint = false;
 
             series.data = new object[] { startPoint, endPoint };
@@ -152,7 +189,7 @@ namespace TrelloStats.Services
             return series;
         }
 
-        private dynamic GetDateEstimatePoint(DateTime date, double points)
+        private dynamic GetDateValuePoint(DateTime date, double points)
         {
             var epochTime = GetEpochTime(date);
             dynamic point = new ExpandoObject() ;

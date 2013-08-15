@@ -145,15 +145,11 @@ namespace TrelloStats.Configuration
             }
         }
 
-        public List<KeyValuePair<string,DateTime>> ProjectionMilestones
+        public string GoogleTimesheetsSpreadsheetName
         {
             get
             {
-                var milestones = new List<KeyValuePair<string, DateTime>>();
-                var milestone = new KeyValuePair<string, DateTime>("Milestone 1", DateTime.Parse("2013-09-01"));
-                milestones.Add(milestone);
-                return milestones;
-                //return GetAppConfig("Projection.Milestones");
+                return GetAppConfig("Google.Timesheets.SpreadsheetName");
             }
         }
 
@@ -183,8 +179,17 @@ Work started on <strong>{0}</strong> with the most recent of <strong>{1}</strong
         }
 
 
-        
 
-       
+
+
+
+
+        public string GoogleTimesheetsExcludeCategoryFromTotalHours
+        {
+            get
+            {
+                return GetAppConfig("Google.Timesheets.ExcludeCategoryFromTotalHours");
+            }
+        }
     }
 }

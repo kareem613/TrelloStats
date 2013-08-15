@@ -14,6 +14,7 @@ namespace TrelloStats.Services
         private readonly HighChartsJsonService _highChartsJsonService;
         private readonly TrelloStatsConfiguration _configuration;
         private readonly GoogleClient _googleClient;
+        private readonly TimesheetService _timesheetService;
 
         public TrelloToGoogleService()
         {
@@ -27,31 +28,37 @@ namespace TrelloStats.Services
             _googleService = new GoogleService(_configuration, spreadsheetEntryFactory, _googleClient);
             _trelloService = new TrelloService(_configuration, trelloClient);
             _highChartsJsonService = new HighChartsJsonService(_configuration, htmlFactory);
+            _timesheetService = new TimesheetService(_configuration, _googleClient);
             _boardStatsService = new BoardStatsService(_configuration);
         }
 
         public void CalculateStats(bool pushToGoogle, bool createJson)
         {
             var stopwatch = Stopwatch.StartNew();
+            Console.Write("Querying Timesheet data...");
+            var timesheetData = _timesheetService.GetTimesheetData();
+            Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
+
+            stopwatch.Restart();
             Console.Write("Querying Trello...");
             var trelloData = _trelloService.GetCardsToExamine();
             Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
             
             stopwatch.Restart();
             Console.Write("Calculating stats...");
-            BoardStatsAnalysis boardStatsAnalysis = _boardStatsService.BuildBoardStatsAnalysis(trelloData);
+            BoardStatsAnalysis boardStatsAnalysis = _boardStatsService.BuildBoardStatsAnalysis(trelloData, timesheetData);
             Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
 
             if (pushToGoogle)
             {
                 stopwatch.Restart();
                 Console.Write("Deleting old records from Google...");
-                _googleClient.ClearSpreadsheet();
+                _googleClient.ClearSpreadsheet(_configuration.GoogleSpreadsheetName);
                 Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
 
                 stopwatch.Restart();
                 Console.Write("Pushing results to Google...");
-                _googleService.PushToGoogleSpreadsheet(boardStatsAnalysis);
+                _googleService.PushToGoogleSpreadsheet(boardStatsAnalysis, _configuration.GoogleSpreadsheetName);
                 Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
             }
 

@@ -17,12 +17,12 @@ namespace TrelloStats.Services
             _configuration = configuration;
         }
 
-        public BoardStatsAnalysis BuildBoardStatsAnalysis(TrelloData trelloData)
+        public BoardStatsAnalysis BuildBoardStatsAnalysis(TrelloData trelloData, List<TimesheetData> timesheetData)
         {
             var boardStats = new BoardStats();
             BuildCardStats(trelloData, boardStats);
             boardStats.ListStats = GetListStats(trelloData.ListsToCount);
-            
+            boardStats.TimesheetData = timesheetData;
             boardStats.ProjectStartDate = ProjectStartDate;
             var boardStatsAnalysis = new BoardStatsAnalysis(_configuration, boardStats);
             

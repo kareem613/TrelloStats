@@ -75,7 +75,12 @@
     $(function () {
         $('#projections').highcharts({
             chart: {
-                type: 'line'
+
+            },
+            plotOptions: {
+                column: {
+                    stacking: 'normal'
+                }
             },
             title: {
                 text: 'Projections'
@@ -87,12 +92,21 @@
                 type: 'datetime',
 
             },
-            yAxis: {
+            yAxis: [{
                 title: {
                     text: 'Points'
                 },
+                yAxis: 0,
                 min: 0
             },
+            {
+                title: {
+                    text: 'Hours'
+                },
+                yAxis: 1,
+                opposite: true,
+                min: 0
+            }],
             tooltip: {
                 formatter: function () {
                     if (this.series.name == "Milestones") {
@@ -111,13 +125,70 @@
                         }
                     }
                     else {
-                     return '<b>' + this.series.name + '</b><br/>' +
-                        Highcharts.dateFormat('%e. %b', this.x) + ': ' + this.y + ' pts';
+                        return '<b>' + this.series.name + '</b><br/>' +
+                           Highcharts.dateFormat('%e. %b', this.x) + ': ' + this.y + ' pts';
                     }
                 }
             },
 
-            series: data.burndown
+            series: [
+                {
+                    name: data.burndown.historicalPoints.name,
+                    data: data.burndown.historicalPoints.data,
+                    type: 'line',
+                    marker: {
+                        symbol: 'square'
+                    }
+                },
+				{
+				    name: data.burndown.projectionSeriesBestCase.name,
+				    data: data.burndown.projectionSeriesBestCase.data,
+				    isProjection: data.burndown.projectionSeriesBestCase.isProjection,
+				    type: 'line',
+				    marker: {
+				        symbol: 'circle'
+				    }
+				},
+				{
+				    name: data.burndown.projectionSeriesWorstCase.name,
+				    data: data.burndown.projectionSeriesWorstCase.data,
+				    isProjection: data.burndown.projectionSeriesWorstCase.isProjection,
+				    type: 'line',
+				    marker: {
+				        symbol: 'circle'
+				    }
+				},
+				{
+				    name: data.burndown.projectionSeriesIdeal.name,
+				    data: data.burndown.projectionSeriesIdeal.data,
+				    isProjection: data.burndown.projectionSeriesIdeal.isProjection,
+				    type: 'line',
+				    marker: {
+				        symbol: 'circle'
+				    }
+				},
+				{
+				    name: data.milestoneSeries[0].name,
+				    data: data.milestoneSeries[0].data,
+				    type: 'line',
+				    marker: {
+				        symbol: 'diamond'
+				    }
+				},
+                {
+                    name: "Vacation/Holidays",
+                    data: data.historicalExcludedHours.data,
+                    type: 'column',
+                    stack: "hours",
+                },
+                {
+                    name: "Hours",
+                    data: data.historicalHours.data,
+                    type: 'column',
+                    stack: "hours",
+                }
+                
+            ]
         });
     });
 

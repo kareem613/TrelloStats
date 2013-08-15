@@ -42,10 +42,10 @@ namespace TrelloStats.Clients
             return listFeed;
         }
 
-        public ListFeed GetListFeedForSpreadsheet()
+        public ListFeed GetListFeedForSpreadsheet(string spreadsheetName)
         {
             SpreadsheetQuery query = new SpreadsheetQuery();
-            query.Title = _configuration.GoogleSpreadsheetName;
+            query.Title = spreadsheetName;
             SpreadsheetFeed feed = _service.Query(query);
 
             if (feed.Entries.Count != 1)
@@ -56,9 +56,9 @@ namespace TrelloStats.Clients
             return listFeed;
         }
 
-        public void ClearSpreadsheet()
+        public void ClearSpreadsheet(string spreadsheetName)
         {
-            var listFeed = GetListFeedForSpreadsheet();
+            var listFeed = GetListFeedForSpreadsheet(spreadsheetName);
 
             DeleteAllDataInWorksheet(listFeed);
         }

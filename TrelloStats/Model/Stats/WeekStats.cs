@@ -52,5 +52,24 @@ namespace TrelloStats.Model.Stats
         public DateTime StartDate { get; set; }
 
         public DateTime EndDate { get; set; }
+
+        public List<Data.TimesheetData> TimesheetEntries { get; set; }
+        public List<Data.TimesheetData> ExcludedTimesheetEntries { get; set; }
+
+        public double TotalHours
+        {
+            get
+            {
+                return TimesheetEntries.Sum(t => t.Hours);
+            }
+        }
+
+        public double TotalExcludedHours
+        {
+            get
+            {
+                return ExcludedTimesheetEntries.Sum(t => t.Hours);
+            }
+        }
     }
 }

@@ -22,9 +22,9 @@ namespace TrelloStats.Services
             
         }
 
-        public void PushToGoogleSpreadsheet(BoardStatsAnalysis boardStatsAnalysis)
+        public void PushToGoogleSpreadsheet(BoardStatsAnalysis boardStatsAnalysis, string spreadsheetName)
         {
-            var listFeed = _googleClient.GetListFeedForSpreadsheet();
+            var listFeed = _googleClient.GetListFeedForSpreadsheet(spreadsheetName);
             AddTitleCard(boardStatsAnalysis, listFeed);
             AddGoodCards(boardStatsAnalysis, listFeed);
             AddBadCards(boardStatsAnalysis, listFeed);
