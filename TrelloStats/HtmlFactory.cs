@@ -47,7 +47,7 @@ namespace TrelloStats
             var headerTitles = new List<string>() { "Week #", "Start", "End", "In Progress", "In Test", "Stories Completed", "Points Completed" };
             foreach (var labelName in _configuration.LabelNames)
             {
-                headerTitles.Insert(headerTitles.Count - 1, labelName);
+                headerTitles.Insert(headerTitles.Count - 2, labelName);
             }
 
             var header = new StringBuilder("<tr>");
