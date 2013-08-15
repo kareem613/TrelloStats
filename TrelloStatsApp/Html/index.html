@@ -264,34 +264,32 @@ Team Velocity is <strong>41</strong> points per week. Incomplete estimated point
 
             series: [
                 {
-                    name: data.burndown[0].name,
-                    data: data.burndown[0].data,
-                    type: 'line',
-                    isProjection: data.burndown[0].isProjection
+                    name: data.burndown.historicalPoints.name,
+                    data: data.burndown.historicalPoints.data,
+                    type: 'line'
                 },
 				{
-				    name: data.burndown[1].name,
-				    data: data.burndown[1].data,
-				    type: 'line',
-				    isProjection: data.burndown[0].isProjection
+				    name: data.burndown.projectionSeriesBestCase.name,
+				    data: data.burndown.projectionSeriesBestCase.data,
+				    isProjection: data.burndown.projectionSeriesBestCase.isProjection,
+				    type: 'line'
 				},
 				{
-				    name: data.burndown[2].name,
-				    data: data.burndown[2].data,
-				    type: 'line',
-				    isProjection: data.burndown[0].isProjection
+				    name: data.burndown.projectionSeriesWorstCase.name,
+				    data: data.burndown.projectionSeriesWorstCase.data,
+				    isProjection: data.burndown.projectionSeriesWorstCase.isProjection,
+				    type: 'line'
 				},
 				{
-				    name: data.burndown[3].name,
-				    data: data.burndown[3].data,
-				    type: 'line',
-				    isProjection: data.burndown[0].isProjection
+				    name: data.burndown.projectionSeriesIdeal.name,
+				    data: data.burndown.projectionSeriesIdeal.data,
+				    isProjection: data.burndown.projectionSeriesIdeal.isProjection,
+				    type: 'line'
 				},
 				{
-				    name: data.burndown[4].name,
-				    data: data.burndown[4].data,
+				    name: data.milestoneSeries[0].name,
+				    data: data.milestoneSeries[0].data,
 				    type: 'line',
-				    isProjection: data.burndown[0].isProjection
 				},
                 {
                     name: data.historicalHours.name,

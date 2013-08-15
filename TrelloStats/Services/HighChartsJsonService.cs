@@ -25,19 +25,18 @@ namespace TrelloStats.Services
         {
             dynamic data = new ExpandoObject();
             data.weeklyStats = CreateWeeklyStatsSeriesCollection(boardStatsAnalysis);
-
+            data.burndown = new ExpandoObject();
             var burndownPointsData = GetBurndownData(boardStatsAnalysis);
-            var burndownSeries = CreateSeries("Historical",burndownPointsData);
-            var projectionSeries = CreateProjectionsSeries(boardStatsAnalysis);
-            projectionSeries.Add(burndownSeries);
-            data.burndown = projectionSeries;
+            var historicalPointsSeries = CreateSeries("Historical", burndownPointsData);
+            data.burndown.historicalPoints = historicalPointsSeries;
+            AddProjectionsSeries(boardStatsAnalysis, data.burndown);
 
             var burndownHoursData = GetBurndownHoursData(boardStatsAnalysis);
             var burndownHoursSeries = CreateSeries("HistoricalHours", burndownHoursData);
             data.historicalHours = burndownHoursSeries;
 
-            var milestoneSeries = GetMilestonesSeries(boardStatsAnalysis);
-            projectionSeries.AddRange(milestoneSeries);
+            data.milestoneSeries = GetMilestonesSeries(boardStatsAnalysis);
+            
 
             var json = JsonConvert.SerializeObject(data, Newtonsoft.Json.Formatting.Indented, new JavaScriptDateTimeConverter());
 
@@ -122,13 +121,13 @@ namespace TrelloStats.Services
             return burndownHoursData;
         }
 
-        private List<dynamic> CreateProjectionsSeries(BoardStatsAnalysis boardStatsAnalysis)
+        private void AddProjectionsSeries(BoardStatsAnalysis boardStatsAnalysis, dynamic burndownSeries)
         {
-            dynamic projectPointBestCase = GetCompletionProjectionSeries("Best Case", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectedMinimumCompletionDate);
-            dynamic projectPointWorstCase = GetCompletionProjectionSeries("Worst Case", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectedMaximumCompletionDate);
-            dynamic projectPointIdeal = GetCompletionProjectionSeries("Ideal", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectionCompletionDate);
+            burndownSeries.projectionSeriesBestCase = GetCompletionProjectionSeries("Best Case", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectedMinimumCompletionDate);
+            burndownSeries.projectionSeriesWorstCase = GetCompletionProjectionSeries("Worst Case", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectedMaximumCompletionDate);
+            burndownSeries.projectionSeriesIdeal = GetCompletionProjectionSeries("Ideal", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectionCompletionDate);
 
-            return new List<dynamic>(){ projectPointBestCase, projectPointWorstCase, projectPointIdeal };
+            //return new List<dynamic>(){ projectionSeriesBestCase, projectionSeriesWorstCase, projectionSeriesIdeal };
         }
 
         private List<dynamic> CreateWeeklyStatsSeriesCollection(BoardStatsAnalysis boardStatsAnalysis)
