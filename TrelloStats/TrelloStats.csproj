@@ -86,6 +86,8 @@
     <Compile Include="Model\Stats\CardStats.cs" />
     <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="Services\GoogleService.cs" />
+    <Compile Include="Model\Data\TimesheetData.cs" />
+    <Compile Include="Services\TimesheetService.cs" />
     <Compile Include="SpreadsheetEntryFactory.cs" />
     <Compile Include="Model\Data\TrelloData.cs" />
     <Compile Include="Services\TrelloService.cs" />

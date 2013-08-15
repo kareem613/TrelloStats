@@ -44,7 +44,7 @@ namespace TrelloStats
 
         private string GetWeekStatsHtmlHeader()
         {
-            var headerTitles = new List<string>() { "Week #", "Start", "End", "In Progress", "In Test", "Stories Completed", "Points Completed" };
+            var headerTitles = new List<string>() { "Week #", "Start", "End", "In Progress", "In Test", "Stories Completed", "Points Completed", "Timesheet Hours" };
             foreach (var labelName in _configuration.LabelNames)
             {
                 headerTitles.Insert(headerTitles.Count - 1, labelName);
@@ -91,6 +91,7 @@ namespace TrelloStats
             }
 
             row.AppendLine(GetWeekStatsRow(w.PointsCompleted,"text-center"));
+            row.AppendLine(GetWeekStatsRow(Math.Ceiling(w.TotalHours), "text-center"));
 
 
             row.Append("</tr>");

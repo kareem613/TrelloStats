@@ -7,6 +7,7 @@ namespace TrelloStats.Configuration
         string GmailEmailAddress { get; }
         string GmailPassword { get; }
         string GoogleSpreadsheetName { get; }
+        string GoogleTimesheetsSpreadsheetName { get; }
         string[] LabelNames { get; }
         ListNameConfiguration ListNames { get; set; }
         string TimelineJsDefaultTag { get; }
@@ -17,7 +18,6 @@ namespace TrelloStats.Configuration
         string TrelloKey { get; }
         double TrelloProjectionsEstimateWindowLowerBoundFactor { get; }
         double TrelloProjectionsEstimateWindowUpperBoundFactor { get; }
-        List<KeyValuePair<string, DateTime>> ProjectionMilestones { get; }
         string TrelloToken { get; }
         int WeeksToSkipForVelocityCalculation { get; }
         string WebsiteJsonFilename { get; }

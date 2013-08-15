@@ -113,8 +113,9 @@ namespace TrelloStats
                 var completedCards = BoardStats.CardStats.Where(c => !c.IsInProgress && !c.IsInTest && c.DoneAction.DateInTimeZone(_configuration.TimeZone) >= startDay && c.DoneAction.DateInTimeZone(_configuration.TimeZone) < endDay);
                 var inProgressCards = BoardStats.CardStats.Where(c => c.IsInProgress && c.EffectiveStartAction.DateInTimeZone(_configuration.TimeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_configuration.TimeZone) < endDay);
                 var inTestCards = BoardStats.CardStats.Where(c => c.IsInTest && c.EffectiveStartAction.DateInTimeZone(_configuration.TimeZone) >= startDay && c.EffectiveStartAction.DateInTimeZone(_configuration.TimeZone) < endDay);
+                var timesheetEntries = BoardStats.TimesheetData.Where(t => t.Week == week).ToList();
                 
-                WeekStats weekStats = new WeekStats() { Cards = completedCards, CardsInProgress = inProgressCards,CardsInTest = inTestCards, WeekNumber = week, StartDate = startDay, EndDate = endDay };
+                WeekStats weekStats = new WeekStats() { Cards = completedCards, CardsInProgress = inProgressCards,CardsInTest = inTestCards, WeekNumber = week, StartDate = startDay, EndDate = endDay, TimesheetEntries = timesheetEntries };
                 weekStatsList.Add(weekStats);
             }
             return weekStatsList;
