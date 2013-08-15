@@ -183,5 +183,13 @@ Work started on <strong>{0}</strong> with the most recent of <strong>{1}</strong
 
 
 
+
+        public string GoogleTimesheetsExcludeCategoryFromTotalHours
+        {
+            get
+            {
+                return GetAppConfig("Google.Timesheets.ExcludeCategoryFromTotalHours");
+            }
+        }
     }
 }

@@ -91,7 +91,9 @@ namespace TrelloStats
             }
 
             row.AppendLine(GetWeekStatsRow(w.PointsCompleted,"text-center"));
-            row.AppendLine(GetWeekStatsRow(Math.Ceiling(w.TotalHours), "text-center"));
+            
+            var hoursString = string.Format("{0}/{1}",Math.Ceiling(w.TotalHours),Math.Ceiling(w.TotalExcludedHours));
+            row.AppendLine(GetWeekStatsRow(hoursString, "text-center"));
 
 
             row.Append("</tr>");

@@ -35,6 +35,10 @@ namespace TrelloStats.Services
             var burndownHoursSeries = CreateSeries("HistoricalHours", burndownHoursData);
             data.historicalHours = burndownHoursSeries;
 
+            var burndownExcludedHoursData = GetBurndownExcludedHoursData(boardStatsAnalysis);
+            var burndownExcludedHoursSeries = CreateSeries("HistoricalExcludedHours", burndownExcludedHoursData);
+            data.historicalExcludedHours = burndownExcludedHoursSeries;
+
             data.milestoneSeries = GetMilestonesSeries(boardStatsAnalysis);
             
 
@@ -117,6 +121,21 @@ namespace TrelloStats.Services
 
             var lastWeekStats = boardStatsAnalysis.WeekStats.Last();
             var lastPoint = GetDateValuePoint(DateTime.Now, lastWeekStats.TotalHours);
+            burndownHoursData.Add(lastPoint);
+            return burndownHoursData;
+        }
+
+        private List<dynamic> GetBurndownExcludedHoursData(BoardStatsAnalysis boardStatsAnalysis)
+        {
+            var burndownHoursData = new List<dynamic>();
+            foreach (var weekStats in boardStatsAnalysis.WeekStats.Take(boardStatsAnalysis.WeekStats.Count - 1))
+            {
+                var point = GetDateValuePoint(weekStats.EndDate, weekStats.TotalExcludedHours);
+                burndownHoursData.Add(point);
+            }
+
+            var lastWeekStats = boardStatsAnalysis.WeekStats.Last();
+            var lastPoint = GetDateValuePoint(DateTime.Now, lastWeekStats.TotalExcludedHours);
             burndownHoursData.Add(lastPoint);
             return burndownHoursData;
         }
