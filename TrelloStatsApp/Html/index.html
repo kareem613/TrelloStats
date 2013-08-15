@@ -135,30 +135,45 @@
                 {
                     name: data.burndown.historicalPoints.name,
                     data: data.burndown.historicalPoints.data,
-                    type: 'line'
+                    type: 'line',
+                    marker: {
+                        symbol: 'square'
+                    }
                 },
 				{
 				    name: data.burndown.projectionSeriesBestCase.name,
 				    data: data.burndown.projectionSeriesBestCase.data,
 				    isProjection: data.burndown.projectionSeriesBestCase.isProjection,
-				    type: 'line'
+				    type: 'line',
+				    marker: {
+				        symbol: 'circle'
+				    }
 				},
 				{
 				    name: data.burndown.projectionSeriesWorstCase.name,
 				    data: data.burndown.projectionSeriesWorstCase.data,
 				    isProjection: data.burndown.projectionSeriesWorstCase.isProjection,
-				    type: 'line'
+				    type: 'line',
+				    marker: {
+				        symbol: 'circle'
+				    }
 				},
 				{
 				    name: data.burndown.projectionSeriesIdeal.name,
 				    data: data.burndown.projectionSeriesIdeal.data,
 				    isProjection: data.burndown.projectionSeriesIdeal.isProjection,
-				    type: 'line'
+				    type: 'line',
+				    marker: {
+				        symbol: 'circle'
+				    }
 				},
 				{
 				    name: data.milestoneSeries[0].name,
 				    data: data.milestoneSeries[0].data,
 				    type: 'line',
+				    marker: {
+				        symbol: 'diamond'
+				    }
 				},
                 {
                     name: "Vacation/Holidays",
