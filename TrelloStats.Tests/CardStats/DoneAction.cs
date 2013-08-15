@@ -73,7 +73,8 @@ namespace TrelloStats.Tests.CardStats
             Assert.IsNull(cardStats.DoneAction);
         }
 
-        [TestMethod]
+        [TestMethod][Ignore]
+        //Bad test. Shouldn't be based on DateTime.Now. Needs cases for weekday->weekday, weekday->weekend and weekend->weekday
         public void GivenDoneAction3DaysAfterStartActionExpectDurationToBe3()
         {
             var expectedBusinessDaysElapsed = 3;
