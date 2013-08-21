@@ -24,7 +24,6 @@
     </div>
 </body>
 
-
 <script type="text/javascript">
 
     $(function () {
@@ -167,14 +166,6 @@
 				        symbol: 'circle'
 				    }
 				},
-				{
-				    name: data.milestoneSeries[0].name,
-				    data: data.milestoneSeries[0].data,
-				    type: 'line',
-				    marker: {
-				        symbol: 'diamond'
-				    }
-				},
                 {
                     name: "Vacation/Holidays",
                     data: data.historicalExcludedHours.data,
@@ -195,3 +186,20 @@
 
 </script>
 
+<script type="text/javascript">
+    $(document).ready(function () {
+        var chart = $('#projections').highcharts();
+        var points = new Array();
+        for (var i = 0; i < data.milestoneSeries.length; i++) {
+            chart.addSeries({
+                name: data.milestoneSeries[i].name,
+                data: data.milestoneSeries[i].data,
+                type: 'line',
+                marker: {
+                    symbol: 'diamond'
+                }
+            });
+        }
+    });
+
+</script>

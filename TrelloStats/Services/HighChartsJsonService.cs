@@ -73,9 +73,9 @@ namespace TrelloStats.Services
                 var bottomPoint = GetDateValuePoint(milestone.TargetDate, 0);
                 bottomPoint.milestoneName = milestone.Name;
                 bottomPoint.isTopPoint = false;
-                
 
-                var series = CreateSeries("Milestones", new List<dynamic>() { bottomPoint, topPoint });
+
+                var series = CreateSeries(milestone.Name + "(Milestone)", new List<dynamic>() { bottomPoint, topPoint });
                 series.color = "#AFAFC1";
                 series.marker = new ExpandoObject();
                 series.marker.enabled = false;
