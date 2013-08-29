@@ -158,8 +158,7 @@ namespace TrelloStats.Configuration
             get
             {
                return @"
-Work started on <strong>{0}</strong> with the most recent of <strong>{1}</strong> stories completed on <strong>{2}</strong>. Total points completed is <strong>{5}</strong>.<br/>
-[[projections_summary]]
+Work started on <strong>{0}</strong> with the most recent of <strong>{1}</strong> stories completed on <strong>{2}</strong>. Total points completed is <strong>{5}</strong>.
 <br/> Timeline last updated {3} {4}.";
             }
         }

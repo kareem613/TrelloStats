@@ -33,7 +33,7 @@ namespace TrelloStats
                     boardStatsAnalysis.TotalPoints
                 );
 
-            summaryText = summaryText.Replace("[[projections_summary]]", GetProjectionsSummaryText(boardStatsAnalysis));
+            
             
 
             return summaryText;
@@ -98,13 +98,13 @@ namespace TrelloStats
             return row.ToString();
         }
 
-        private string GetProjectionsSummaryText(BoardStatsAnalysis boardStatsAnalysis)
+        public string GetProjectionsSummaryText(BoardProjections projections)
         {
             var template = "Team Velocity is <strong>[[velocity]]</strong> points per week. Incomplete estimated points are <strong>[[remaining_points]]</strong>. Expected completion window is <strong>[[expected_completion_min]] - [[expected_completion_max]]</strong>.";
-            template = template.Replace("[[velocity]]", boardStatsAnalysis.Projections.historicalPointsPerWeek.ToString("##"))
-                .Replace("[[remaining_points]]", boardStatsAnalysis.Projections.EstimatePoints.ToString())
-                .Replace("[[expected_completion_min]]", boardStatsAnalysis.Projections.ProjectedMinimumCompletionDate.ToLongDateString())
-                .Replace("[[expected_completion_max]]", boardStatsAnalysis.Projections.ProjectedMaximumCompletionDate.ToLongDateString());
+            template = template.Replace("[[velocity]]", projections.historicalPointsPerWeek.ToString("##"))
+                .Replace("[[remaining_points]]", projections.EstimatePoints.ToString())
+                .Replace("[[expected_completion_min]]", projections.ProjectedMinimumCompletionDate.ToLongDateString())
+                .Replace("[[expected_completion_max]]", projections.ProjectedMaximumCompletionDate.ToLongDateString());
             return template;
         }
 

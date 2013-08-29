@@ -52,6 +52,8 @@ namespace TrelloStats.Services
             html = html.Replace("[[summary]]",_htmlFactory.GetSummaryTextForBoardStat(boardStatsAnalysis));
             html = html.Replace("[[extra_lists_stats_table]]", _htmlFactory.GetExtraListsStatsTable(boardStatsAnalysis));
             html = html.Replace("[[weekly_stats_rows]]", _htmlFactory.GetWeeklyStatsRows(boardStatsAnalysis));
+            html = html.Replace("[[projections_summary]]", _htmlFactory.GetProjectionsSummaryText(boardStatsAnalysis.Projections));
+            html = html.Replace("[[next_milestone_projections_summary]]", _htmlFactory.GetProjectionsSummaryText(boardStatsAnalysis.NextMilestoneProjection));
             
 
             File.WriteAllText(htmlFileInfo.FullName, html);
