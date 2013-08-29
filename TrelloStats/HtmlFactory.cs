@@ -152,7 +152,7 @@ namespace TrelloStats
 
             var weekStatsList = boardStatsAnalysis.WeekStats;
             var weekRows = new StringBuilder();
-            weekStatsList.ForEach(w => weekRows.Append(GetWeekStatsHtmlRow(w, boardStatsAnalysis)));
+            weekStatsList.OrderByDescending(ws=>ws.WeekNumber).ToList().ForEach(w => weekRows.Append(GetWeekStatsHtmlRow(w, boardStatsAnalysis)));
 
             return weekStatsHeader + weekRows;
         }
