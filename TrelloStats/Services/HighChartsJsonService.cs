@@ -25,19 +25,17 @@ namespace TrelloStats.Services
         {
             dynamic data = new ExpandoObject();
             data.weeklyStats = CreateWeeklyStatsSeriesCollection(boardStatsAnalysis);
+            
             data.burndown = new ExpandoObject();
             var burndownPointsData = GetBurndownData(boardStatsAnalysis);
             var historicalPointsSeries = CreateSeries("Historical", burndownPointsData);
             data.burndown.historicalPoints = historicalPointsSeries;
-            AddProjectionsSeries(boardStatsAnalysis, data.burndown);
+            AddProjectionsSeries(boardStatsAnalysis.Projections, data.burndown);
+            
+            data.nextMilestoneBurndown = new ExpandoObject();
+            AddProjectionsSeries(boardStatsAnalysis.NextMilestoneProjection, data.nextMilestoneBurndown);
 
-            var burndownHoursData = GetBurndownHoursData(boardStatsAnalysis);
-            var burndownHoursSeries = CreateSeries("HistoricalHours", burndownHoursData);
-            data.historicalHours = burndownHoursSeries;
-
-            var burndownExcludedHoursData = GetBurndownExcludedHoursData(boardStatsAnalysis);
-            var burndownExcludedHoursSeries = CreateSeries("HistoricalExcludedHours", burndownExcludedHoursData);
-            data.historicalExcludedHours = burndownExcludedHoursSeries;
+            AddHourTimesheetData(boardStatsAnalysis, data);
 
             data.milestoneSeries = GetMilestonesSeries(boardStatsAnalysis);
             
@@ -60,6 +58,17 @@ namespace TrelloStats.Services
 
             CopyFileToOutputFolder("style.css");
             CopyFileToOutputFolder("bootstrap.min.css");
+        }
+
+        private void AddHourTimesheetData(BoardStatsAnalysis boardStatsAnalysis, dynamic data)
+        {
+            var burndownHoursData = GetBurndownHoursData(boardStatsAnalysis);
+            var burndownHoursSeries = CreateSeries("HistoricalHours", burndownHoursData);
+            data.historicalHours = burndownHoursSeries;
+
+            var burndownExcludedHoursData = GetBurndownExcludedHoursData(boardStatsAnalysis);
+            var burndownExcludedHoursSeries = CreateSeries("HistoricalExcludedHours", burndownExcludedHoursData);
+            data.historicalExcludedHours = burndownExcludedHoursSeries;
         }
 
         private List<dynamic> GetMilestonesSeries(BoardStatsAnalysis boardStatsAnalysis)
@@ -143,13 +152,11 @@ namespace TrelloStats.Services
             return burndownHoursData;
         }
 
-        private void AddProjectionsSeries(BoardStatsAnalysis boardStatsAnalysis, dynamic burndownSeries)
+        private void AddProjectionsSeries(BoardProjections projections, dynamic burndownSeries)
         {
-            burndownSeries.projectionSeriesBestCase = GetCompletionProjectionSeries("Best Case", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectedMinimumCompletionDate);
-            burndownSeries.projectionSeriesWorstCase = GetCompletionProjectionSeries("Worst Case", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectedMaximumCompletionDate);
-            burndownSeries.projectionSeriesIdeal = GetCompletionProjectionSeries("Ideal", boardStatsAnalysis.Projections.EstimatePoints, boardStatsAnalysis.Projections.ProjectionCompletionDate);
-
-            //return new List<dynamic>(){ projectionSeriesBestCase, projectionSeriesWorstCase, projectionSeriesIdeal };
+            burndownSeries.projectionSeriesBestCase = GetCompletionProjectionSeries("Best Case", projections.EstimatePoints, projections.ProjectedMinimumCompletionDate);
+            burndownSeries.projectionSeriesWorstCase = GetCompletionProjectionSeries("Worst Case", projections.EstimatePoints, projections.ProjectedMaximumCompletionDate);
+            burndownSeries.projectionSeriesIdeal = GetCompletionProjectionSeries("Ideal", projections.EstimatePoints, projections.ProjectionCompletionDate);
         }
 
         private List<dynamic> CreateWeeklyStatsSeriesCollection(BoardStatsAnalysis boardStatsAnalysis)

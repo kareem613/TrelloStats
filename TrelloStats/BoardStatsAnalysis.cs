@@ -135,6 +135,8 @@ namespace TrelloStats
         internal BoardProjections Projections { get; set; }
 
         public List<Milestone> Milestones { get; set; }
+
+        internal BoardProjections NextMilestoneProjection { get; set; }
     }
     
 }

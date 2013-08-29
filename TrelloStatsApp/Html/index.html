@@ -16,6 +16,10 @@
             [[summary]]
    
         </p>
+
+        <div class="row">
+            <div id="next_milestone_projections" class="col-lg-12 col-sm-12"></div>
+        </div>
         <div class="row">
             <div id="projections" class="col-lg-8 col-sm-12"></div>
             <div id="weeklyStats" class="col-lg-4 col-sm-12"></div>
@@ -198,10 +202,120 @@
 
 </script>
 
+
+
+<script type="text/javascript">
+    $(function () {
+        $('#next_milestone_projections').highcharts({
+            chart: {
+
+            },
+            plotOptions: {
+                column: {
+                    stacking: 'normal'
+                }
+            },
+            title: {
+                text: 'Next Milestone Projections'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                type: 'datetime',
+
+            },
+            yAxis: [{
+                title: {
+                    text: 'Points'
+                },
+                yAxis: 0,
+                min: 0
+            }],
+            tooltip: {
+                formatter: function () {
+                    if (this.series.name == "Milestones") {
+                        if (this.point.isTopPoint) {
+                            return '<strong>' + this.point.milestoneName + '</strong><br/>' +
+                                Highcharts.dateFormat('%e. %b', this.x);
+                        } else {
+                            return false;
+                        }
+                    } else if (this.series.options.isProjection) {
+                        if (this.point.isStartPoint) {
+                            return false;//'<b>' + this.series.name + '</b><br/>';
+                        } else {
+                            return '<b>' + this.series.name + '</b><br/>' +
+                            Highcharts.dateFormat('%e. %b', this.x);
+                        }
+                    }
+                    else {
+                        return '<b>' + this.series.name + '</b><br/>' +
+                           Highcharts.dateFormat('%e. %b', this.x) + ': ' + this.y + ' pts';
+                    }
+                }
+            },
+
+            series: [
+                {
+                    name: data.burndown.historicalPoints.name,
+                    data: data.burndown.historicalPoints.data,
+                    type: 'line',
+                    marker: {
+                        symbol: 'square'
+                    }
+                },
+				{
+				    name: data.nextMilestoneBurndown.projectionSeriesBestCase.name,
+				    data: data.nextMilestoneBurndown.projectionSeriesBestCase.data,
+				    isProjection: data.nextMilestoneBurndown.projectionSeriesBestCase.isProjection,
+				    type: 'line',
+				    marker: {
+				        symbol: 'circle'
+				    }
+				},
+				{
+				    name: data.nextMilestoneBurndown.projectionSeriesWorstCase.name,
+				    data: data.nextMilestoneBurndown.projectionSeriesWorstCase.data,
+				    isProjection: data.nextMilestoneBurndown.projectionSeriesWorstCase.isProjection,
+				    type: 'line',
+				    marker: {
+				        symbol: 'circle'
+				    }
+				},
+				{
+				    name: data.nextMilestoneBurndown.projectionSeriesIdeal.name,
+				    data: data.nextMilestoneBurndown.projectionSeriesIdeal.data,
+				    isProjection: data.nextMilestoneBurndown.projectionSeriesIdeal.isProjection,
+				    type: 'line',
+				    marker: {
+				        symbol: 'circle'
+				    }
+				}
+               
+            ]
+        });
+    });
+
+
+</script>
+
 <script type="text/javascript">
     $(document).ready(function () {
         var chart = $('#projections').highcharts();
+        var nextMilestoneChart = $('#next_milestone_projections').highcharts();
         var points = new Array();
+
+        nextMilestoneChart.addSeries({
+            name: data.milestoneSeries[0].name,
+            data: data.milestoneSeries[0].data,
+            type: 'line',
+            marker: {
+                symbol: 'diamond'
+            }
+        });
+
+
         for (var i = 0; i < data.milestoneSeries.length; i++) {
             chart.addSeries({
                 name: data.milestoneSeries[i].name,
@@ -211,6 +325,8 @@
                     symbol: 'diamond'
                 }
             });
+
+
         }
     });
 
