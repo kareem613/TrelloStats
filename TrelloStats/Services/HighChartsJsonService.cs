@@ -52,6 +52,9 @@ namespace TrelloStats.Services
 
             var html = File.ReadAllText(htmlSourceFileInfo.FullName);
             html = html.Replace("[[summary]]",_htmlFactory.GetSummaryTextForBoardStat(boardStatsAnalysis));
+            html = html.Replace("[[extra_lists_stats_table]]", _htmlFactory.GetExtraListsStatsTable(boardStatsAnalysis));
+            html = html.Replace("[[weekly_stats_rows]]", _htmlFactory.GetWeeklyStatsRows(boardStatsAnalysis));
+            
 
             File.WriteAllText(htmlFileInfo.FullName, html);
 

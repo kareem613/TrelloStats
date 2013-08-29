@@ -34,10 +34,7 @@ namespace TrelloStats
                 );
 
             summaryText = summaryText.Replace("[[projections_summary]]", GetProjectionsSummaryText(boardStatsAnalysis));
-            summaryText = summaryText.Replace("[[extra_lists_stats_table]]", GetExtraListsStatsTableHtml(boardStatsAnalysis));
-            summaryText = summaryText.Replace("[[weekly_stats_header]]", weekStatsHeader);
-            summaryText = summaryText.Replace("[[weekly_stats_rows]]", weekRows.ToString());
-
+            
 
             return summaryText;
         }
@@ -140,6 +137,24 @@ namespace TrelloStats
         private string GetWeekStatsRow(object value)
         {
             return string.Format("<td>{0}</td>", value.ToString());
+        }
+
+        internal string GetExtraListsStatsTable(BoardStatsAnalysis boardStatsAnalysis)
+        {
+            return GetExtraListsStatsTableHtml(boardStatsAnalysis);
+            
+
+        }
+
+        internal string GetWeeklyStatsRows(BoardStatsAnalysis boardStatsAnalysis)
+        {
+            var weekStatsHeader = GetWeekStatsHtmlHeader();
+
+            var weekStatsList = boardStatsAnalysis.WeekStats;
+            var weekRows = new StringBuilder();
+            weekStatsList.ForEach(w => weekRows.Append(GetWeekStatsHtmlRow(w, boardStatsAnalysis)));
+
+            return weekStatsHeader + weekRows;
         }
     }
 }
