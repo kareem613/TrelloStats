@@ -25,14 +25,16 @@ namespace TrelloStats.Services
             boardStats.TimesheetData = timesheetData;
             boardStats.ProjectStartDate = ProjectStartDate;
             var boardStatsAnalysis = new BoardStatsAnalysis(_configuration, boardStats);
-            
-            BuildProjections(trelloData, boardStatsAnalysis);
+
+            boardStatsAnalysis.NextMilestoneProjection = BuildProjectionsForNextMilestone(trelloData, boardStatsAnalysis);
+            boardStatsAnalysis.Projections = BuildProjections(trelloData, boardStatsAnalysis);
 
             if (trelloData.MilestoneList != null)
             {
                 var milestones = new List<Milestone>();
                 foreach (var card in trelloData.MilestoneList.CardDataCollection)
                 {
+                    
                     if (card.Card.Due.HasValue)
                     {
                         milestones.Add(new Milestone() { Name = card.Card.Name, TargetDate = card.Card.Due.Value });
@@ -44,14 +46,32 @@ namespace TrelloStats.Services
             return boardStatsAnalysis;
         }
 
-        private void BuildProjections(TrelloData trelloData, BoardStatsAnalysis boardStatsAnalysis)
+        private BoardProjections BuildProjections(TrelloData trelloData, BoardStatsAnalysis boardStatsAnalysis)
         {
             var estimatedPoints = GetEstimatedPointsForList(trelloData, _configuration.ListNames.EstimatedList);
             estimatedPoints += GetEstimatedPointsForList(trelloData, _configuration.ListNames.InProgressListName);
             estimatedPoints += GetEstimatedPointsForList(trelloData, _configuration.ListNames.InTestListName);
 
             boardStatsAnalysis.EstimatedListPoints = estimatedPoints;
-            
+
+            var projection = BuildBoardProjection(boardStatsAnalysis, estimatedPoints);
+            return projection;
+        }
+
+        private BoardProjections BuildProjectionsForNextMilestone(TrelloData trelloData, BoardStatsAnalysis boardStatsAnalysis)
+        {
+            var estimatedPoints = GetEstimatedPointsNextMilestoneForList(trelloData, _configuration.ListNames.EstimatedList);
+            estimatedPoints += GetEstimatedPointsNextMilestoneForList(trelloData, _configuration.ListNames.InProgressListName);
+            estimatedPoints += GetEstimatedPointsNextMilestoneForList(trelloData, _configuration.ListNames.InTestListName);
+
+            boardStatsAnalysis.EstimatedListPoints = estimatedPoints;
+
+            var projection = BuildBoardProjection(boardStatsAnalysis, estimatedPoints);
+            return projection;
+        }
+
+        private BoardProjections BuildBoardProjection(BoardStatsAnalysis boardStatsAnalysis, double estimatedPoints)
+        {
             var totalDonePoints = boardStatsAnalysis.TotalPoints;
             var elapsedWeeks = boardStatsAnalysis.CompletedWeeksElapsed - _configuration.WeeksToSkipForVelocityCalculation;
 
@@ -60,7 +80,7 @@ namespace TrelloStats.Services
             var projectedWeeksMin = projectedWeeksToComplete * _configuration.TrelloProjectionsEstimateWindowLowerBoundFactor;
             var projectedWeeksMax = projectedWeeksToComplete * _configuration.TrelloProjectionsEstimateWindowUpperBoundFactor;
 
-            boardStatsAnalysis.Projections = new BoardProjections()
+            var projection = new BoardProjections()
             {
                 EstimatePoints = estimatedPoints,
                 TotalPointsCompleted = totalDonePoints,
@@ -71,12 +91,20 @@ namespace TrelloStats.Services
                 ProjectedMinimumCompletionDate = GetCompletionDate(projectedWeeksMin),
                 ProjectedMaximumCompletionDate = GetCompletionDate(projectedWeeksMax)
             };
+            return projection;
         }
-  
+
         private double GetEstimatedPointsForList(TrelloData trelloData, string listName)
         {
             var estimatedListData = trelloData.GetListData(listName);
             var estimatedPoints = estimatedListData.CardDataCollection.Sum(cd => cd.Points);
+            return estimatedPoints;
+        }
+
+        private double GetEstimatedPointsNextMilestoneForList(TrelloData trelloData, string listName)
+        {
+            var estimatedListData = trelloData.GetListData(listName);
+            var estimatedPoints = estimatedListData.CardDataCollection.Where(c=>c.Card.Labels.Any(l=>l.Name == "Next Milestone")).Sum(cd => cd.Points);
             return estimatedPoints;
         }
 

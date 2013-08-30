@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TrelloStats.Model.Stats
 {
-    class BoardProjections
+    public class BoardProjections
     {
         public double EstimatePoints { get; set; }
 

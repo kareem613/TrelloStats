@@ -1,0 +1,9 @@
+Features:
+Calculation to display required points/week to meet next milestone
+Bubble chart to display duration(y-axis) vs time(x-axis) vs points(bubble size)
+A better way to dealing with milestones and release planning
+
+Codebase:
+Lots lots lots.
+Major overhaul to base time period stats on filtered Trello actions
+Unit tests for json output

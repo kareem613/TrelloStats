@@ -33,11 +33,8 @@ namespace TrelloStats
                     boardStatsAnalysis.TotalPoints
                 );
 
-            summaryText = summaryText.Replace("[[projections_summary]]", GetProjectionsSummaryText(boardStatsAnalysis));
-            summaryText = summaryText.Replace("[[extra_lists_stats_table]]", GetExtraListsStatsTableHtml(boardStatsAnalysis));
-            summaryText = summaryText.Replace("[[weekly_stats_header]]", weekStatsHeader);
-            summaryText = summaryText.Replace("[[weekly_stats_rows]]", weekRows.ToString());
-
+            
+            
 
             return summaryText;
         }
@@ -101,13 +98,13 @@ namespace TrelloStats
             return row.ToString();
         }
 
-        private string GetProjectionsSummaryText(BoardStatsAnalysis boardStatsAnalysis)
+        public string GetProjectionsSummaryText(BoardProjections projections)
         {
             var template = "Team Velocity is <strong>[[velocity]]</strong> points per week. Incomplete estimated points are <strong>[[remaining_points]]</strong>. Expected completion window is <strong>[[expected_completion_min]] - [[expected_completion_max]]</strong>.";
-            template = template.Replace("[[velocity]]", boardStatsAnalysis.Projections.historicalPointsPerWeek.ToString("##"))
-                .Replace("[[remaining_points]]", boardStatsAnalysis.Projections.EstimatePoints.ToString())
-                .Replace("[[expected_completion_min]]", boardStatsAnalysis.Projections.ProjectedMinimumCompletionDate.ToLongDateString())
-                .Replace("[[expected_completion_max]]", boardStatsAnalysis.Projections.ProjectedMaximumCompletionDate.ToLongDateString());
+            template = template.Replace("[[velocity]]", projections.historicalPointsPerWeek.ToString("##"))
+                .Replace("[[remaining_points]]", projections.EstimatePoints.ToString())
+                .Replace("[[expected_completion_min]]", projections.ProjectedMinimumCompletionDate.ToLongDateString())
+                .Replace("[[expected_completion_max]]", projections.ProjectedMaximumCompletionDate.ToLongDateString());
             return template;
         }
 
@@ -140,6 +137,24 @@ namespace TrelloStats
         private string GetWeekStatsRow(object value)
         {
             return string.Format("<td>{0}</td>", value.ToString());
+        }
+
+        internal string GetExtraListsStatsTable(BoardStatsAnalysis boardStatsAnalysis)
+        {
+            return GetExtraListsStatsTableHtml(boardStatsAnalysis);
+            
+
+        }
+
+        internal string GetWeeklyStatsRows(BoardStatsAnalysis boardStatsAnalysis)
+        {
+            var weekStatsHeader = GetWeekStatsHtmlHeader();
+
+            var weekStatsList = boardStatsAnalysis.WeekStats;
+            var weekRows = new StringBuilder();
+            weekStatsList.OrderByDescending(ws=>ws.WeekNumber).ToList().ForEach(w => weekRows.Append(GetWeekStatsHtmlRow(w, boardStatsAnalysis)));
+
+            return weekStatsHeader + weekRows;
         }
     }
 }

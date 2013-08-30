@@ -158,25 +158,35 @@ namespace TrelloStats.Configuration
             get
             {
                return @"
-Work started on <strong>{0}</strong> with the most recent of <strong>{1}</strong> stories completed on <strong>{2}</strong>. Total points completed is <strong>{5}</strong>.<br/>
-[[projections_summary]]
-<br/> Timeline last updated {3} {4}.
-<div class=""row"">
-    <div class=""col-lg-2"">
-        [[extra_lists_stats_table]]
-    </div>
-    <div class=""col-lg-10"">
-        <table id=""week_stats"" class=""table-condensed table-bordered table-striped"">
-        <tbody>
-            [[weekly_stats_header]]
-            [[weekly_stats_rows]]
-        <tbody>
-        </table>
-    </div>
-</div>
-";
+Work started on <strong>{0}</strong> with the most recent of <strong>{1}</strong> stories completed on <strong>{2}</strong>. Total points completed is <strong>{5}</strong>.
+<br/> Timeline last updated {3} {4}.";
             }
         }
+
+//        public string SummaryTextTemplate
+//        {
+//            get
+//            {
+//                return @"
+//Work started on <strong>{0}</strong> with the most recent of <strong>{1}</strong> stories completed on <strong>{2}</strong>. Total points completed is <strong>{5}</strong>.<br/>
+//[[projections_summary]]
+//<br/> Timeline last updated {3} {4}.
+//<div class=""row"">
+//    <div class=""col-lg-2"">
+//        [[extra_lists_stats_table]]
+//    </div>
+//    <div class=""col-lg-10"">
+//        <table id=""week_stats"" class=""table-condensed table-bordered table-striped"">
+//        <tbody>
+//            [[weekly_stats_header]]
+//            [[weekly_stats_rows]]
+//        <tbody>
+//        </table>
+//    </div>
+//</div>
+//";
+//            }
+//        }
 
 
 
