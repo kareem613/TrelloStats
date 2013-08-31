@@ -1,6 +1,7 @@
 Features:
 Calculation to display required points/week to meet next milestone
 Bubble chart to display duration(y-axis) vs time(x-axis) vs points(bubble size)
+Persist projected windows into google spreadsheet
 A better way to dealing with milestones and release planning
 
 Codebase:
