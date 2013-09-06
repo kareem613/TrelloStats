@@ -34,9 +34,24 @@ namespace TrelloStats.Services
 
         public void CalculateStats(bool pushToGoogle, bool createJson)
         {
+
+
+           
+            CounterCreationDataCollection counters = new CounterCreationDataCollection();
+            CounterCreationData totalTimeSheetEntries = new CounterCreationData();
+            totalTimeSheetEntries.CounterName = "NumberOfTimesheetEntries";
+            totalTimeSheetEntries.CounterHelp = "Total number of timesheet entries from google spreadsheet.";
+            totalTimeSheetEntries.CounterType = PerformanceCounterType.NumberOfItems32;
+            counters.Add(totalTimeSheetEntries);
+            PerformanceCounterCategory.Delete("TrelloStats");
+            PerformanceCounterCategory.Create("TrelloStats", "TrelloStats", PerformanceCounterCategoryType.SingleInstance, counters);
+           
+            var perfCounter = new PerformanceCounter("TrelloStats", "NumberOfTimesheetEntries", "", false);
+
             var stopwatch = Stopwatch.StartNew();
             Console.Write("Querying Timesheet data...");
             var timesheetData = _timesheetService.GetTimesheetData();
+            perfCounter.RawValue = timesheetData.Count;
             Console.WriteLine(String.Format("Completed in {0}s.", stopwatch.Elapsed.TotalSeconds));
 
             stopwatch.Restart();
